@@ -12,18 +12,18 @@ export default function AppTabs() {
       backgroundColor={colors.background}
       indicatorColor={colors.backgroundElement}
       labelStyle={{ selected: { color: colors.text } }}>
-      <NativeTabs.Trigger name="index">
-        <NativeTabs.Trigger.Label>Home</NativeTabs.Trigger.Label>
+      <NativeTabs.Trigger name="grading-systems">
+        <NativeTabs.Trigger.Label>Grades</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon
-          src={require('@/assets/images/tabIcons/home.png')}
+          src={require('@/assets/images/tabIcons/systems.png')}
           renderingMode="template"
         />
       </NativeTabs.Trigger>
 
-      <NativeTabs.Trigger name="explore">
-        <NativeTabs.Trigger.Label>Explore</NativeTabs.Trigger.Label>
+      <NativeTabs.Trigger name="routes">
+        <NativeTabs.Trigger.Label>Routes</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon
-          src={require('@/assets/images/tabIcons/explore.png')}
+          src={require('@/assets/images/tabIcons/routes.png')}
           renderingMode="template"
         />
       </NativeTabs.Trigger>
