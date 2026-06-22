@@ -6,20 +6,22 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs =
-    { self, nixpkgs, flake-utils }:
+  outputs = {
+    self,
+    nixpkgs,
+    flake-utils,
+  }:
     flake-utils.lib.eachDefaultSystem (
-      system:
-      let
+      system: let
         pkgs = nixpkgs.legacyPackages.${system};
-      in
-      {
+      in {
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
             nodejs_22
             pnpm
             git
             playwright-driver.browsers
+            android-tools
           ];
 
           env = {
