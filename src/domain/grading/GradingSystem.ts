@@ -17,48 +17,59 @@ export class GradingSystem {
     if (input.grades.length === 0) {
       throw new Error("Grading system must have at least one grade");
     }
-    for (const grade of input.grades) {
-      validate(grade);
+
+    this.validateGrades(input.grades);
+
+    return new GradingSystem(
+      input.name,
+      this.sortGradesBasedOnOrder(input.grades),
+    );
+  }
+
+  private static validateGrades(grades: GradeDefinition[]): void {
+    grades.forEach((grade) => this.validate(grade));
+  }
+
+  private static validate = (grade: GradeDefinition): void => {
+    if (!grade.name) {
+      throw new Error(`Grade name cannot be empty`);
     }
-    const sorted = [...input.grades].sort((a, b) => a.order - b.order);
-    return new GradingSystem(input.name, sorted);
-  }
-
-  public contains(value: string): boolean {
-    return this.grades.some((grade) => grade.value === value);
-  }
-
-  public gradeFor(value: string): Grade {
-    if (!this.contains(value)) {
+    if (!grade.color) {
+      throw new Error(`Grade color for "${grade.name}" cannot be empty`);
+    }
+    if (!Number.isFinite(grade.order)) {
       throw new Error(
-        `Grade "${value}" is not part of grading system "${this.name}"`,
+        `Grade order for "${grade.name}" must be a finite number`,
       );
     }
-    return Object.freeze({ systemId: this.name, value });
+  };
+
+  private static sortGradesBasedOnOrder(
+    grades: GradeDefinition[],
+  ): GradeDefinition[] {
+    return [...grades].sort((a, b) => a.order - b.order);
   }
 
-  public definitionFor(value: string): GradeDefinition {
-    const definition = this.grades.find((grade) => grade.value === value);
+  public contains(name: string): boolean {
+    return this.grades.some((grade) => grade.name === name);
+  }
+
+  public gradeFor(name: string): Grade {
+    if (!this.contains(name)) {
+      throw new Error(
+        `Grade "${name}" is not part of grading system "${this.name}"`,
+      );
+    }
+    return Object.freeze({ systemId: this.name, name });
+  }
+
+  public definitionFor(name: string): GradeDefinition {
+    const definition = this.grades.find((grade) => grade.name === name);
     if (!definition) {
       throw new Error(
-        `Grade "${value}" is not part of grading system "${this.name}"`,
+        `Grade "${name}" is not part of grading system "${this.name}"`,
       );
     }
     return definition;
   }
 }
-
-const validate = (grade: GradeDefinition): void => {
-  if (!grade.value) {
-    throw new Error("Grade value cannot be empty");
-  }
-  if (!grade.label) {
-    throw new Error(`Grade label for "${grade.value}" cannot be empty`);
-  }
-  if (!grade.color) {
-    throw new Error(`Grade color for "${grade.value}" cannot be empty`);
-  }
-  if (!Number.isFinite(grade.order)) {
-    throw new Error(`Grade order for "${grade.value}" must be a finite number`);
-  }
-};

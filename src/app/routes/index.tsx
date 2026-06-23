@@ -226,7 +226,7 @@ export default function RoutesScreen() {
                 try {
                   background = gradingSystemRegistry
                     .requireByName(route.grade.systemId)
-                    .definitionFor(route.grade.value).color;
+                    .definitionFor(route.grade.name).color;
                 } catch {
                   background = Rainbow[3];
                 }

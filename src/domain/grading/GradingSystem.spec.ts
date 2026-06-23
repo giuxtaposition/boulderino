@@ -2,11 +2,8 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { GradeDefinition } from "./GradeDefinition";
 import { GradingSystem } from "./GradingSystem";
 
-const sample = (
-  overrides: Partial<GradeDefinition> = {},
-): GradeDefinition => ({
-  value: "5.10a",
-  label: "5.10a",
+const sample = (overrides: Partial<GradeDefinition> = {}): GradeDefinition => ({
+  name: "5.10a",
   color: "#22C55E",
   order: 1,
   ...overrides,
@@ -17,11 +14,11 @@ describe("GradingSystem", () => {
     it("should create a new grading system with valid grades", () => {
       const system = GradingSystem.create({
         name: "YDS",
-        grades: [sample(), sample({ value: "5.10b", order: 2 })],
+        grades: [sample(), sample({ name: "5.10b", order: 2 })],
       });
 
       expect(system.name).toBe("YDS");
-      expect(system.grades.map((grade) => grade.value)).toEqual([
+      expect(system.grades.map((grade) => grade.name)).toEqual([
         "5.10a",
         "5.10b",
       ]);
@@ -31,13 +28,13 @@ describe("GradingSystem", () => {
       const system = GradingSystem.create({
         name: "YDS",
         grades: [
-          sample({ value: "5.10c", order: 3 }),
-          sample({ value: "5.10a", order: 1 }),
-          sample({ value: "5.10b", order: 2 }),
+          sample({ name: "5.10c", order: 3 }),
+          sample({ name: "5.10a", order: 1 }),
+          sample({ name: "5.10b", order: 2 }),
         ],
       });
 
-      expect(system.grades.map((grade) => grade.value)).toEqual([
+      expect(system.grades.map((grade) => grade.name)).toEqual([
         "5.10a",
         "5.10b",
         "5.10c",
@@ -51,27 +48,18 @@ describe("GradingSystem", () => {
     });
 
     it("should throw an error if the grades array is empty", () => {
-      expect(() =>
-        GradingSystem.create({ name: "YDS", grades: [] }),
-      ).toThrow("Grading system must have at least one grade");
+      expect(() => GradingSystem.create({ name: "YDS", grades: [] })).toThrow(
+        "Grading system must have at least one grade",
+      );
     });
 
-    it("should throw an error if a grade value is empty", () => {
+    it("should throw an error if a grade name is empty", () => {
       expect(() =>
         GradingSystem.create({
           name: "YDS",
-          grades: [sample({ value: "" })],
+          grades: [sample({ name: "" })],
         }),
-      ).toThrow("Grade value cannot be empty");
-    });
-
-    it("should throw an error if a grade label is empty", () => {
-      expect(() =>
-        GradingSystem.create({
-          name: "YDS",
-          grades: [sample({ label: "" })],
-        }),
-      ).toThrow('Grade label for "5.10a" cannot be empty');
+      ).toThrow("Grade name cannot be empty");
     });
 
     it("should throw an error if a grade color is empty", () => {
@@ -100,9 +88,9 @@ describe("GradingSystem", () => {
       system = GradingSystem.create({
         name: "YDS",
         grades: [
-          sample({ value: "5.10a", order: 1 }),
-          sample({ value: "5.10b", order: 2 }),
-          sample({ value: "5.10c", order: 3 }),
+          sample({ name: "5.10a", order: 1 }),
+          sample({ name: "5.10b", order: 2 }),
+          sample({ name: "5.10c", order: 3 }),
         ],
       });
     });
@@ -115,14 +103,14 @@ describe("GradingSystem", () => {
       expect(system.contains("V5")).toBe(false);
     });
 
-    it("should build a Grade tagged with the system name when the value is valid", () => {
+    it("should build a Grade tagged with the system name when the name is valid", () => {
       expect(system.gradeFor("5.10a")).toEqual({
         systemId: "YDS",
-        value: "5.10a",
+        name: "5.10a",
       });
     });
 
-    it("should throw when building a Grade with a value not in the system", () => {
+    it("should throw when building a Grade with a name not in the system", () => {
       expect(() => system.gradeFor("V5")).toThrow(
         'Grade "V5" is not part of grading system "YDS"',
       );
@@ -130,14 +118,13 @@ describe("GradingSystem", () => {
 
     it("should return the matching GradeDefinition for definitionFor", () => {
       expect(system.definitionFor("5.10b")).toEqual({
-        value: "5.10b",
-        label: "5.10a",
+        name: "5.10b",
         color: "#22C55E",
         order: 2,
       });
     });
 
-    it("should throw when definitionFor cannot find the value", () => {
+    it("should throw when definitionFor cannot find the name", () => {
       expect(() => system.definitionFor("V5")).toThrow(
         'Grade "V5" is not part of grading system "YDS"',
       );

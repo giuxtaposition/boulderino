@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
+import { expect, fn, userEvent, within } from 'storybook/test';
 
 import { DisciplineSelector } from './DisciplineSelector';
 import { Discipline } from '@/domain/route/Discipline';
@@ -9,7 +10,7 @@ const meta = {
   component: DisciplineSelector,
   args: {
     value: 'bouldering',
-    onChange: () => {},
+    onChange: fn(),
   },
 } satisfies Meta<typeof DisciplineSelector>;
 
@@ -24,5 +25,14 @@ export const Interactive: Story = {
   render: (args) => {
     const [value, setValue] = useState<Discipline>('bouldering');
     return <DisciplineSelector {...args} value={value} onChange={setValue} />;
+  },
+};
+
+export const SelectsDiscipline: Story = {
+  play: async ({ args, canvasElement }) => {
+    const canvas = within(canvasElement);
+    const sport = await canvas.findByTestId('select-discipline-lead-sport');
+    await userEvent.click(sport);
+    await expect(args.onChange).toHaveBeenCalledWith('lead-sport');
   },
 };

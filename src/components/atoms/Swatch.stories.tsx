@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, fn, userEvent, within } from "storybook/test";
 
 import { Swatch } from "./Swatch";
 import { Rainbow } from "@/constants/theme";
@@ -10,6 +11,8 @@ const meta = {
   args: {
     color: Rainbow[3],
     selected: false,
+    accessibilityLabel: "green swatch",
+    onPress: fn(),
   },
 } satisfies Meta<typeof Swatch>;
 
@@ -29,5 +32,14 @@ export const Interactive: Story = {
         onPress={() => setSelected((prev) => !prev)}
       />
     );
+  },
+};
+
+export const InvokesOnPress: Story = {
+  play: async ({ args, canvasElement }) => {
+    const canvas = within(canvasElement);
+    const swatch = await canvas.findByRole("button", { name: /green swatch/i });
+    await userEvent.click(swatch);
+    await expect(args.onPress).toHaveBeenCalledTimes(1);
   },
 };

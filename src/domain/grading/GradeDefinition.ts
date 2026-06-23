@@ -1,6 +1,5 @@
 export type GradeDefinition = Readonly<{
-  value: string;
-  label: string;
+  name: string;
   color: string;
   order: number;
 }>;

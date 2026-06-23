@@ -8,7 +8,7 @@ const validInput: RouteInput = {
   discipline: "bouldering",
   grade: {
     systemId: "system1",
-    value: "green",
+    name: "green",
   },
   photo: {
     url: "https://example.com/photo.jpg",

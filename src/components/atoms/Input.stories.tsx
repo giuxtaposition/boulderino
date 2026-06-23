@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
+import { expect, fn, userEvent, within } from 'storybook/test';
 
 import { Input } from './Input';
 
@@ -8,6 +9,7 @@ const meta = {
   component: Input,
   args: {
     placeholder: 'Route name',
+    onChangeText: fn(),
   },
 } satisfies Meta<typeof Input>;
 
@@ -24,5 +26,14 @@ export const Interactive: Story = {
   render: (args) => {
     const [value, setValue] = useState('');
     return <Input {...args} value={value} onChangeText={setValue} />;
+  },
+};
+
+export const InvokesOnChangeText: Story = {
+  play: async ({ args, canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = await canvas.findByPlaceholderText('Route name');
+    await userEvent.type(input, 'Hi');
+    await expect(args.onChangeText).toHaveBeenLastCalledWith('Hi');
   },
 };

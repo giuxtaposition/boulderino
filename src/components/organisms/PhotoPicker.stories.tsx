@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
+import { expect, fn, userEvent, within } from 'storybook/test';
 
 import { PhotoPicker, PickedPhoto } from './PhotoPicker';
 
@@ -14,7 +15,7 @@ const meta = {
   component: PhotoPicker,
   args: {
     photo: null,
-    onPick: () => {},
+    onPick: fn(),
   },
 } satisfies Meta<typeof PhotoPicker>;
 
@@ -36,5 +37,14 @@ export const Interactive: Story = {
         onPick={() => setPhoto(photo ? null : samplePhoto)}
       />
     );
+  },
+};
+
+export const InvokesOnPick: Story = {
+  play: async ({ args, canvasElement }) => {
+    const canvas = within(canvasElement);
+    const button = await canvas.findByTestId('pick-photo-button');
+    await userEvent.click(button);
+    await expect(args.onPick).toHaveBeenCalledTimes(1);
   },
 };

@@ -66,7 +66,7 @@ export default function RouteDetailScreen() {
   try {
     background = gradingSystemRegistry
       .requireByName(route.grade.systemId)
-      .definitionFor(route.grade.value).color;
+      .definitionFor(route.grade.name).color;
   } catch {
     background = Rainbow[3];
   }
@@ -108,7 +108,7 @@ export default function RouteDetailScreen() {
             <View style={styles.metaRow}>
               <View style={styles.gradeTag}>
                 <ThemedText style={styles.gradeTagText}>
-                  {route.grade.systemId} / {route.grade.value}
+                  {route.grade.systemId} / {route.grade.name}
                 </ThemedText>
               </View>
               <View style={styles.disciplineTag}>

@@ -6,7 +6,7 @@ const buildRoute = (): Route =>
   Route.create({
     name: "Test Route",
     discipline: "bouldering",
-    grade: { systemId: "YDS", value: "5.10a" },
+    grade: { systemId: "YDS", name: "5.10a" },
     photo: {
       url: "https://example.com/photo.jpg",
       width: 800,

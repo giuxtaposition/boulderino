@@ -27,12 +27,16 @@
     "@storybook/addon-docs": "^10.4.6",
     "@storybook/react": "^10.4.6",
     "@storybook/react-native-web-vite": "^10.4.6",
+    "@storybook/test-runner": "^0.24.4",
     "@types/react": "~19.2.2",
     "@vitest/coverage-v8": "^4.1.9",
+    "concurrently": "^10.0.3",
+    "http-server": "^14.1.1",
     "storybook": "^10.4.6",
     "typescript": "~6.0.3",
     "vite": "^8.0.16",
-    "vitest": "^4.1.9"
+    "vitest": "^4.1.9",
+    "wait-on": "^9.0.10"
   },
   "scripts": {
     "start": "expo start",
@@ -49,7 +53,8 @@
     "e2e:report": "playwright show-report",
     "e2e:trace": "playwright show-trace",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "test:storybook": "pnpm build-storybook --quiet && concurrently -k -s first -n SB,TEST -c magenta,blue \"http-server storybook-static -p 6007 -s\" \"wait-on tcp:6007 && test-storybook --url http://127.0.0.1:6007\""
   },
   "private": true
 }

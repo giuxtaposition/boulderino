@@ -13,7 +13,7 @@ type Snapshot = {
   description: string | null;
   tags: readonly string[];
   discipline: Discipline;
-  grade: { systemId: string; value: string };
+  grade: { systemId: string; name: string };
   photo: Photo;
   createdAt: string;
 };
@@ -64,7 +64,7 @@ export class AsyncStorageRouteRepository implements RouteRepository {
       description: route.description,
       tags: [...route.tags],
       discipline: route.discipline,
-      grade: { systemId: route.grade.systemId, value: route.grade.value },
+      grade: { systemId: route.grade.systemId, name: route.grade.name },
       photo: route.photo,
       createdAt: route.createdAt.toISOString(),
     }));

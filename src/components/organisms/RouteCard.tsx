@@ -1,7 +1,7 @@
-import { Image, Pressable, StyleSheet, View } from 'react-native';
-import { Href, useRouter } from 'expo-router';
+import { Image, Pressable, StyleSheet, View } from "react-native";
+import { Href, useRouter } from "expo-router";
 
-import { ThemedText } from '../themed-text';
+import { ThemedText } from "../themed-text";
 import {
   BorderWidth,
   PressableState,
@@ -11,9 +11,9 @@ import {
   blockShadow,
   focusRing,
   onColor,
-} from '@/constants/theme';
-import { Route } from '@/domain/route/Route';
-import { useTheme } from '@/hooks/use-theme';
+} from "@/constants/theme";
+import { Route } from "@/domain/route/Route";
+import { useTheme } from "@/hooks/use-theme";
 
 type RouteCardProps = {
   route: Route;
@@ -22,11 +22,11 @@ type RouteCardProps = {
 };
 
 const dateFormatter = new Intl.DateTimeFormat(undefined, {
-  year: 'numeric',
-  month: 'short',
-  day: '2-digit',
-  hour: '2-digit',
-  minute: '2-digit',
+  year: "numeric",
+  month: "short",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
 });
 
 const formatDate = (date: Date): string => dateFormatter.format(date);
@@ -50,7 +50,8 @@ export function RouteCard({ route, index, background }: RouteCardProps) {
         { backgroundColor: background },
         pressed && styles.pressed,
         focused && styles.focused,
-      ]}>
+      ]}
+    >
       <Image
         source={{ uri: route.photo.url }}
         style={[styles.photo, { borderColor: theme.border }]}
@@ -60,12 +61,13 @@ export function RouteCard({ route, index, background }: RouteCardProps) {
       <View style={styles.body}>
         <ThemedText
           style={[styles.name, { color: cardTextColor }]}
-          numberOfLines={1}>
+          numberOfLines={1}
+        >
           {route.name}
         </ThemedText>
         <View style={styles.headerRow}>
           <ThemedText style={[styles.grade, { color: cardTextColor }]}>
-            {route.grade.systemId} / {route.grade.value}
+            {route.grade.systemId} / {route.grade.name}
           </ThemedText>
           <View style={[styles.tag, { backgroundColor: tagBackground }]}>
             <ThemedText style={[styles.tagText, { color: tagTextColor }]}>
@@ -75,7 +77,8 @@ export function RouteCard({ route, index, background }: RouteCardProps) {
         </View>
         <ThemedText
           style={[styles.timestamp, { color: cardTextColor, opacity: 0.7 }]}
-          testID={`route-created-${index}`}>
+          testID={`route-created-${index}`}
+        >
           {formatDate(route.createdAt)}
         </ThemedText>
       </View>
@@ -86,7 +89,7 @@ export function RouteCard({ route, index, background }: RouteCardProps) {
 const makeStyles = (theme: Theme) =>
   StyleSheet.create({
     card: {
-      flexDirection: 'row',
+      flexDirection: "row",
       gap: Spacing.three,
       borderWidth: BorderWidth.chunky,
       borderColor: theme.border,
@@ -103,21 +106,21 @@ const makeStyles = (theme: Theme) =>
       borderWidth: BorderWidth.thick,
       backgroundColor: theme.backgroundElement,
     },
-    body: { flex: 1, gap: Spacing.one, justifyContent: 'space-between' },
+    body: { flex: 1, gap: Spacing.one, justifyContent: "space-between" },
     name: {
       fontSize: 17,
-      fontWeight: '800',
+      fontWeight: "800",
       letterSpacing: -0.3,
     },
     headerRow: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
       gap: Spacing.two,
     },
     grade: {
       fontSize: 14,
-      fontWeight: '800',
+      fontWeight: "800",
       flexShrink: 1,
     },
     tag: {
@@ -127,12 +130,12 @@ const makeStyles = (theme: Theme) =>
     },
     tagText: {
       fontSize: 11,
-      fontWeight: '800',
+      fontWeight: "800",
       letterSpacing: 1,
-      textTransform: 'uppercase',
+      textTransform: "uppercase",
     },
     timestamp: {
       fontSize: 11,
-      fontWeight: '700',
+      fontWeight: "700",
     },
   });

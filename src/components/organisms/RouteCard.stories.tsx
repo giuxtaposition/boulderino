@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, within } from "storybook/test";
 
 import { RouteCard } from "./RouteCard";
 import { Rainbow } from "@/constants/theme";
@@ -10,7 +11,7 @@ const route: Route = Route.restore({
   description: "Iconic Camp 4 highball.",
   tags: ["highball", "classic"],
   discipline: "bouldering",
-  grade: { systemId: "V-scale", value: "V8" },
+  grade: { systemId: "V-scale", name: "V8" },
   photo: {
     url: "https://images.unsplash.com/photo-1522163182402-834f871fd851?w=400",
     width: 400,
@@ -34,6 +35,15 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 
+export const RendersRouteSummary: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(await canvas.findByText("Midnight Lightning")).toBeVisible();
+    await expect(await canvas.findByText(/V-scale \/ V8/)).toBeVisible();
+    await expect(await canvas.findByText("bouldering")).toBeVisible();
+  },
+};
+
 export const Sport: Story = {
   args: {
     route: Route.restore({
@@ -42,7 +52,7 @@ export const Sport: Story = {
       description: null,
       tags: [],
       discipline: "lead-sport",
-      grade: { systemId: "French", value: "9a+" },
+      grade: { systemId: "French", name: "9a+" },
       photo: {
         url: "https://images.unsplash.com/photo-1521410676103-bf7d5add6f08?w=400",
         width: 400,

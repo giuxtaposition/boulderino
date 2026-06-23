@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, fn, userEvent, within } from "storybook/test";
 
 import { GradeRowEditor, GradeRowValue } from "./GradeRowEditor";
 import { Rainbow } from "@/constants/theme";
@@ -9,10 +10,10 @@ const meta = {
   component: GradeRowEditor,
   args: {
     index: 0,
-    row: { value: "V2", label: "V2", color: Rainbow[1], order: "3" },
+    row: { name: "V2", color: Rainbow[1], order: "3" },
     removable: true,
-    onChange: () => {},
-    onRemove: () => {},
+    onChange: fn(),
+    onRemove: fn(),
   },
 } satisfies Meta<typeof GradeRowEditor>;
 
@@ -36,5 +37,23 @@ export const Interactive: Story = {
         onRemove={() => {}}
       />
     );
+  },
+};
+
+export const RemovesRow: Story = {
+  play: async ({ args, canvasElement }) => {
+    const canvas = within(canvasElement);
+    const removeButton = await canvas.findByTestId("remove-grade-row-0");
+    await userEvent.click(removeButton);
+    await expect(args.onRemove).toHaveBeenCalledTimes(1);
+  },
+};
+
+export const EditsName: Story = {
+  play: async ({ args, canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = await canvas.findByTestId("input-grade-name0");
+    await userEvent.type(input, "x");
+    await expect(args.onChange).toHaveBeenCalledWith({ name: "V2x" });
   },
 };

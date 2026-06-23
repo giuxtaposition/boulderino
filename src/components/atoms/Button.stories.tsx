@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { expect, fn, userEvent, within } from 'storybook/test';
 
 import { Button } from './Button';
 
@@ -19,6 +20,7 @@ const meta = {
     children: 'Press me',
     variant: 'primary',
     size: 'medium',
+    onPress: fn(),
   },
 } satisfies Meta<typeof Button>;
 
@@ -41,4 +43,13 @@ export const Dashed: Story = {
 
 export const Small: Story = {
   args: { size: 'small' },
+};
+
+export const InvokesOnPress: Story = {
+  play: async ({ args, canvasElement }) => {
+    const canvas = within(canvasElement);
+    const button = await canvas.findByRole('button', { name: /press me/i });
+    await userEvent.click(button);
+    await expect(args.onPress).toHaveBeenCalledTimes(1);
+  },
 };

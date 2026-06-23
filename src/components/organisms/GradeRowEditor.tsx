@@ -1,21 +1,15 @@
-import { useMemo } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { useMemo } from "react";
+import { StyleSheet, View } from "react-native";
 
-import { Button } from '../atoms/Button';
-import { Input } from '../atoms/Input';
-import { ColorPicker } from '../molecules/ColorPicker';
-import { FormField } from '../molecules/FormField';
-import {
-  BorderWidth,
-  Radius,
-  Spacing,
-  Theme,
-} from '@/constants/theme';
-import { useTheme } from '@/hooks/use-theme';
+import { Button } from "../atoms/Button";
+import { Input } from "../atoms/Input";
+import { ColorPicker } from "../molecules/ColorPicker";
+import { FormField } from "../molecules/FormField";
+import { BorderWidth, Radius, Spacing, Theme } from "@/constants/theme";
+import { useTheme } from "@/hooks/use-theme";
 
 export type GradeRowValue = {
-  value: string;
-  label: string;
+  name: string;
   color: string;
   order: string;
 };
@@ -42,15 +36,15 @@ export function GradeRowEditor({
     <View style={styles.card} testID={`grade-row-${index}`}>
       <View style={styles.row}>
         <View style={styles.valueField}>
-          <FormField label="Value" variant="small">
+          <FormField label="Name" variant="small">
             <Input
               placeholder="5.10a"
-              value={row.value}
-              onChangeText={(value) => onChange({ value })}
+              value={row.name}
+              onChangeText={(name) => onChange({ name })}
               autoCapitalize="none"
               autoCorrect={false}
               accessibilityLabel={`grade ${index + 1} value`}
-              testID={`input-grade-value-${index}`}
+              testID={`input-grade-name${index}`}
             />
           </FormField>
         </View>
@@ -68,17 +62,6 @@ export function GradeRowEditor({
         </View>
       </View>
 
-      <FormField label="Label" variant="small">
-        <Input
-          placeholder="Display label (optional)"
-          value={row.label}
-          onChangeText={(label) => onChange({ label })}
-          autoCorrect={false}
-          accessibilityLabel={`grade ${index + 1} label`}
-          testID={`input-grade-label-${index}`}
-        />
-      </FormField>
-
       <FormField label="Color" variant="small">
         <ColorPicker
           value={row.color}
@@ -95,7 +78,8 @@ export function GradeRowEditor({
           onPress={onRemove}
           accessibilityLabel={`remove grade ${index + 1}`}
           testID={`remove-grade-row-${index}`}
-          style={styles.removeButton}>
+          style={styles.removeButton}
+        >
           REMOVE
         </Button>
       )}
@@ -114,12 +98,12 @@ const makeStyles = (theme: Theme) =>
       backgroundColor: theme.inputBackground,
     },
     row: {
-      flexDirection: 'row',
+      flexDirection: "row",
       gap: Spacing.two,
-      alignItems: 'flex-end',
+      alignItems: "flex-end",
     },
     valueField: { flex: 1 },
     orderField: { width: 80 },
-    orderInput: { textAlign: 'center' },
-    removeButton: { alignSelf: 'flex-start' },
+    orderInput: { textAlign: "center" },
+    removeButton: { alignSelf: "flex-start" },
   });

@@ -28,8 +28,7 @@ import { GradingSystem } from "@/domain/grading/GradingSystem";
 import { useTheme } from "@/hooks/use-theme";
 
 const emptyRow = (index: number): GradeRowValue => ({
-  value: "",
-  label: "",
+  name: "",
   color: pickRainbowColor(index),
   order: String(index + 1),
 });
@@ -37,12 +36,11 @@ const emptyRow = (index: number): GradeRowValue => ({
 const rowsToDefinitions = (rows: GradeRowValue[]): GradeDefinition[] =>
   rows
     .map((row) => ({
-      value: row.value.trim(),
-      label: row.label.trim() || row.value.trim(),
+      name: row.name.trim(),
       color: row.color,
       order: Number.parseInt(row.order, 10),
     }))
-    .filter((grade) => grade.value.length > 0);
+    .filter((grade) => grade.name.length > 0);
 
 export default function GradingSystemsScreen() {
   const theme = useTheme();

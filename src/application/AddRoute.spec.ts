@@ -21,8 +21,8 @@ describe("AddRoute", () => {
       GradingSystem.create({
         name: "YDS",
         grades: [
-          { value: "5.10a", label: "5.10a", color: "#22C55E", order: 1 },
-          { value: "5.10b", label: "5.10b", color: "#FACC15", order: 2 },
+          { name: "5.10a", color: "#22C55E", order: 1 },
+          { name: "5.10b", color: "#FACC15", order: 2 },
         ],
       }),
     );
@@ -45,7 +45,7 @@ describe("AddRoute", () => {
     expect(route.name).toBe("Sample");
     expect(route.description).toBe("Long pulls");
     expect(route.tags).toEqual(["overhang", "crimp"]);
-    expect(route.grade).toEqual({ systemId: "YDS", value: "5.10a" });
+    expect(route.grade).toEqual({ systemId: "YDS", name: "5.10a" });
     expect(route.discipline).toBe("bouldering");
     expect(route.photo).toEqual(validPhoto);
   });

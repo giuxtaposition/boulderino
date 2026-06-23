@@ -11,8 +11,8 @@ describe("InMemoryGradingSystemRegistry", () => {
     yds = GradingSystem.create({
       name: "YDS",
       grades: [
-        { value: "5.10a", label: "5.10a", color: "#22C55E", order: 1 },
-        { value: "5.10b", label: "5.10b", color: "#FACC15", order: 2 },
+        { name: "5.10a", color: "#22C55E", order: 1 },
+        { name: "5.10b", color: "#FACC15", order: 2 },
       ],
     });
   });
@@ -54,7 +54,7 @@ describe("InMemoryGradingSystemRegistry", () => {
   it("should return all registered systems in insertion order", () => {
     const v = GradingSystem.create({
       name: "V-Scale",
-      grades: [{ value: "V0", label: "V0", color: "#2563EB", order: 1 }],
+      grades: [{ name: "V0", color: "#2563EB", order: 1 }],
     });
     registry.register(yds);
     registry.register(v);

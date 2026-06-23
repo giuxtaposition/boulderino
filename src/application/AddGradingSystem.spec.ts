@@ -4,8 +4,7 @@ import { InMemoryGradingSystemRegistry } from "../infrastructure/grading/InMemor
 import { AddGradingSystem } from "./AddGradingSystem";
 
 const grade = (overrides: Partial<GradeDefinition> = {}): GradeDefinition => ({
-  value: "5.10a",
-  label: "5.10a",
+  name: "5.10a",
   color: "#22C55E",
   order: 1,
   ...overrides,
@@ -23,10 +22,10 @@ describe("AddGradingSystem", () => {
   it("should register a new grading system in the registry", () => {
     useCase.execute({
       name: "YDS",
-      grades: [grade(), grade({ value: "5.10b", order: 2 })],
+      grades: [grade(), grade({ name: "5.10b", order: 2 })],
     });
 
-    expect(registry.getByName("YDS")?.grades.map((g) => g.value)).toEqual([
+    expect(registry.getByName("YDS")?.grades.map((g) => g.name)).toEqual([
       "5.10a",
       "5.10b",
     ]);
@@ -35,7 +34,7 @@ describe("AddGradingSystem", () => {
   it("should return the registered grading system", () => {
     const system = useCase.execute({
       name: "V-Scale",
-      grades: [grade({ value: "V0", label: "V0", order: 1 })],
+      grades: [grade({ name: "V0", order: 1 })],
     });
 
     expect(system.name).toBe("V-Scale");
@@ -60,7 +59,7 @@ describe("AddGradingSystem", () => {
     expect(() =>
       useCase.execute({
         name: "YDS",
-        grades: [grade({ value: "5.10b", order: 2 })],
+        grades: [grade({ name: "5.10b", order: 2 })],
       }),
     ).toThrow('Grading system "YDS" is already registered');
   });

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, fn, userEvent, within } from "storybook/test";
 
 import { GradingSystemPicker } from "./GradingSystemPicker";
 import { Rainbow } from "@/constants/theme";
@@ -8,28 +9,28 @@ import { GradingSystem } from "@/domain/grading/GradingSystem";
 const vScale = GradingSystem.create({
   name: "V-scale",
   grades: [
-    { value: "V0", label: "V0", color: Rainbow[3], order: 1 },
-    { value: "V1", label: "V1", color: Rainbow[1], order: 2 },
-    { value: "V2", label: "V2", color: Rainbow[5], order: 3 },
+    { name: "V0", color: Rainbow[3], order: 1 },
+    { name: "V1", color: Rainbow[1], order: 2 },
+    { name: "V2", color: Rainbow[5], order: 3 },
   ],
 });
 
 const french = GradingSystem.create({
   name: "French",
   grades: [
-    { value: "6a", label: "6a", color: Rainbow[3], order: 1 },
-    { value: "6b", label: "6b", color: Rainbow[1], order: 2 },
-    { value: "7a", label: "7a", color: Rainbow[4], order: 3 },
+    { name: "6a", color: Rainbow[3], order: 1 },
+    { name: "6b", color: Rainbow[1], order: 2 },
+    { name: "7a", color: Rainbow[4], order: 3 },
   ],
 });
 
 const fontainebleau = GradingSystem.create({
   name: "Fontainebleau",
   grades: [
-    { value: "5", label: "5", color: Rainbow[3], order: 1 },
-    { value: "6A", label: "6A", color: Rainbow[1], order: 2 },
-    { value: "7A", label: "7A", color: Rainbow[4], order: 3 },
-    { value: "8A", label: "8A", color: Rainbow[2], order: 4 },
+    { name: "5", color: Rainbow[3], order: 1 },
+    { name: "6A", color: Rainbow[1], order: 2 },
+    { name: "7A", color: Rainbow[4], order: 3 },
+    { name: "8A", color: Rainbow[2], order: 4 },
   ],
 });
 
@@ -39,7 +40,7 @@ const meta = {
   args: {
     systems: [vScale, french, fontainebleau],
     selected: "V-scale",
-    onSelect: () => {},
+    onSelect: fn(),
   },
 } satisfies Meta<typeof GradingSystemPicker>;
 
@@ -58,5 +59,14 @@ export const Interactive: Story = {
         onSelect={setSelected}
       />
     );
+  },
+};
+
+export const SelectsSystem: Story = {
+  play: async ({ args, canvasElement }) => {
+    const canvas = within(canvasElement);
+    const french = await canvas.findByTestId("select-system-French");
+    await userEvent.click(french);
+    await expect(args.onSelect).toHaveBeenCalledWith("French");
   },
 };

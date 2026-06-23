@@ -1,6 +1,6 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from "react-native";
 
-import { ThemedText } from '../themed-text';
+import { ThemedText } from "../themed-text";
 import {
   BorderWidth,
   Radius,
@@ -8,9 +8,9 @@ import {
   Theme,
   blockShadow,
   onColor,
-} from '@/constants/theme';
-import { GradingSystem } from '@/domain/grading/GradingSystem';
-import { useTheme } from '@/hooks/use-theme';
+} from "@/constants/theme";
+import { GradingSystem } from "@/domain/grading/GradingSystem";
+import { useTheme } from "@/hooks/use-theme";
 
 type SystemCardProps = {
   system: GradingSystem;
@@ -25,13 +25,15 @@ export function SystemCard({ system, background }: SystemCardProps) {
   return (
     <View
       testID={`system-row-${system.name}`}
-      style={[styles.card, { backgroundColor: background }]}>
+      style={[styles.card, { backgroundColor: background }]}
+    >
       <View style={styles.header}>
         <ThemedText style={[styles.name, { color: cardTextColor }]}>
           {system.name}
         </ThemedText>
         <ThemedText
-          style={[styles.meta, { color: cardTextColor, opacity: 0.75 }]}>
+          style={[styles.meta, { color: cardTextColor, opacity: 0.75 }]}
+        >
           {system.grades.length} grades
         </ThemedText>
       </View>
@@ -40,7 +42,7 @@ export function SystemCard({ system, background }: SystemCardProps) {
           const chipTextColor = onColor(grade.color);
           return (
             <View
-              key={grade.value}
+              key={grade.name}
               style={[
                 styles.chip,
                 {
@@ -48,16 +50,17 @@ export function SystemCard({ system, background }: SystemCardProps) {
                   borderColor: theme.border,
                 },
               ]}
-              testID={`system-grade-${system.name}-${grade.value}`}>
-              <ThemedText
-                style={[styles.chipText, { color: chipTextColor }]}>
-                {grade.label}
+              testID={`system-grade-${system.name}-${grade.name}`}
+            >
+              <ThemedText style={[styles.chipText, { color: chipTextColor }]}>
+                {grade.name}
               </ThemedText>
               <ThemedText
                 style={[
                   styles.chipMeta,
                   { color: chipTextColor, opacity: 0.75 },
-                ]}>
+                ]}
+              >
                 #{grade.order}
               </ThemedText>
             </View>
@@ -79,33 +82,33 @@ const makeStyles = (theme: Theme) =>
       ...blockShadow(theme),
     },
     header: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'baseline',
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "baseline",
     },
     name: {
       fontSize: 22,
-      fontWeight: '800',
+      fontWeight: "800",
       letterSpacing: -0.3,
     },
     meta: {
       fontSize: 11,
-      fontWeight: '700',
+      fontWeight: "700",
     },
     chipRow: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
+      flexDirection: "row",
+      flexWrap: "wrap",
       gap: Spacing.two,
     },
     chip: {
-      flexDirection: 'row',
-      alignItems: 'center',
+      flexDirection: "row",
+      alignItems: "center",
       gap: Spacing.one,
       borderWidth: BorderWidth.thick,
       borderRadius: Radius.small,
       paddingVertical: Spacing.one,
       paddingHorizontal: Spacing.two,
     },
-    chipText: { fontSize: 13, fontWeight: '800' },
-    chipMeta: { fontSize: 10, fontWeight: '700' },
+    chipText: { fontSize: 13, fontWeight: "800" },
+    chipMeta: { fontSize: 10, fontWeight: "700" },
   });

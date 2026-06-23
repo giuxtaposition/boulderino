@@ -1,23 +1,24 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, fn, userEvent, within } from "storybook/test";
 
 import { GradePicker } from "./GradePicker";
 import { Rainbow } from "@/constants/theme";
 import { GradeDefinition } from "@/domain/grading/GradeDefinition";
 
 const grades: GradeDefinition[] = [
-  { value: "V0", label: "V0", color: Rainbow[3], order: 1 },
-  { value: "V1", label: "V1", color: Rainbow[1], order: 2 },
-  { value: "V2", label: "V2", color: Rainbow[5], order: 3 },
-  { value: "V3", label: "V3", color: Rainbow[6], order: 4 },
-  { value: "V4", label: "V4", color: Rainbow[2], order: 5 },
-  { value: "V5", label: "V5", color: Rainbow[4], order: 6 },
+  { name: "V0", color: Rainbow[3], order: 1 },
+  { name: "V1", color: Rainbow[1], order: 2 },
+  { name: "V2", color: Rainbow[5], order: 3 },
+  { name: "V3", color: Rainbow[6], order: 4 },
+  { name: "V4", color: Rainbow[2], order: 5 },
+  { name: "V5", color: Rainbow[4], order: 6 },
 ];
 
 const meta = {
   title: "Organisms/GradePicker",
   component: GradePicker,
-  args: { grades, selected: "V2", onSelect: () => {} },
+  args: { grades, selected: "V2", onSelect: fn() },
 } satisfies Meta<typeof GradePicker>;
 
 export default meta;
@@ -33,3 +34,18 @@ export const Interactive: Story = {
 };
 
 export const Empty: Story = { args: { selected: null } };
+
+export const SelectsGradeOnClick: Story = {
+  play: async ({ args, canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("clicks V4 option", async () => {
+      const option = await canvas.findByTestId("select-grade-V4");
+      await userEvent.click(option);
+    });
+
+    await step("invokes onSelect with grade name", async () => {
+      await expect(args.onSelect).toHaveBeenCalledWith("V4");
+    });
+  },
+};
