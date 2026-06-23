@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo } from "react";
 import {
   Tabs,
   TabList,
@@ -6,21 +6,21 @@ import {
   TabSlot,
   TabTriggerSlotProps,
   TabListProps,
-} from 'expo-router/ui';
-import { Pressable, StyleSheet, View } from 'react-native';
+} from "expo-router/ui";
+import { Pressable, StyleSheet, View } from "react-native";
 
-import { ThemedText } from './themed-text';
+import { ThemedText } from "./themed-text";
 import {
   BorderWidth,
   BottomTabHeight,
   MaxContentWidth,
   Radius,
   Spacing,
-  Tetromino,
+  Rainbow,
   Theme,
   blockShadow,
-} from '@/constants/theme';
-import { useTheme } from '@/hooks/use-theme';
+} from "@/constants/theme";
+import { useTheme } from "@/hooks/use-theme";
 
 export default function AppTabs() {
   const theme = useTheme();
@@ -28,14 +28,14 @@ export default function AppTabs() {
 
   return (
     <Tabs>
-      <TabSlot style={{ height: '100%' }} />
+      <TabSlot style={{ height: "100%" }} />
       <TabList asChild>
         <CustomTabList>
           <TabTrigger name="grading-systems" href="/grading-systems" asChild>
-            <TabButton color={Tetromino.O}>Grades</TabButton>
+            <TabButton color={Rainbow[1]}>Grades</TabButton>
           </TabTrigger>
           <TabTrigger name="routes" href="/routes" asChild>
-            <TabButton color={Tetromino.S}>Routes</TabButton>
+            <TabButton color={Rainbow[3]}>Routes</TabButton>
           </TabTrigger>
         </CustomTabList>
       </TabList>
@@ -61,9 +61,9 @@ export function TabButton({
         styles.tabButton,
         isFocused && { backgroundColor: color },
         pressed && styles.tabPressed,
-      ]}>
-      <ThemedText
-        style={[styles.tabLabel, isFocused && styles.tabLabelActive]}>
+      ]}
+    >
+      <ThemedText style={[styles.tabLabel, isFocused && styles.tabLabelActive]}>
         {children}
       </ThemedText>
     </Pressable>
@@ -84,25 +84,25 @@ export function CustomTabList(props: TabListProps) {
 const makeStyles = (theme: Theme) =>
   StyleSheet.create({
     tabListContainer: {
-      position: 'absolute',
+      position: "absolute",
       bottom: 0,
       left: 0,
       right: 0,
       paddingHorizontal: Spacing.four,
       paddingTop: Spacing.two,
       paddingBottom: Spacing.three,
-      justifyContent: 'center',
-      alignItems: 'center',
-      flexDirection: 'row',
+      justifyContent: "center",
+      alignItems: "center",
+      flexDirection: "row",
       backgroundColor: theme.tabBar,
       borderTopWidth: BorderWidth.chunky,
       borderTopColor: theme.border,
       zIndex: 100,
     },
     tabsRow: {
-      flexDirection: 'row',
+      flexDirection: "row",
       gap: Spacing.two,
-      width: '100%',
+      width: "100%",
       maxWidth: MaxContentWidth,
       height: BottomTabHeight - 28,
     },
@@ -113,8 +113,8 @@ const makeStyles = (theme: Theme) =>
       borderWidth: BorderWidth.thick,
       borderColor: theme.border,
       backgroundColor: theme.tabBarInactive,
-      justifyContent: 'center',
-      alignItems: 'center',
+      justifyContent: "center",
+      alignItems: "center",
       minHeight: 44,
       ...blockShadow(theme, 3),
     },
@@ -124,10 +124,10 @@ const makeStyles = (theme: Theme) =>
     tabLabel: {
       color: theme.text,
       fontSize: 14,
-      fontWeight: '800',
+      fontWeight: "800",
       letterSpacing: 1,
     },
     tabLabelActive: {
-      color: '#0F172A',
+      color: "#0F172A",
     },
   });

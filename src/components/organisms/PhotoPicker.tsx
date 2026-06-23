@@ -4,9 +4,11 @@ import { Image, Pressable, StyleSheet, View } from 'react-native';
 import { ThemedText } from '../themed-text';
 import {
   BorderWidth,
+  PressableState,
   Radius,
   Spacing,
   Theme,
+  focusRing,
 } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
@@ -30,7 +32,11 @@ export function PhotoPicker({ photo, onPick }: PhotoPickerProps) {
       onPress={onPick}
       accessibilityRole="button"
       testID="pick-photo-button"
-      style={({ pressed }) => [styles.picker, pressed && styles.pressed]}>
+      style={({ pressed, focused }: PressableState) => [
+        styles.picker,
+        pressed && styles.pressed,
+        focused && styles.focused,
+      ]}>
       {photo ? (
         <View style={styles.previewWrap}>
           <Image
@@ -63,6 +69,7 @@ const makeStyles = (theme: Theme) =>
       alignItems: 'center',
     },
     pressed: { transform: [{ translateX: 2 }, { translateY: 2 }] },
+    focused: focusRing(theme),
     cta: {
       color: theme.text,
       fontSize: 14,

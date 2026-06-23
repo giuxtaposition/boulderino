@@ -4,10 +4,13 @@ import { Href, useRouter } from 'expo-router';
 import { ThemedText } from '../themed-text';
 import {
   BorderWidth,
+  PressableState,
   Radius,
   Spacing,
   Theme,
   blockShadow,
+  focusRing,
+  onColor,
 } from '@/constants/theme';
 import { Route } from '@/domain/route/Route';
 import { useTheme } from '@/hooks/use-theme';
@@ -32,6 +35,9 @@ export function RouteCard({ route, index, background }: RouteCardProps) {
   const theme = useTheme();
   const styles = makeStyles(theme);
   const router = useRouter();
+  const cardTextColor = onColor(background);
+  const tagBackground = theme.text;
+  const tagTextColor = onColor(tagBackground);
 
   return (
     <Pressable
@@ -39,30 +45,37 @@ export function RouteCard({ route, index, background }: RouteCardProps) {
       accessibilityLabel={`Open ${route.name}`}
       testID={`route-row-${index}`}
       onPress={() => router.push(`/routes/${route.id.value}` as Href)}
-      style={({ pressed }) => [
+      style={({ pressed, focused }: PressableState) => [
         styles.card,
         { backgroundColor: background },
         pressed && styles.pressed,
+        focused && styles.focused,
       ]}>
       <Image
         source={{ uri: route.photo.url }}
-        style={styles.photo}
+        style={[styles.photo, { borderColor: theme.border }]}
         accessibilityLabel={`photo of route ${route.name}`}
         testID={`route-photo-${index}`}
       />
       <View style={styles.body}>
-        <ThemedText style={styles.name} numberOfLines={1}>
+        <ThemedText
+          style={[styles.name, { color: cardTextColor }]}
+          numberOfLines={1}>
           {route.name}
         </ThemedText>
         <View style={styles.headerRow}>
-          <ThemedText style={styles.grade}>
+          <ThemedText style={[styles.grade, { color: cardTextColor }]}>
             {route.grade.systemId} / {route.grade.value}
           </ThemedText>
-          <View style={styles.tag}>
-            <ThemedText style={styles.tagText}>{route.discipline}</ThemedText>
+          <View style={[styles.tag, { backgroundColor: tagBackground }]}>
+            <ThemedText style={[styles.tagText, { color: tagTextColor }]}>
+              {route.discipline}
+            </ThemedText>
           </View>
         </View>
-        <ThemedText style={styles.timestamp} testID={`route-created-${index}`}>
+        <ThemedText
+          style={[styles.timestamp, { color: cardTextColor, opacity: 0.7 }]}
+          testID={`route-created-${index}`}>
           {formatDate(route.createdAt)}
         </ThemedText>
       </View>
@@ -82,19 +95,18 @@ const makeStyles = (theme: Theme) =>
       ...blockShadow(theme),
     },
     pressed: { transform: [{ translateX: 3 }, { translateY: 3 }] },
+    focused: focusRing(theme),
     photo: {
       width: 88,
       height: 88,
       borderRadius: Radius.small,
       borderWidth: BorderWidth.thick,
-      borderColor: '#0F172A',
-      backgroundColor: '#FFFFFF',
+      backgroundColor: theme.backgroundElement,
     },
     body: { flex: 1, gap: Spacing.one, justifyContent: 'space-between' },
     name: {
       fontSize: 17,
       fontWeight: '800',
-      color: '#0F172A',
       letterSpacing: -0.3,
     },
     headerRow: {
@@ -106,17 +118,14 @@ const makeStyles = (theme: Theme) =>
     grade: {
       fontSize: 14,
       fontWeight: '800',
-      color: '#0F172A',
       flexShrink: 1,
     },
     tag: {
-      backgroundColor: '#0F172A',
       paddingVertical: Spacing.half,
       paddingHorizontal: Spacing.two,
       borderRadius: Radius.small,
     },
     tagText: {
-      color: '#FFFFFF',
       fontSize: 11,
       fontWeight: '800',
       letterSpacing: 1,
@@ -125,7 +134,5 @@ const makeStyles = (theme: Theme) =>
     timestamp: {
       fontSize: 11,
       fontWeight: '700',
-      color: '#0F172A',
-      opacity: 0.7,
     },
   });

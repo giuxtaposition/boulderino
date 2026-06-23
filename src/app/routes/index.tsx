@@ -1,39 +1,36 @@
-import { useCallback, useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useFocusEffect } from 'expo-router';
-import * as ImagePicker from 'expo-image-picker';
+import { useCallback, useMemo, useState } from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useFocusEffect } from "expo-router";
+import * as ImagePicker from "expo-image-picker";
 
-import { Button } from '@/components/atoms/Button';
-import { EmptyBlock } from '@/components/atoms/EmptyBlock';
-import { ErrorBlock } from '@/components/atoms/ErrorBlock';
-import { FormCard } from '@/components/atoms/FormCard';
-import { Input } from '@/components/atoms/Input';
-import { DisciplineSelector } from '@/components/molecules/DisciplineSelector';
-import { FormField } from '@/components/molecules/FormField';
-import { GradePicker } from '@/components/organisms/GradePicker';
-import { GradingSystemPicker } from '@/components/organisms/GradingSystemPicker';
-import {
-  PhotoPicker,
-  PickedPhoto,
-} from '@/components/organisms/PhotoPicker';
-import { RouteCard } from '@/components/organisms/RouteCard';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
+import { Button } from "@/components/atoms/Button";
+import { EmptyBlock } from "@/components/atoms/EmptyBlock";
+import { ErrorBlock } from "@/components/atoms/ErrorBlock";
+import { FormCard } from "@/components/atoms/FormCard";
+import { Input } from "@/components/atoms/Input";
+import { DisciplineSelector } from "@/components/molecules/DisciplineSelector";
+import { FormField } from "@/components/molecules/FormField";
+import { GradePicker } from "@/components/organisms/GradePicker";
+import { GradingSystemPicker } from "@/components/organisms/GradingSystemPicker";
+import { PhotoPicker, PickedPhoto } from "@/components/organisms/PhotoPicker";
+import { RouteCard } from "@/components/organisms/RouteCard";
+import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
 import {
   BorderWidth,
   BottomTabHeight,
   MaxContentWidth,
   Radius,
   Spacing,
-  Tetromino,
+  Rainbow,
   Theme,
-} from '@/constants/theme';
-import { useContainer } from '@/composition/Container';
-import { Discipline } from '@/domain/route/Discipline';
-import { GradingSystem } from '@/domain/grading/GradingSystem';
-import { Route } from '@/domain/route/Route';
-import { useTheme } from '@/hooks/use-theme';
+} from "@/constants/theme";
+import { useContainer } from "@/composition/Container";
+import { Discipline } from "@/domain/route/Discipline";
+import { GradingSystem } from "@/domain/grading/GradingSystem";
+import { Route } from "@/domain/route/Route";
+import { useTheme } from "@/hooks/use-theme";
 
 export default function RoutesScreen() {
   const theme = useTheme();
@@ -43,10 +40,10 @@ export default function RoutesScreen() {
   const [systems, setSystems] = useState<GradingSystem[]>(() =>
     gradingSystemRegistry.findAll(),
   );
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [tagsInput, setTagsInput] = useState('');
-  const [discipline, setDiscipline] = useState<Discipline>('bouldering');
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [tagsInput, setTagsInput] = useState("");
+  const [discipline, setDiscipline] = useState<Discipline>("bouldering");
   const [selectedSystem, setSelectedSystem] = useState<string | null>(null);
   const [selectedGrade, setSelectedGrade] = useState<string | null>(null);
   const [photo, setPhoto] = useState<PickedPhoto | null>(null);
@@ -92,13 +89,13 @@ export default function RoutesScreen() {
   };
 
   const handleSubmit = () => {
-    if (!name.trim()) return setError('Name your route');
-    if (!selectedSystem) return setError('Select a grading system');
-    if (!selectedGrade) return setError('Select a grade');
-    if (!photo) return setError('Pick a photo from your gallery');
+    if (!name.trim()) return setError("Name your route");
+    if (!selectedSystem) return setError("Select a grading system");
+    if (!selectedGrade) return setError("Select a grade");
+    if (!photo) return setError("Pick a photo from your gallery");
 
     const tags = tagsInput
-      .split(',')
+      .split(",")
       .map((tag) => tag.trim())
       .filter((tag) => tag.length > 0);
 
@@ -113,9 +110,9 @@ export default function RoutesScreen() {
         photo: { url: photo.uri, width: photo.width, height: photo.height },
       });
       setRoutes(routeRepository.findAll());
-      setName('');
-      setDescription('');
-      setTagsInput('');
+      setName("");
+      setDescription("");
+      setTagsInput("");
       setSelectedGrade(null);
       setPhoto(null);
       setError(null);
@@ -126,11 +123,12 @@ export default function RoutesScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea} edges={['top']}>
+      <SafeAreaView style={styles.safeArea} edges={["top"]}>
         <ScrollView
           contentContainerStyle={styles.scroll}
           keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}>
+          showsVerticalScrollIndicator={false}
+        >
           <View style={styles.header}>
             <ThemedText style={styles.kicker}>ROUTES · LEVEL 02</ThemedText>
             <ThemedText style={styles.heading}>Send your routes</ThemedText>
@@ -175,10 +173,7 @@ export default function RoutesScreen() {
             </FormField>
 
             <FormField label="Discipline">
-              <DisciplineSelector
-                value={discipline}
-                onChange={setDiscipline}
-              />
+              <DisciplineSelector value={discipline} onChange={setDiscipline} />
             </FormField>
 
             <FormField label="Grading system">
@@ -214,7 +209,8 @@ export default function RoutesScreen() {
             <Button
               onPress={handleSubmit}
               testID="submit-route"
-              style={styles.submit}>
+              style={styles.submit}
+            >
               ADD NEW ROUTE
             </Button>
 
@@ -226,13 +222,13 @@ export default function RoutesScreen() {
               <EmptyBlock message="No sends yet. Log your first route." />
             ) : (
               routes.map((route, index) => {
-                let background: string = Tetromino.S;
+                let background: string = Rainbow[3];
                 try {
                   background = gradingSystemRegistry
                     .requireByName(route.grade.systemId)
                     .definitionFor(route.grade.value).color;
                 } catch {
-                  background = Tetromino.S;
+                  background = Rainbow[3];
                 }
                 return (
                   <RouteCard
@@ -261,19 +257,19 @@ const makeStyles = (theme: Theme) =>
       paddingBottom: BottomTabHeight + Spacing.six,
       gap: Spacing.five,
       maxWidth: MaxContentWidth,
-      width: '100%',
-      alignSelf: 'center',
+      width: "100%",
+      alignSelf: "center",
     },
     header: { gap: Spacing.one },
     kicker: {
       fontSize: 11,
-      fontWeight: '700',
+      fontWeight: "700",
       letterSpacing: 2,
       color: theme.textSecondary,
     },
     heading: {
       fontSize: 30,
-      fontWeight: '800',
+      fontWeight: "800",
       letterSpacing: -0.5,
       color: theme.text,
     },
@@ -281,15 +277,15 @@ const makeStyles = (theme: Theme) =>
     multiline: {
       minHeight: 84,
       paddingTop: Spacing.three,
-      textAlignVertical: 'top',
+      textAlignVertical: "top",
     },
     hint: {
       borderWidth: BorderWidth.thick,
-      borderStyle: 'dashed',
+      borderStyle: "dashed",
       borderColor: theme.borderMuted,
       borderRadius: Radius.small,
       padding: Spacing.three,
     },
-    hintText: { color: theme.textSecondary, fontWeight: '600' },
+    hintText: { color: theme.textSecondary, fontWeight: "600" },
     list: { gap: Spacing.three },
   });

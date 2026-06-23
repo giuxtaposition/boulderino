@@ -9,19 +9,25 @@ import {
 } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
-export const Input = forwardRef<TextInput, TextInputProps>((props, ref) => {
-  const theme = useTheme();
-  const styles = useMemo(() => makeStyles(theme), [theme]);
+type InputProps = TextInputProps & {
+  error?: boolean;
+};
 
-  return (
-    <TextInput
-      ref={ref}
-      placeholderTextColor={theme.inputPlaceholder}
-      {...props}
-      style={[styles.input, props.style]}
-    />
-  );
-});
+export const Input = forwardRef<TextInput, InputProps>(
+  ({ error, style, ...props }, ref) => {
+    const theme = useTheme();
+    const styles = useMemo(() => makeStyles(theme), [theme]);
+
+    return (
+      <TextInput
+        ref={ref}
+        placeholderTextColor={theme.inputPlaceholder}
+        {...props}
+        style={[styles.input, error && styles.inputError, style]}
+      />
+    );
+  },
+);
 
 Input.displayName = 'Input';
 
@@ -38,5 +44,8 @@ const makeStyles = (theme: Theme) =>
       color: theme.text,
       backgroundColor: theme.inputBackground,
       minHeight: 48,
+    },
+    inputError: {
+      borderColor: theme.dangerBorder,
     },
   });

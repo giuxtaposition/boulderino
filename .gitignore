@@ -48,3 +48,6 @@ example
 /test-results/
 /.playwright/
 
+# Storybook
+/storybook-static/
+

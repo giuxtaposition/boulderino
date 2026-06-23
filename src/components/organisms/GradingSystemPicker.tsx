@@ -1,22 +1,28 @@
-import { useMemo } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { useMemo } from "react";
+import { Pressable, StyleSheet, View } from "react-native";
 
-import { ThemedText } from '../themed-text';
+import { ThemedText } from "../themed-text";
 import {
   BorderWidth,
+  PressableState,
   Radius,
+  Rainbow,
   Spacing,
-  Tetromino,
   Theme,
-} from '@/constants/theme';
-import { GradingSystem } from '@/domain/grading/GradingSystem';
-import { useTheme } from '@/hooks/use-theme';
+  focusRing,
+  onColor,
+} from "@/constants/theme";
+import { GradingSystem } from "@/domain/grading/GradingSystem";
+import { useTheme } from "@/hooks/use-theme";
 
 type GradingSystemPickerProps = {
   systems: readonly GradingSystem[];
   selected: string | null;
   onSelect: (systemName: string) => void;
 };
+
+const SELECTED_BG = Rainbow[5];
+const SELECTED_TEXT = onColor(SELECTED_BG);
 
 export function GradingSystemPicker({
   systems,
@@ -37,16 +43,30 @@ export function GradingSystemPicker({
             accessibilityRole="button"
             accessibilityState={{ selected: isSelected }}
             testID={`select-system-${system.name}`}
-            style={({ pressed }) => [
+            style={({ pressed, focused }: PressableState) => [
               styles.option,
               isSelected && styles.optionSelected,
               pressed && styles.pressed,
-            ]}>
+              focused && styles.focused,
+            ]}
+          >
             <ThemedText
-              style={[styles.name, isSelected && styles.nameSelected]}>
+              style={[
+                styles.name,
+                { color: isSelected ? SELECTED_TEXT : theme.text },
+              ]}
+            >
               {system.name}
             </ThemedText>
-            <ThemedText style={styles.meta}>
+            <ThemedText
+              style={[
+                styles.meta,
+                {
+                  color: isSelected ? SELECTED_TEXT : theme.textSecondary,
+                  opacity: isSelected ? 0.75 : 1,
+                },
+              ]}
+            >
               {system.grades.length} grades
             </ThemedText>
           </Pressable>
@@ -58,7 +78,7 @@ export function GradingSystemPicker({
 
 const makeStyles = (theme: Theme) =>
   StyleSheet.create({
-    row: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.two },
+    row: { flexDirection: "row", flexWrap: "wrap", gap: Spacing.two },
     option: {
       flexGrow: 1,
       flexBasis: 140,
@@ -69,12 +89,12 @@ const makeStyles = (theme: Theme) =>
       borderColor: theme.border,
       backgroundColor: theme.inputBackground,
       minHeight: 56,
-      justifyContent: 'center',
+      justifyContent: "center",
       gap: Spacing.half,
     },
-    optionSelected: { backgroundColor: Tetromino.I },
+    optionSelected: { backgroundColor: SELECTED_BG },
     pressed: { transform: [{ translateX: 2 }, { translateY: 2 }] },
-    name: { fontSize: 16, fontWeight: '800', color: theme.text },
-    nameSelected: { color: '#0F172A' },
-    meta: { fontSize: 11, fontWeight: '700', color: theme.textSecondary },
+    focused: focusRing(theme),
+    name: { fontSize: 16, fontWeight: "800" },
+    meta: { fontSize: 11, fontWeight: "700" },
   });

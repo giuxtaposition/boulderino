@@ -4,9 +4,12 @@ import { Pressable, PressableProps, StyleSheet } from 'react-native';
 import { ThemedText } from '../themed-text';
 import {
   BorderWidth,
+  PressableState,
   Radius,
   Theme,
   blockShadow,
+  focusRing,
+  onColor,
 } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
@@ -23,13 +26,18 @@ export function Swatch({ color, selected, style, ...rest }: SwatchProps) {
       accessibilityRole="button"
       accessibilityState={{ selected }}
       {...rest}
-      style={(state) => [
+      style={(state: PressableState) => [
         styles.swatch,
         { backgroundColor: color },
         selected && styles.selected,
+        state.focused && styles.focused,
         typeof style === 'function' ? style(state) : style,
       ]}>
-      {selected && <ThemedText style={styles.check}>✓</ThemedText>}
+      {selected && (
+        <ThemedText style={[styles.check, { color: onColor(color) }]}>
+          ✓
+        </ThemedText>
+      )}
     </Pressable>
   );
 }
@@ -49,8 +57,8 @@ const makeStyles = (theme: Theme) =>
       borderWidth: BorderWidth.chunky + 1,
       ...blockShadow(theme, 3),
     },
+    focused: focusRing(theme),
     check: {
-      color: '#0F172A',
       fontSize: 18,
       fontWeight: '900',
     },

@@ -1,30 +1,30 @@
-import { useMemo } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { useMemo } from "react";
+import { StyleSheet, View } from "react-native";
 
-import { Input } from '../atoms/Input';
-import { Swatch } from '../atoms/Swatch';
+import { Input } from "../atoms/Input";
+import { Swatch } from "../atoms/Swatch";
 import {
   BorderWidth,
   Radius,
   Spacing,
-  Tetromino,
-  TetrominoKey,
+  Rainbow,
+  RainbowKey,
   Theme,
-} from '@/constants/theme';
-import { useTheme } from '@/hooks/use-theme';
+} from "@/constants/theme";
+import { useTheme } from "@/hooks/use-theme";
 
-const PALETTE: { key: TetrominoKey; hex: string }[] = (
-  ['I', 'O', 'T', 'S', 'Z', 'J', 'L'] as TetrominoKey[]
-).map((key) => ({ key, hex: Tetromino[key] }));
+const PALETTE: { key: RainbowKey; hex: string }[] = (
+  [0, 1, 2, 3, 4, 5, 6] as RainbowKey[]
+).map((key) => ({ key, hex: Rainbow[key] }));
 
 const HEX_REGEX = /^#[0-9A-F]{6}$/;
 
 export const isValidHex = (value: string): boolean => HEX_REGEX.test(value);
 
 export const normalizeHex = (raw: string): string => {
-  const upper = raw.toUpperCase().replace(/[^#0-9A-F]/g, '');
-  if (upper.length === 0) return '';
-  return upper.startsWith('#') ? upper : `#${upper}`;
+  const upper = raw.toUpperCase().replace(/[^#0-9A-F]/g, "");
+  if (upper.length === 0) return "";
+  return upper.startsWith("#") ? upper : `#${upper}`;
 };
 
 type ColorPickerProps = {
@@ -42,6 +42,7 @@ export function ColorPicker({
 }: ColorPickerProps) {
   const theme = useTheme();
   const styles = useMemo(() => makeStyles(theme), [theme]);
+  const hasInvalidHex = value.length > 0 && !isValidHex(value);
 
   return (
     <View style={styles.container}>
@@ -65,8 +66,9 @@ export function ColorPicker({
         <View
           style={[
             styles.preview,
+            hasInvalidHex && styles.previewInvalid,
             {
-              backgroundColor: isValidHex(value) ? value : 'transparent',
+              backgroundColor: isValidHex(value) ? value : "transparent",
             },
           ]}
           testID={`${testIDPrefix}-preview`}
@@ -78,10 +80,11 @@ export function ColorPicker({
           autoCapitalize="characters"
           autoCorrect={false}
           maxLength={7}
+          error={hasInvalidHex}
           accessibilityLabel={
             accessibilityPrefix
               ? `${accessibilityPrefix} custom hex`
-              : 'custom hex color'
+              : "custom hex color"
           }
           testID={`${testIDPrefix}-hex`}
           style={styles.hexInput}
@@ -94,10 +97,10 @@ export function ColorPicker({
 const makeStyles = (theme: Theme) =>
   StyleSheet.create({
     container: { gap: Spacing.two },
-    palette: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.two },
+    palette: { flexDirection: "row", flexWrap: "wrap", gap: Spacing.two },
     hexRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
+      flexDirection: "row",
+      alignItems: "center",
       gap: Spacing.two,
     },
     preview: {
@@ -107,9 +110,13 @@ const makeStyles = (theme: Theme) =>
       borderWidth: BorderWidth.thick,
       borderColor: theme.border,
     },
+    previewInvalid: {
+      borderColor: theme.dangerBorder,
+      borderStyle: "dashed",
+    },
     hexInput: {
       flex: 1,
       letterSpacing: 1,
-      textTransform: 'uppercase',
+      textTransform: "uppercase",
     },
   });

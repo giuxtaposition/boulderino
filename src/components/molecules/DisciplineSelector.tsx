@@ -1,13 +1,13 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from "react-native";
 
-import { Chip } from '../atoms/Chip';
-import { Spacing, Tetromino } from '@/constants/theme';
-import { Discipline } from '@/domain/route/Discipline';
+import { Chip } from "../atoms/Chip";
+import { Spacing, Rainbow } from "@/constants/theme";
+import { Discipline } from "@/domain/route/Discipline";
 
 const OPTIONS: { value: Discipline; label: string; color: string }[] = [
-  { value: 'bouldering', label: 'Boulder', color: Tetromino.O },
-  { value: 'lead-sport', label: 'Sport', color: Tetromino.J },
-  { value: 'lead-trad', label: 'Trad', color: Tetromino.L },
+  { value: "bouldering", label: "Boulder", color: Rainbow[1] },
+  { value: "lead-sport", label: "Sport", color: Rainbow[5] },
+  { value: "lead-trad", label: "Trad", color: Rainbow[6] },
 ];
 
 type DisciplineSelectorProps = {
@@ -27,7 +27,8 @@ export function DisciplineSelector({
           selected={option.value === value}
           selectedColor={option.color}
           onPress={() => onChange(option.value)}
-          testID={`select-discipline-${option.value}`}>
+          testID={`select-discipline-${option.value}`}
+        >
           {option.label}
         </Chip>
       ))}
@@ -36,5 +37,5 @@ export function DisciplineSelector({
 }
 
 const styles = StyleSheet.create({
-  row: { flexDirection: 'row', gap: Spacing.two, flexWrap: 'wrap' },
+  row: { flexDirection: "row", gap: Spacing.two, flexWrap: "wrap" },
 });

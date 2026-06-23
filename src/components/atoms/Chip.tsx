@@ -4,9 +4,12 @@ import { Pressable, PressableProps, StyleSheet } from 'react-native';
 import { ThemedText } from '../themed-text';
 import {
   BorderWidth,
+  PressableState,
   Radius,
   Spacing,
   Theme,
+  focusRing,
+  onColor,
 } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
@@ -25,18 +28,21 @@ export function Chip({
 }: ChipProps) {
   const theme = useTheme();
   const styles = useMemo(() => makeStyles(theme), [theme]);
+  const selectedTextColor =
+    selected && selectedColor ? onColor(selectedColor) : theme.text;
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityState={{ selected }}
       {...rest}
-      style={(state) => [
+      style={(state: PressableState) => [
         styles.chip,
         selected && selectedColor ? { backgroundColor: selectedColor } : null,
         state.pressed && styles.pressed,
+        state.focused && styles.focused,
         typeof style === 'function' ? style(state) : style,
       ]}>
-      <ThemedText style={[styles.text, selected && styles.textSelected]}>
+      <ThemedText style={[styles.text, { color: selectedTextColor }]}>
         {children}
       </ThemedText>
     </Pressable>
@@ -59,11 +65,10 @@ const makeStyles = (theme: Theme) =>
       alignItems: 'center',
     },
     pressed: { transform: [{ translateX: 2 }, { translateY: 2 }] },
+    focused: focusRing(theme),
     text: {
       fontSize: 14,
       fontWeight: '800',
-      color: theme.text,
       letterSpacing: 0.3,
     },
-    textSelected: { color: '#0F172A' },
   });

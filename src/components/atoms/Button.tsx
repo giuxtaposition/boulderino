@@ -1,28 +1,30 @@
-import { ReactNode, useMemo } from 'react';
-import { Pressable, PressableProps, StyleSheet } from 'react-native';
+import { ReactNode, useMemo } from "react";
+import { Pressable, PressableProps, StyleSheet } from "react-native";
 
-import { ThemedText } from '../themed-text';
+import { ThemedText } from "../themed-text";
 import {
   BorderWidth,
+  PressableState,
   Radius,
   Spacing,
   Theme,
   blockShadow,
-} from '@/constants/theme';
-import { useTheme } from '@/hooks/use-theme';
+  focusRing,
+} from "@/constants/theme";
+import { useTheme } from "@/hooks/use-theme";
 
-type Variant = 'primary' | 'ghost' | 'danger' | 'dashed';
-type Size = 'medium' | 'small';
+type Variant = "primary" | "ghost" | "danger" | "dashed";
+type Size = "medium" | "small";
 
-type ButtonProps = Omit<PressableProps, 'children'> & {
+type ButtonProps = Omit<PressableProps, "children"> & {
   variant?: Variant;
   size?: Size;
   children: ReactNode;
 };
 
 export function Button({
-  variant = 'primary',
-  size = 'medium',
+  variant = "primary",
+  size = "medium",
   style,
   children,
   ...rest
@@ -33,14 +35,18 @@ export function Button({
   return (
     <Pressable
       accessibilityRole="button"
+      accessibilityState={{ disabled: rest.disabled === true }}
       {...rest}
-      style={(state) => [
+      style={(state: PressableState) => [
         styles.base,
-        size === 'small' && styles.small,
+        size === "small" && styles.small,
         styles[variant],
-        state.pressed && styles.pressed,
-        typeof style === 'function' ? style(state) : style,
-      ]}>
+        state.pressed && !rest.disabled && styles.pressed,
+        state.focused && styles.focused,
+        rest.disabled && styles.disabled,
+        typeof style === "function" ? style(state) : style,
+      ]}
+    >
       <ThemedText style={[styles.text, styles[`${variant}Text`]]}>
         {children}
       </ThemedText>
@@ -56,23 +62,27 @@ const makeStyles = (theme: Theme) =>
       borderColor: theme.border,
       paddingVertical: Spacing.three,
       paddingHorizontal: Spacing.four,
-      alignItems: 'center',
-      justifyContent: 'center',
+      alignItems: "center",
+      justifyContent: "center",
       minHeight: 52,
     },
     small: {
       paddingVertical: Spacing.two,
       paddingHorizontal: Spacing.three,
-      minHeight: 36,
+      minHeight: 44,
     },
     pressed: {
       transform: [{ translateX: 3 }, { translateY: 3 }],
     },
+    focused: focusRing(theme),
+    disabled: {
+      opacity: 0.5,
+    },
     text: {
       fontSize: 15,
-      fontWeight: '800',
+      fontWeight: "800",
       letterSpacing: 0.8,
-      textAlign: 'center',
+      textAlign: "center",
     },
     primary: {
       backgroundColor: theme.accent,
@@ -90,16 +100,12 @@ const makeStyles = (theme: Theme) =>
     },
     dangerText: {
       color: theme.dangerText,
-      fontSize: 11,
-      letterSpacing: 1.5,
     },
     dashed: {
       backgroundColor: theme.inputBackground,
-      borderStyle: 'dashed',
+      borderStyle: "dashed",
     },
     dashedText: {
       color: theme.text,
-      fontSize: 13,
-      letterSpacing: 1.5,
     },
   });

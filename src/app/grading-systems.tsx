@@ -1,36 +1,36 @@
-import { useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useMemo, useState } from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import { Button } from '@/components/atoms/Button';
-import { EmptyBlock } from '@/components/atoms/EmptyBlock';
-import { ErrorBlock } from '@/components/atoms/ErrorBlock';
-import { FormCard } from '@/components/atoms/FormCard';
-import { Input } from '@/components/atoms/Input';
-import { FormField } from '@/components/molecules/FormField';
+import { Button } from "@/components/atoms/Button";
+import { EmptyBlock } from "@/components/atoms/EmptyBlock";
+import { ErrorBlock } from "@/components/atoms/ErrorBlock";
+import { FormCard } from "@/components/atoms/FormCard";
+import { Input } from "@/components/atoms/Input";
+import { FormField } from "@/components/molecules/FormField";
 import {
   GradeRowList,
   GradeRowValue,
-} from '@/components/organisms/GradeRowList';
-import { SystemCard } from '@/components/organisms/SystemCard';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
+} from "@/components/organisms/GradeRowList";
+import { SystemCard } from "@/components/organisms/SystemCard";
+import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
 import {
   BottomTabHeight,
   MaxContentWidth,
   Spacing,
   Theme,
-  pickTetromino,
-} from '@/constants/theme';
-import { useContainer } from '@/composition/Container';
-import { GradeDefinition } from '@/domain/grading/GradeDefinition';
-import { GradingSystem } from '@/domain/grading/GradingSystem';
-import { useTheme } from '@/hooks/use-theme';
+  pickRainbowColor,
+} from "@/constants/theme";
+import { useContainer } from "@/composition/Container";
+import { GradeDefinition } from "@/domain/grading/GradeDefinition";
+import { GradingSystem } from "@/domain/grading/GradingSystem";
+import { useTheme } from "@/hooks/use-theme";
 
 const emptyRow = (index: number): GradeRowValue => ({
-  value: '',
-  label: '',
-  color: pickTetromino(index),
+  value: "",
+  label: "",
+  color: pickRainbowColor(index),
   order: String(index + 1),
 });
 
@@ -49,7 +49,7 @@ export default function GradingSystemsScreen() {
   const styles = useMemo(() => makeStyles(theme), [theme]);
   const { addGradingSystem, gradingSystemRegistry } = useContainer();
 
-  const [name, setName] = useState('');
+  const [name, setName] = useState("");
   const [rows, setRows] = useState<GradeRowValue[]>(() => [emptyRow(0)]);
   const [systems, setSystems] = useState<GradingSystem[]>(() =>
     gradingSystemRegistry.findAll(),
@@ -75,7 +75,7 @@ export default function GradingSystemsScreen() {
         grades: rowsToDefinitions(rows),
       });
       setSystems(gradingSystemRegistry.findAll());
-      setName('');
+      setName("");
       setRows([emptyRow(0)]);
       setError(null);
     } catch (err) {
@@ -85,11 +85,12 @@ export default function GradingSystemsScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea} edges={['top']}>
+      <SafeAreaView style={styles.safeArea} edges={["top"]}>
         <ScrollView
           contentContainerStyle={styles.scroll}
           keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}>
+          showsVerticalScrollIndicator={false}
+        >
           <View style={styles.header}>
             <ThemedText style={styles.kicker}>GRADES · LEVEL 01</ThemedText>
             <ThemedText style={styles.heading}>Grading systems</ThemedText>
@@ -114,7 +115,8 @@ export default function GradingSystemsScreen() {
                 <ThemedText style={styles.helper}>
                   Easiest = lowest order
                 </ThemedText>
-              }>
+              }
+            >
               <GradeRowList
                 rows={rows}
                 onChangeRow={updateRow}
@@ -126,7 +128,8 @@ export default function GradingSystemsScreen() {
             <Button
               onPress={handleSubmit}
               testID="submit-system"
-              style={styles.submit}>
+              style={styles.submit}
+            >
               SAVE GRADING SYSTEM
             </Button>
 
@@ -141,7 +144,7 @@ export default function GradingSystemsScreen() {
                 <SystemCard
                   key={system.name}
                   system={system}
-                  background={pickTetromino(index)}
+                  background={pickRainbowColor(index)}
                 />
               ))
             )}
@@ -162,23 +165,23 @@ const makeStyles = (theme: Theme) =>
       paddingBottom: BottomTabHeight + Spacing.six,
       gap: Spacing.five,
       maxWidth: MaxContentWidth,
-      width: '100%',
-      alignSelf: 'center',
+      width: "100%",
+      alignSelf: "center",
     },
     header: { gap: Spacing.one },
     kicker: {
       fontSize: 11,
-      fontWeight: '700',
+      fontWeight: "700",
       letterSpacing: 2,
       color: theme.textSecondary,
     },
     heading: {
       fontSize: 30,
-      fontWeight: '800',
+      fontWeight: "800",
       letterSpacing: -0.5,
       color: theme.text,
     },
-    helper: { fontSize: 11, color: theme.textMuted, fontWeight: '600' },
+    helper: { fontSize: 11, color: theme.textMuted, fontWeight: "600" },
     submit: { marginTop: Spacing.three },
     list: { gap: Spacing.three },
   });

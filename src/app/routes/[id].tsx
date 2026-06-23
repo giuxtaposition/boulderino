@@ -1,29 +1,29 @@
-import { useMemo } from 'react';
-import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useMemo } from "react";
+import { Image, Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useLocalSearchParams, useRouter } from "expo-router";
 
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
+import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
 import {
   BorderWidth,
   BottomTabHeight,
   MaxContentWidth,
   Radius,
   Spacing,
-  Tetromino,
+  Rainbow,
   Theme,
   blockShadow,
-} from '@/constants/theme';
-import { useContainer } from '@/composition/Container';
-import { useTheme } from '@/hooks/use-theme';
+} from "@/constants/theme";
+import { useContainer } from "@/composition/Container";
+import { useTheme } from "@/hooks/use-theme";
 
 const dateFormatter = new Intl.DateTimeFormat(undefined, {
-  year: 'numeric',
-  month: 'long',
-  day: '2-digit',
-  hour: '2-digit',
-  minute: '2-digit',
+  year: "numeric",
+  month: "long",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
 });
 
 export default function RouteDetailScreen() {
@@ -38,7 +38,7 @@ export default function RouteDetailScreen() {
   if (!route) {
     return (
       <ThemedView style={styles.container}>
-        <SafeAreaView style={styles.safeArea} edges={['top']}>
+        <SafeAreaView style={styles.safeArea} edges={["top"]}>
           <ScrollView contentContainerStyle={styles.scroll}>
             <Pressable
               accessibilityRole="button"
@@ -47,12 +47,11 @@ export default function RouteDetailScreen() {
               style={({ pressed }) => [
                 styles.backButton,
                 pressed && styles.pressed,
-              ]}>
+              ]}
+            >
               <ThemedText style={styles.backText}>← BACK</ThemedText>
             </Pressable>
-            <View
-              testID="route-detail-missing"
-              style={styles.missingBlock}>
+            <View testID="route-detail-missing" style={styles.missingBlock}>
               <ThemedText style={styles.missingText}>
                 Route not found.
               </ThemedText>
@@ -63,21 +62,22 @@ export default function RouteDetailScreen() {
     );
   }
 
-  let background: string = Tetromino.S;
+  let background: string = Rainbow[3];
   try {
     background = gradingSystemRegistry
       .requireByName(route.grade.systemId)
       .definitionFor(route.grade.value).color;
   } catch {
-    background = Tetromino.S;
+    background = Rainbow[3];
   }
 
   return (
     <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea} edges={['top']}>
+      <SafeAreaView style={styles.safeArea} edges={["top"]}>
         <ScrollView
           contentContainerStyle={styles.scroll}
-          showsVerticalScrollIndicator={false}>
+          showsVerticalScrollIndicator={false}
+        >
           <Pressable
             accessibilityRole="button"
             onPress={() => router.back()}
@@ -85,13 +85,15 @@ export default function RouteDetailScreen() {
             style={({ pressed }) => [
               styles.backButton,
               pressed && styles.pressed,
-            ]}>
+            ]}
+          >
             <ThemedText style={styles.backText}>← BACK</ThemedText>
           </Pressable>
 
           <View
             testID="route-detail-card"
-            style={[styles.card, { backgroundColor: background }]}>
+            style={[styles.card, { backgroundColor: background }]}
+          >
             <Image
               source={{ uri: route.photo.url }}
               style={styles.photo}
@@ -116,9 +118,7 @@ export default function RouteDetailScreen() {
               </View>
             </View>
 
-            <ThemedText
-              style={styles.timestamp}
-              testID="route-detail-created">
+            <ThemedText style={styles.timestamp} testID="route-detail-created">
               {dateFormatter.format(route.createdAt)}
             </ThemedText>
 
@@ -128,7 +128,8 @@ export default function RouteDetailScreen() {
                   <View
                     key={tag}
                     style={styles.tagChip}
-                    testID={`route-detail-tag-${tag}`}>
+                    testID={`route-detail-tag-${tag}`}
+                  >
                     <ThemedText style={styles.tagChipText}>#{tag}</ThemedText>
                   </View>
                 ))}
@@ -138,7 +139,8 @@ export default function RouteDetailScreen() {
             {route.description ? (
               <View
                 style={styles.descriptionBlock}
-                testID="route-detail-description">
+                testID="route-detail-description"
+              >
                 <ThemedText style={styles.descriptionLabel}>BETA</ThemedText>
                 <ThemedText style={styles.descriptionText}>
                   {route.description}
@@ -162,11 +164,11 @@ const makeStyles = (theme: Theme) =>
       paddingBottom: BottomTabHeight + Spacing.six,
       gap: Spacing.four,
       maxWidth: MaxContentWidth,
-      width: '100%',
-      alignSelf: 'center',
+      width: "100%",
+      alignSelf: "center",
     },
     backButton: {
-      alignSelf: 'flex-start',
+      alignSelf: "flex-start",
       paddingVertical: Spacing.two,
       paddingHorizontal: Spacing.three,
       borderWidth: BorderWidth.thick,
@@ -178,7 +180,7 @@ const makeStyles = (theme: Theme) =>
     backText: {
       color: theme.text,
       fontSize: 12,
-      fontWeight: '800',
+      fontWeight: "800",
       letterSpacing: 1.5,
     },
     card: {
@@ -190,103 +192,103 @@ const makeStyles = (theme: Theme) =>
       ...blockShadow(theme),
     },
     photo: {
-      width: '100%',
+      width: "100%",
       aspectRatio: 4 / 3,
       borderRadius: Radius.small,
       borderWidth: BorderWidth.thick,
-      borderColor: '#0F172A',
-      backgroundColor: '#FFFFFF',
+      borderColor: "#0F172A",
+      backgroundColor: "#FFFFFF",
     },
     name: {
       fontSize: 28,
-      fontWeight: '800',
-      color: '#0F172A',
+      fontWeight: "800",
+      color: "#0F172A",
       letterSpacing: -0.5,
     },
     metaRow: {
-      flexDirection: 'row',
+      flexDirection: "row",
       gap: Spacing.two,
-      flexWrap: 'wrap',
+      flexWrap: "wrap",
     },
     gradeTag: {
-      backgroundColor: '#FFFFFF',
+      backgroundColor: "#FFFFFF",
       borderWidth: BorderWidth.thick,
-      borderColor: '#0F172A',
+      borderColor: "#0F172A",
       borderRadius: Radius.small,
       paddingVertical: Spacing.one,
       paddingHorizontal: Spacing.two,
     },
     gradeTagText: {
-      color: '#0F172A',
-      fontWeight: '800',
+      color: "#0F172A",
+      fontWeight: "800",
       fontSize: 13,
     },
     disciplineTag: {
-      backgroundColor: '#0F172A',
+      backgroundColor: "#0F172A",
       borderRadius: Radius.small,
       paddingVertical: Spacing.one,
       paddingHorizontal: Spacing.two,
     },
     disciplineTagText: {
-      color: '#FFFFFF',
-      fontWeight: '800',
+      color: "#FFFFFF",
+      fontWeight: "800",
       fontSize: 11,
       letterSpacing: 1,
-      textTransform: 'uppercase',
+      textTransform: "uppercase",
     },
     timestamp: {
       fontSize: 12,
-      fontWeight: '700',
-      color: '#0F172A',
+      fontWeight: "700",
+      color: "#0F172A",
       opacity: 0.7,
     },
     tagRow: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
+      flexDirection: "row",
+      flexWrap: "wrap",
       gap: Spacing.two,
     },
     tagChip: {
-      backgroundColor: 'rgba(255,255,255,0.7)',
+      backgroundColor: "rgba(255,255,255,0.7)",
       borderWidth: BorderWidth.thick,
-      borderColor: '#0F172A',
+      borderColor: "#0F172A",
       borderRadius: Radius.pill,
       paddingVertical: Spacing.half,
       paddingHorizontal: Spacing.three,
     },
     tagChipText: {
-      color: '#0F172A',
+      color: "#0F172A",
       fontSize: 12,
-      fontWeight: '800',
+      fontWeight: "800",
       letterSpacing: 0.4,
     },
     descriptionBlock: {
       gap: Spacing.one,
-      backgroundColor: 'rgba(255,255,255,0.7)',
+      backgroundColor: "rgba(255,255,255,0.7)",
       borderWidth: BorderWidth.thick,
-      borderColor: '#0F172A',
+      borderColor: "#0F172A",
       borderRadius: Radius.small,
       padding: Spacing.three,
     },
     descriptionLabel: {
       fontSize: 10,
-      fontWeight: '800',
+      fontWeight: "800",
       letterSpacing: 1.5,
-      color: '#0F172A',
+      color: "#0F172A",
       opacity: 0.7,
     },
     descriptionText: {
       fontSize: 15,
-      fontWeight: '500',
-      color: '#0F172A',
+      fontWeight: "500",
+      color: "#0F172A",
       lineHeight: 22,
     },
     missingBlock: {
       padding: Spacing.five,
       borderWidth: BorderWidth.thick,
-      borderStyle: 'dashed',
+      borderStyle: "dashed",
       borderColor: theme.borderMuted,
       borderRadius: Radius.medium,
-      alignItems: 'center',
+      alignItems: "center",
     },
-    missingText: { color: theme.textSecondary, fontWeight: '700' },
+    missingText: { color: theme.textSecondary, fontWeight: "700" },
   });
