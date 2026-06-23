@@ -64,4 +64,23 @@ describe("InMemoryRouteRepository", () => {
   it("should return undefined when no route matches the id", () => {
     expect(repository.findById("missing")).toBeUndefined();
   });
+
+  it("should replace an existing route via update", () => {
+    const route = buildRoute();
+    repository.save(route);
+    const replaced = Route.withHolds(route, []);
+
+    repository.update(replaced);
+
+    expect(repository.findById(route.id.value)).toBe(replaced);
+    expect(repository.findAll()).toHaveLength(1);
+  });
+
+  it("should throw when updating a route that does not exist", () => {
+    const route = buildRoute();
+
+    expect(() => repository.update(route)).toThrow(
+      `Route "${route.id.value}" not found`,
+    );
+  });
 });

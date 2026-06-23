@@ -1,5 +1,5 @@
-import { useCallback, useMemo, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { lazy, Suspense, useCallback, useMemo, useState } from "react";
+import { ActivityIndicator, ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
@@ -15,6 +15,8 @@ import { GradePicker } from "@/components/organisms/GradePicker";
 import { GradingSystemPicker } from "@/components/organisms/GradingSystemPicker";
 import { PhotoPicker, PickedPhoto } from "@/components/organisms/PhotoPicker";
 import { RouteCard } from "@/components/organisms/RouteCard";
+
+const HoldEditor = lazy(() => import("@/components/organisms/HoldEditor"));
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import {
@@ -29,6 +31,7 @@ import {
 import { useContainer } from "@/composition/Container";
 import { Discipline } from "@/domain/route/Discipline";
 import { GradingSystem } from "@/domain/grading/GradingSystem";
+import { Hold } from "@/domain/route/Hold";
 import { Route } from "@/domain/route/Route";
 import { useTheme } from "@/hooks/use-theme";
 
@@ -47,6 +50,7 @@ export default function RoutesScreen() {
   const [selectedSystem, setSelectedSystem] = useState<string | null>(null);
   const [selectedGrade, setSelectedGrade] = useState<string | null>(null);
   const [photo, setPhoto] = useState<PickedPhoto | null>(null);
+  const [holds, setHolds] = useState<readonly Hold[]>([]);
   const [routes, setRoutes] = useState<Route[]>(() =>
     routeRepository.findAll(),
   );
@@ -82,6 +86,7 @@ export default function RoutesScreen() {
         width: asset.width,
         height: asset.height,
       });
+      setHolds([]);
       setError(null);
     } catch (err) {
       setError((err as Error).message);
@@ -108,6 +113,7 @@ export default function RoutesScreen() {
         gradingSystemName: selectedSystem,
         gradeValue: selectedGrade,
         photo: { url: photo.uri, width: photo.width, height: photo.height },
+        holds,
       });
       setRoutes(routeRepository.findAll());
       setName("");
@@ -115,6 +121,7 @@ export default function RoutesScreen() {
       setTagsInput("");
       setSelectedGrade(null);
       setPhoto(null);
+      setHolds([]);
       setError(null);
     } catch (err) {
       setError((err as Error).message);
@@ -205,6 +212,21 @@ export default function RoutesScreen() {
             <FormField label="Photo">
               <PhotoPicker photo={photo} onPick={handlePickPhoto} />
             </FormField>
+
+            {photo && (
+              <FormField label="Holds">
+                <Suspense fallback={<ActivityIndicator />}>
+                  <HoldEditor
+                    photoUri={photo.uri}
+                    photoWidth={photo.width}
+                    photoHeight={photo.height}
+                    holds={holds}
+                    onChange={setHolds}
+                    testID="form-hold-editor"
+                  />
+                </Suspense>
+              </FormField>
+            )}
 
             <Button
               onPress={handleSubmit}

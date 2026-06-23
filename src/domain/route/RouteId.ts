@@ -1,8 +1,10 @@
+import { randomUUID } from "expo-crypto";
+
 export class RouteId {
   private constructor(readonly value: string) {}
 
   static generate(): RouteId {
-    return new RouteId(globalThis.crypto.randomUUID());
+    return new RouteId(randomUUID());
   }
 
   static from(value: string): RouteId {

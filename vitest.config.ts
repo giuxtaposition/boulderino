@@ -5,6 +5,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
+      "expo-crypto": path.resolve(__dirname, "src/test/expo-crypto-stub.ts"),
     },
   },
   test: {

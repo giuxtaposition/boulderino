@@ -11,6 +11,7 @@ import { AddGradingSystem } from '@/application/AddGradingSystem';
 import { AddRoute } from '@/application/AddRoute';
 import { GradingSystemRegistry } from '@/application/GradingSystemRegistry';
 import { RouteRepository } from '@/application/RouteRepository';
+import { UpdateRouteHolds } from '@/application/UpdateRouteHolds';
 import { AsyncStorageGradingSystemRegistry } from '@/infrastructure/grading/AsyncStorageGradingSystemRegistry';
 import { AsyncStorageRouteRepository } from '@/infrastructure/route/AsyncStorageRouteRepository';
 
@@ -19,6 +20,7 @@ export interface Container {
   routeRepository: RouteRepository;
   addGradingSystem: AddGradingSystem;
   addRoute: AddRoute;
+  updateRouteHolds: UpdateRouteHolds;
 }
 
 export async function createContainer(): Promise<Container> {
@@ -31,6 +33,7 @@ export async function createContainer(): Promise<Container> {
     routeRepository,
     addGradingSystem: new AddGradingSystem(gradingSystemRegistry),
     addRoute: new AddRoute(gradingSystemRegistry, routeRepository),
+    updateRouteHolds: new UpdateRouteHolds(routeRepository),
   };
 }
 

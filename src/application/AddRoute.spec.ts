@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { GradingSystem } from "../domain/grading/GradingSystem";
+import { Hold } from "../domain/route/Hold";
 import { InMemoryGradingSystemRegistry } from "../infrastructure/grading/InMemoryGradingSystemRegistry";
 import { InMemoryRouteRepository } from "../infrastructure/route/InMemoryRouteRepository";
 import { AddRoute } from "./AddRoute";
@@ -117,6 +118,39 @@ describe("AddRoute", () => {
     });
 
     expect(first.id).not.toBe(second.id);
+  });
+
+  it("should accept holds and pass them to the created route", () => {
+    const hold = Hold.create({
+      color: "#FF0000",
+      points: [
+        { x: 0.1, y: 0.1 },
+        { x: 0.3, y: 0.1 },
+        { x: 0.3, y: 0.3 },
+      ],
+    });
+    const route = useCase.execute({
+      name: "With holds",
+      discipline: "bouldering",
+      gradingSystemName: "YDS",
+      gradeValue: "5.10a",
+      photo: validPhoto,
+      holds: [hold],
+    });
+
+    expect(route.holds).toEqual([hold]);
+  });
+
+  it("should default holds to an empty array", () => {
+    const route = useCase.execute({
+      name: "No holds",
+      discipline: "bouldering",
+      gradingSystemName: "YDS",
+      gradeValue: "5.10a",
+      photo: validPhoto,
+    });
+
+    expect(route.holds).toEqual([]);
   });
 
   it("should throw when the route name is empty", () => {

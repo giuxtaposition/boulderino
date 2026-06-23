@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
+import { Hold } from "./Hold";
 import { Route, RouteInput } from "./Route";
+
+const samplePoints = [
+  { x: 0.1, y: 0.1 },
+  { x: 0.2, y: 0.1 },
+  { x: 0.2, y: 0.2 },
+];
 
 const validInput: RouteInput = {
   name: "Crimpy Crack",
@@ -60,5 +67,63 @@ describe("Route", () => {
     const b = Route.create(validInput);
 
     expect(a.id).not.toBe(b.id);
+  });
+
+  it("should default holds to an empty array when omitted", () => {
+    const route = Route.create(validInput);
+
+    expect(route.holds).toEqual([]);
+    expect(Object.isFrozen(route.holds)).toBe(true);
+  });
+
+  it("should accept provided holds", () => {
+    const hold = Hold.create({ color: "#FF0000", points: samplePoints });
+    const route = Route.create({ ...validInput, holds: [hold] });
+
+    expect(route.holds).toHaveLength(1);
+    expect(route.holds[0]).toBe(hold);
+  });
+
+  it("should restore holds from a snapshot", () => {
+    const route = Route.restore({
+      id: "route-1",
+      name: "x",
+      description: null,
+      tags: [],
+      discipline: "bouldering",
+      grade: { systemId: "s", name: "g" },
+      photo: { url: "u", width: 1, height: 1 },
+      createdAt: new Date().toISOString(),
+      holds: [{ id: "hold-1", color: "#FF0000", points: samplePoints }],
+    });
+
+    expect(route.holds).toHaveLength(1);
+    expect(route.holds[0].id).toBe("hold-1");
+  });
+
+  it("should default holds to empty when restoring snapshot without holds", () => {
+    const route = Route.restore({
+      id: "route-1",
+      name: "x",
+      description: null,
+      tags: [],
+      discipline: "bouldering",
+      grade: { systemId: "s", name: "g" },
+      photo: { url: "u", width: 1, height: 1 },
+      createdAt: new Date().toISOString(),
+    });
+
+    expect(route.holds).toEqual([]);
+  });
+
+  it("should return a new route with replaced holds via withHolds", () => {
+    const route = Route.create(validInput);
+    const hold = Hold.create({ color: "#FF0000", points: samplePoints });
+    const updated = Route.withHolds(route, [hold]);
+
+    expect(updated).not.toBe(route);
+    expect(updated.id).toBe(route.id);
+    expect(updated.holds).toHaveLength(1);
+    expect(route.holds).toEqual([]);
   });
 });

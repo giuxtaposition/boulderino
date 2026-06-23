@@ -1,10 +1,21 @@
-import { useMemo } from "react";
-import { Image, Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { lazy, Suspense, useCallback, useMemo, useState } from "react";
+import {
+  ActivityIndicator,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 
+import { Button } from "@/components/atoms/Button";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
+import { Hold } from "@/domain/route/Hold";
+
+const HoldEditor = lazy(() => import("@/components/organisms/HoldEditor"));
+const HoldOverlay = lazy(() => import("@/components/organisms/HoldOverlay"));
 import {
   BorderWidth,
   BottomTabHeight,
@@ -31,9 +42,34 @@ export default function RouteDetailScreen() {
   const styles = useMemo(() => makeStyles(theme), [theme]);
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { routeRepository, gradingSystemRegistry } = useContainer();
+  const { routeRepository, gradingSystemRegistry, updateRouteHolds } =
+    useContainer();
 
   const route = id ? routeRepository.findById(id) : undefined;
+  const [editing, setEditing] = useState(false);
+  const [draftHolds, setDraftHolds] = useState<readonly Hold[]>(
+    route?.holds ?? [],
+  );
+
+  const handleStartEdit = useCallback(() => {
+    if (!route) return;
+    setDraftHolds(route.holds);
+    setEditing(true);
+  }, [route]);
+
+  const handleCancelEdit = useCallback(() => {
+    setEditing(false);
+    setDraftHolds(route?.holds ?? []);
+  }, [route]);
+
+  const handleSaveEdit = useCallback(() => {
+    if (!route) return;
+    updateRouteHolds.execute({
+      routeId: route.id.value,
+      holds: draftHolds,
+    });
+    setEditing(false);
+  }, [route, draftHolds, updateRouteHolds]);
 
   if (!route) {
     return (
@@ -94,12 +130,71 @@ export default function RouteDetailScreen() {
             testID="route-detail-card"
             style={[styles.card, { backgroundColor: background }]}
           >
-            <Image
-              source={{ uri: route.photo.url }}
-              style={styles.photo}
-              accessibilityLabel={`photo of route ${route.name}`}
-              testID="route-detail-photo"
-            />
+            <Suspense
+              fallback={
+                <View
+                  style={[
+                    styles.photoFrame,
+                    {
+                      aspectRatio:
+                        route.photo.width > 0 && route.photo.height > 0
+                          ? route.photo.width / route.photo.height
+                          : 4 / 3,
+                    },
+                  ]}
+                >
+                  <ActivityIndicator />
+                </View>
+              }
+            >
+              {editing ? (
+                <HoldEditor
+                  photoUri={route.photo.url}
+                  photoWidth={route.photo.width}
+                  photoHeight={route.photo.height}
+                  holds={draftHolds}
+                  onChange={setDraftHolds}
+                  testID="route-detail-hold-editor"
+                />
+              ) : (
+                <HoldOverlay
+                  photoUri={route.photo.url}
+                  photoWidth={route.photo.width}
+                  photoHeight={route.photo.height}
+                  holds={route.holds}
+                  accessibilityLabel={`photo of route ${route.name}`}
+                  testID="route-detail-photo"
+                  style={styles.photoFrame}
+                />
+              )}
+            </Suspense>
+
+            <View style={styles.editRow}>
+              {editing ? (
+                <>
+                  <Button
+                    onPress={handleSaveEdit}
+                    testID="route-detail-save-holds"
+                  >
+                    SAVE HOLDS
+                  </Button>
+                  <Button
+                    onPress={handleCancelEdit}
+                    testID="route-detail-cancel-edit"
+                    style={styles.cancelButton}
+                  >
+                    CANCEL
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  onPress={handleStartEdit}
+                  testID="route-detail-edit-holds"
+                >
+                  EDIT HOLDS
+                </Button>
+              )}
+            </View>
 
             <ThemedText style={styles.name} testID="route-detail-name">
               {route.name}
@@ -191,13 +286,21 @@ const makeStyles = (theme: Theme) =>
       gap: Spacing.three,
       ...blockShadow(theme),
     },
-    photo: {
+    photoFrame: {
       width: "100%",
-      aspectRatio: 4 / 3,
       borderRadius: Radius.small,
       borderWidth: BorderWidth.thick,
       borderColor: "#0F172A",
       backgroundColor: "#FFFFFF",
+      overflow: "hidden",
+    },
+    editRow: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      gap: Spacing.two,
+    },
+    cancelButton: {
+      backgroundColor: theme.inputBackground,
     },
     name: {
       fontSize: 28,

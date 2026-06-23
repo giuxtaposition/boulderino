@@ -1,4 +1,5 @@
 import { Discipline } from "../domain/route/Discipline";
+import { Hold } from "../domain/route/Hold";
 import { Photo } from "../domain/route/Photo";
 import { Route } from "../domain/route/Route";
 import { GradingSystemRegistry } from "./GradingSystemRegistry";
@@ -12,6 +13,7 @@ export interface AddRouteInput {
   readonly gradingSystemName: string;
   readonly gradeValue: string;
   readonly photo: Photo;
+  readonly holds?: readonly Hold[];
 }
 
 export class AddRoute {
@@ -30,6 +32,7 @@ export class AddRoute {
       discipline: input.discipline,
       grade,
       photo: input.photo,
+      holds: input.holds,
     });
     this.repository.save(route);
     return route;

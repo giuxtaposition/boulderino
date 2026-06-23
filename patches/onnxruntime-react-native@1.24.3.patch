@@ -1,0 +1,83 @@
+diff --git a/android/build.gradle b/android/build.gradle
+index 41b43599a9af6ef1c170047d39db1f3baa6ca682..056835728963e4e5dd4dd80c5fff56abddf834f8 100644
+--- a/android/build.gradle
++++ b/android/build.gradle
+@@ -247,10 +247,7 @@ dependencies {
+     extractLibs "com.microsoft.onnxruntime:onnxruntime-android:latest.integration@aar"
+   }
+ 
+-  if (VersionNumber.parse(REACT_NATIVE_VERSION) < VersionNumber.parse("0.71")) {
+-    extractLibs "com.facebook.fbjni:fbjni:+:headers"
+-    extractLibs "com.facebook.fbjni:fbjni:+"
+-  }
++  // Patched: VersionNumber removed in Gradle 9. RN 0.71+ does not need explicit fbjni headers.
+ 
+   // By default it will just include onnxruntime full aar package
+   if (ortExtensionsEnabled) {
+diff --git a/lib/backend.ts b/lib/backend.ts
+index 31227e7ca2415ddbc9fa78d3ee195ca2b4fd62f4..892a150b8be9052d748b34d344efcf4dfc7f4164 100644
+--- a/lib/backend.ts
++++ b/lib/backend.ts
+@@ -184,7 +184,7 @@ class OnnxruntimeBackend implements Backend {
+   ): Promise<InferenceSessionHandler> {
+     return OnnxruntimeSessionHandler.create(pathOrBuffer, {
+       ...options,
+-      ortExtLibPath: Module.ORT_EXTENSIONS_PATH,
++      ortExtLibPath: Module?.ORT_EXTENSIONS_PATH,
+     });
+   }
+ }
+diff --git a/lib/binding.ts b/lib/binding.ts
+index f5963a02e39c344a4de19d682c1b7c1e20ba8528..81d22e0c6e386dfcceb733707380956c0958fa62 100644
+--- a/lib/binding.ts
++++ b/lib/binding.ts
+@@ -11,16 +11,23 @@ declare global {
+ }
+ 
+ if (typeof globalThis.OrtApi === 'undefined') {
+-  Module.install();
++  // Patched: skip install when native module is missing so module evaluation
++  // does not throw. Errors surface lazily when API methods are called.
++  if (Module) {
++    Module.install();
++  }
+ }
+ 
++const UNAVAILABLE_MSG =
++  'onnxruntime-react-native: Native module not found. Rebuild with: npx expo run:android';
++
+ export const OrtApi =
+   globalThis.OrtApi ??
+   new Proxy(
+     {},
+     {
+-      get: () => {
+-        throw new Error('OrtApi is not initialized. Please make sure Onnxruntime installation is successful.');
++      get: (_target: unknown, _prop: string | symbol) => {
++        return (..._args: unknown[]) => { throw new Error(UNAVAILABLE_MSG); };
+       },
+     },
+   );
+diff --git a/lib/index.ts b/lib/index.ts
+index 3523be6510f36dff8bd6c66c9886014bc5dd2e2d..539a28e41fc694972c569d1ce0a9d1f0b88102bc 100644
+--- a/lib/index.ts
++++ b/lib/index.ts
+@@ -8,9 +8,15 @@ import { registerBackend, env } from 'onnxruntime-common';
+ import { onnxruntimeBackend, listSupportedBackends } from './backend';
+ import { version } from './version';
+ 
+-const backends = listSupportedBackends();
+-for (const backend of backends) {
+-  registerBackend(backend.name, onnxruntimeBackend, 1);
++// Patched: guard backend registration so module evaluation does not throw
++// when native ONNX module is unavailable.
++try {
++  const backends = listSupportedBackends();
++  for (const backend of backends) {
++    registerBackend(backend.name, onnxruntimeBackend, 1);
++  }
++} catch {
++  // Native module not linked — skip backend registration.
+ }
+ 
+ Object.defineProperty(env.versions, 'react-native', { value: version, enumerable: true });
