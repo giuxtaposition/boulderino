@@ -8,9 +8,11 @@ import {
   ViewProps,
   useWindowDimensions,
 } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import {
   BorderWidth,
+  MaxContentWidth,
   Media,
   Radius,
   Spacing,
@@ -23,6 +25,7 @@ import { IconButton } from "./IconButton";
 import { ThemedText } from "../themed-text";
 
 const MobileBreakpoint = 600;
+const DesktopOffset = 160;
 
 type FormCardProps = ViewProps & {
   title: string;
@@ -40,11 +43,12 @@ export function FormCardDrawer({
   ...rest
 }: FormCardProps) {
   const theme = useTheme();
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
   const isMobile = width < MobileBreakpoint;
+  const desktopMaxHeight = Math.max(240, height - DesktopOffset);
   const styles = useMemo(
-    () => makeStyles(theme, isMobile),
-    [theme, isMobile],
+    () => makeStyles(theme, isMobile, desktopMaxHeight),
+    [theme, isMobile, desktopMaxHeight],
   );
 
   const header = (
@@ -64,7 +68,7 @@ export function FormCardDrawer({
         transparent
         onRequestClose={() => setVisible(false)}
       >
-        <View style={styles.sheetRoot}>
+        <GestureHandlerRootView style={styles.sheetRoot}>
           <Pressable
             style={styles.backdrop}
             onPress={() => setVisible(false)}
@@ -80,23 +84,28 @@ export function FormCardDrawer({
               {children}
             </ScrollView>
           </View>
-        </View>
+        </GestureHandlerRootView>
       </Modal>
     );
   }
 
+  if (!visible) return null;
+
   return (
-    <View
-      {...rest}
-      style={[styles.card, visible === false && { display: "none" }, style]}
-    >
+    <View {...rest} style={[styles.card, style]}>
       {header}
-      {children}
+      <ScrollView
+        contentContainerStyle={styles.sheetContent}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
+        {children}
+      </ScrollView>
     </View>
   );
 }
 
-const makeStyles = (theme: Theme, isMobile: boolean) =>
+const makeStyles = (theme: Theme, isMobile: boolean, desktopMaxHeight: number) =>
   StyleSheet.create({
     card: isMobile
       ? {
@@ -118,12 +127,18 @@ const makeStyles = (theme: Theme, isMobile: boolean) =>
           borderWidth: BorderWidth.chunky,
           borderColor: theme.border,
           borderRadius: Radius.medium,
-          padding: Spacing.four,
+          paddingHorizontal: Spacing.four,
+          paddingTop: Spacing.four,
+          paddingBottom: Spacing.two,
           gap: Spacing.two,
           position: "fixed",
-          overflowX: "hidden",
-          overflowY: "scroll",
           bottom: 80,
+          left: Spacing.four,
+          right: Spacing.four,
+          marginHorizontal: "auto",
+          width: "100%",
+          maxWidth: MaxContentWidth,
+          maxHeight: desktopMaxHeight,
           ...blockShadow(theme),
         },
     sheetRoot: {

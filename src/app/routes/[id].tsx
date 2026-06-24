@@ -58,7 +58,9 @@ export default function RouteDetailScreen() {
     deleteAttempt,
   } = useContainer();
 
-  const route = id ? routeRepository.findById(id) : undefined;
+  const [route, setRoute] = useState(() =>
+    id ? routeRepository.findById(id) : undefined,
+  );
   const [editing, setEditing] = useState(false);
   const [draftHolds, setDraftHolds] = useState<readonly Hold[]>(
     route?.holds ?? [],
@@ -82,10 +84,12 @@ export default function RouteDetailScreen() {
 
   const handleSaveEdit = useCallback(() => {
     if (!route) return;
-    updateRouteHolds.execute({
+    const updated = updateRouteHolds.execute({
       routeId: route.id.value,
       holds: draftHolds,
     });
+    setRoute(updated);
+    setDraftHolds(updated.holds);
     setEditing(false);
   }, [route, draftHolds, updateRouteHolds]);
 

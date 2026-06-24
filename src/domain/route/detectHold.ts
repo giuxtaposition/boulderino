@@ -369,8 +369,12 @@ const polygonFromMask = (
   options: PolygonFromMaskOptions,
 ): Point[] | null => {
   const contour = marchingSquares(mask, width, height);
-  if (!contour) return null;
-  const simplified = simplifyPolygon(contour, options.simplifyEpsilonPixels);
+  if (!contour || contour.length < 3) return null;
+  let simplified = simplifyPolygon(contour, options.simplifyEpsilonPixels);
+  if (simplified.length < 3) {
+    simplified = simplifyPolygon(contour, options.simplifyEpsilonPixels / 4);
+  }
+  if (simplified.length < 3) simplified = contour.slice();
   if (simplified.length < 3) return null;
   return polygonToNormalized(simplified, width, height);
 };

@@ -123,6 +123,7 @@ export default function GradingSystemsScreen() {
       }
       setSystems(gradingSystemRegistry.findAll());
       resetForm();
+      setShowAddForm(false);
     } catch (err) {
       setError((err as Error).message);
     }
@@ -168,7 +169,7 @@ export default function GradingSystemsScreen() {
                 value={name}
                 onChangeText={setName}
                 accessibilityLabel="grading system name"
-                autoCapitalize="characters"
+                autoCapitalize="none"
                 autoCorrect={false}
                 testID="input-system-name"
                 editable={editingName === null}

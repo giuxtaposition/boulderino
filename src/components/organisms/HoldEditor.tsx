@@ -49,7 +49,7 @@ const LAB_OPTIONS = {
   tolerance: 22,
   edgeThreshold: 50,
   maxRadiusFraction: 0.35,
-  minRegionPixels: 20,
+  minRegionPixels: 8,
 } as const;
 
 interface PixelData {
@@ -107,9 +107,11 @@ function maskToPolygon(
   maskH: number,
 ): Point[] | null {
   const contour = marchingSquares(mask, maskW, maskH);
-  if (!contour) return null;
+  if (!contour || contour.length < 3) return null;
   const epsilon = Math.max(0.5, Math.min(maskW, maskH) * DEFAULT_SIMPLIFY_FRACTION);
-  const simplified = simplifyPolygon(contour, epsilon);
+  let simplified = simplifyPolygon(contour, epsilon);
+  if (simplified.length < 3) simplified = simplifyPolygon(contour, epsilon / 4);
+  if (simplified.length < 3) simplified = contour.slice();
   if (simplified.length < 3) return null;
   return simplified.map((p) => ({
     x: Math.max(0, Math.min(1, p.x / maskW)),

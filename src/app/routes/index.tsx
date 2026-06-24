@@ -125,6 +125,7 @@ export default function RoutesScreen() {
       setPhoto(null);
       setHolds([]);
       setError(null);
+      setShowAddForm(false);
     } catch (err) {
       setError((err as Error).message);
     }
