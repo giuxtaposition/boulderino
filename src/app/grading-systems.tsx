@@ -45,11 +45,16 @@ const rowsToDefinitions = (rows: GradeRowValue[]): GradeDefinition[] =>
 export default function GradingSystemsScreen() {
   const theme = useTheme();
   const styles = useMemo(() => makeStyles(theme), [theme]);
-  const { addGradingSystem, deleteGradingSystem, gradingSystemRegistry } =
-    useContainer();
+  const {
+    addGradingSystem,
+    editGradingSystem,
+    deleteGradingSystem,
+    gradingSystemRegistry,
+  } = useContainer();
 
   const [name, setName] = useState("");
   const [rows, setRows] = useState<GradeRowValue[]>(() => [emptyRow(0)]);
+  const [editingName, setEditingName] = useState<string | null>(null);
   const [systems, setSystems] = useState<GradingSystem[]>(() =>
     gradingSystemRegistry.findAll(),
   );
@@ -67,26 +72,54 @@ export default function GradingSystemsScreen() {
       prev.length <= 1 ? prev : prev.filter((_, i) => i !== index),
     );
 
-  const handleDelete = (name: string) => {
+  const resetForm = () => {
+    setName("");
+    setRows([emptyRow(0)]);
+    setEditingName(null);
+    setError(null);
+  };
+
+  const handleDelete = (target: string) => {
     try {
-      deleteGradingSystem.execute({ name });
+      deleteGradingSystem.execute({ name: target });
       setSystems(gradingSystemRegistry.findAll());
+      if (editingName === target) resetForm();
       setError(null);
     } catch (err) {
       setError((err as Error).message);
     }
   };
 
+  const handleEdit = (target: string) => {
+    const system = gradingSystemRegistry.getByName(target);
+    if (!system) return;
+    setEditingName(system.name);
+    setName(system.name);
+    setRows(
+      system.grades.map((grade) => ({
+        name: grade.name,
+        color: grade.color,
+        order: String(grade.order),
+      })),
+    );
+    setError(null);
+  };
+
   const handleSubmit = () => {
     try {
-      addGradingSystem.execute({
-        name: name.trim(),
-        grades: rowsToDefinitions(rows),
-      });
+      if (editingName) {
+        editGradingSystem.execute({
+          name: editingName,
+          grades: rowsToDefinitions(rows),
+        });
+      } else {
+        addGradingSystem.execute({
+          name: name.trim(),
+          grades: rowsToDefinitions(rows),
+        });
+      }
       setSystems(gradingSystemRegistry.findAll());
-      setName("");
-      setRows([emptyRow(0)]);
-      setError(null);
+      resetForm();
     } catch (err) {
       setError((err as Error).message);
     }
@@ -115,6 +148,7 @@ export default function GradingSystemsScreen() {
                 autoCapitalize="characters"
                 autoCorrect={false}
                 testID="input-system-name"
+                editable={editingName === null}
               />
             </FormField>
 
@@ -139,8 +173,18 @@ export default function GradingSystemsScreen() {
               testID="submit-system"
               style={styles.submit}
             >
-              SAVE GRADING SYSTEM
+              {editingName ? "UPDATE GRADING SYSTEM" : "SAVE GRADING SYSTEM"}
             </Button>
+
+            {editingName ? (
+              <Button
+                variant="outline"
+                onPress={resetForm}
+                testID="cancel-edit-system"
+              >
+                CANCEL EDIT
+              </Button>
+            ) : null}
 
             {error && <ErrorBlock testID="error-system" message={error} />}
           </FormCard>
@@ -155,6 +199,7 @@ export default function GradingSystemsScreen() {
                   system={system}
                   background={pickRainbowColor(index)}
                   onDelete={handleDelete}
+                  onEdit={handleEdit}
                 />
               ))
             )}

@@ -12,6 +12,7 @@ import { AddRoute } from '@/application/AddRoute';
 import { DeleteAttempt } from '@/application/DeleteAttempt';
 import { DeleteGradingSystem } from '@/application/DeleteGradingSystem';
 import { DeleteRoute } from '@/application/DeleteRoute';
+import { EditGradingSystem } from '@/application/EditGradingSystem';
 import { GradingSystemRegistry } from '@/application/GradingSystemRegistry';
 import { LogAttempt } from '@/application/LogAttempt';
 import { RouteRepository } from '@/application/RouteRepository';
@@ -23,6 +24,7 @@ export interface Container {
   gradingSystemRegistry: GradingSystemRegistry;
   routeRepository: RouteRepository;
   addGradingSystem: AddGradingSystem;
+  editGradingSystem: EditGradingSystem;
   deleteGradingSystem: DeleteGradingSystem;
   addRoute: AddRoute;
   deleteRoute: DeleteRoute;
@@ -40,6 +42,7 @@ export async function createContainer(): Promise<Container> {
     gradingSystemRegistry,
     routeRepository,
     addGradingSystem: new AddGradingSystem(gradingSystemRegistry),
+    editGradingSystem: new EditGradingSystem(gradingSystemRegistry),
     deleteGradingSystem: new DeleteGradingSystem(gradingSystemRegistry),
     addRoute: new AddRoute(gradingSystemRegistry, routeRepository),
     deleteRoute: new DeleteRoute(routeRepository),

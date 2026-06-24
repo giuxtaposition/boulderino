@@ -18,9 +18,15 @@ type SystemCardProps = {
   system: GradingSystem;
   background: string;
   onDelete?: (name: string) => void;
+  onEdit?: (name: string) => void;
 };
 
-export function SystemCard({ system, background, onDelete }: SystemCardProps) {
+export function SystemCard({
+  system,
+  background,
+  onDelete,
+  onEdit,
+}: SystemCardProps) {
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const theme = useTheme();
   const styles = makeStyles(theme);
@@ -71,7 +77,7 @@ export function SystemCard({ system, background, onDelete }: SystemCardProps) {
           );
         })}
       </View>
-      {onDelete ? (
+      {onDelete || onEdit ? (
         <View style={styles.actionRow}>
           {confirmingDelete ? (
             <>
@@ -79,7 +85,7 @@ export function SystemCard({ system, background, onDelete }: SystemCardProps) {
                 size="small"
                 action="negative"
                 onPress={() => {
-                  onDelete(system.name);
+                  onDelete?.(system.name);
                   setConfirmingDelete(false);
                 }}
                 testID={`system-confirm-delete-${system.name}`}
@@ -95,14 +101,27 @@ export function SystemCard({ system, background, onDelete }: SystemCardProps) {
               </Button>
             </>
           ) : (
-            <Button
-              size="small"
-              action="negative"
-              onPress={() => setConfirmingDelete(true)}
-              testID={`system-delete-${system.name}`}
-            >
-              DELETE
-            </Button>
+            <>
+              {onEdit ? (
+                <Button
+                  size="small"
+                  onPress={() => onEdit(system.name)}
+                  testID={`system-edit-${system.name}`}
+                >
+                  EDIT
+                </Button>
+              ) : null}
+              {onDelete ? (
+                <Button
+                  size="small"
+                  action="negative"
+                  onPress={() => setConfirmingDelete(true)}
+                  testID={`system-delete-${system.name}`}
+                >
+                  DELETE
+                </Button>
+              ) : null}
+            </>
           )}
         </View>
       ) : null}
