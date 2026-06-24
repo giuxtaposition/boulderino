@@ -7,6 +7,8 @@ import {
   Radius,
   Spacing,
   Theme,
+  onColor,
+  outcomeColor,
 } from "@/constants/theme";
 import { Attempt } from "@/domain/route/Attempt";
 import { useTheme } from "@/hooks/use-theme";
@@ -20,17 +22,6 @@ const dateFormatter = new Intl.DateTimeFormat(undefined, {
   hour: "2-digit",
   minute: "2-digit",
 });
-
-const outcomeColor = (outcome: Attempt["outcome"]): string => {
-  switch (outcome) {
-    case "sent":
-      return "#22C55E";
-    case "flash":
-      return "#FACC15";
-    case "fell":
-      return "#EF4444";
-  }
-};
 
 export interface AttemptListProps {
   readonly attempts: readonly Attempt[];
@@ -79,10 +70,15 @@ export function AttemptList({
             <View
               style={[
                 styles.outcomeTag,
-                { backgroundColor: outcomeColor(attempt.outcome) },
+                { backgroundColor: outcomeColor(theme, attempt.outcome) },
               ]}
             >
-              <ThemedText style={styles.outcomeText}>
+              <ThemedText
+                style={[
+                  styles.outcomeText,
+                  { color: onColor(outcomeColor(theme, attempt.outcome)) },
+                ]}
+              >
                 {attempt.outcome.toUpperCase()}
               </ThemedText>
             </View>
@@ -129,9 +125,9 @@ const makeStyles = (theme: Theme) =>
     item: {
       gap: Spacing.two,
       padding: Spacing.three,
-      backgroundColor: "rgba(255,255,255,0.7)",
+      backgroundColor: theme.overlay,
       borderWidth: BorderWidth.thick,
-      borderColor: "#0F172A",
+      borderColor: theme.border,
       borderRadius: Radius.small,
     },
     header: {
@@ -143,11 +139,11 @@ const makeStyles = (theme: Theme) =>
     date: {
       fontSize: 13,
       fontWeight: "700",
-      color: "#0F172A",
+      color: theme.text,
     },
     outcomeTag: {
       borderWidth: BorderWidth.thick,
-      borderColor: "#0F172A",
+      borderColor: theme.border,
       borderRadius: Radius.small,
       paddingVertical: Spacing.half,
       paddingHorizontal: Spacing.two,
@@ -156,18 +152,18 @@ const makeStyles = (theme: Theme) =>
       fontSize: 11,
       fontWeight: "800",
       letterSpacing: 1,
-      color: "#0F172A",
+      color: theme.text,
     },
     notes: {
       fontSize: 14,
-      color: "#0F172A",
+      color: theme.text,
       lineHeight: 20,
     },
     fallFrame: {
       width: "100%",
       borderRadius: Radius.small,
       borderWidth: BorderWidth.thick,
-      borderColor: "#0F172A",
+      borderColor: theme.border,
       overflow: "hidden",
     },
   });

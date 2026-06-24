@@ -28,6 +28,7 @@ import {
   Rainbow,
   Theme,
   blockShadow,
+  onColor,
 } from "@/constants/theme";
 import { useContainer } from "@/composition/Container";
 import { useTheme } from "@/hooks/use-theme";
@@ -100,7 +101,9 @@ export default function RouteDetailScreen() {
           <ScrollView contentContainerStyle={styles.scroll}>
             <Pressable
               accessibilityRole="button"
-              onPress={() => router.back()}
+              onPress={() =>
+                router.canGoBack() ? router.back() : router.replace("/routes")
+              }
               testID="route-detail-back"
               style={({ pressed }) => [
                 styles.backButton,
@@ -128,6 +131,7 @@ export default function RouteDetailScreen() {
   } catch {
     background = Rainbow[3];
   }
+  const onCard = onColor(background);
 
   return (
     <ThemedView style={styles.container}>
@@ -138,7 +142,9 @@ export default function RouteDetailScreen() {
         >
           <Pressable
             accessibilityRole="button"
-            onPress={() => router.back()}
+            onPress={() =>
+              router.canGoBack() ? router.back() : router.replace("/routes")
+            }
             testID="route-detail-back"
             style={({ pressed }) => [
               styles.backButton,
@@ -150,7 +156,7 @@ export default function RouteDetailScreen() {
 
           <View
             testID="route-detail-card"
-            style={[styles.card, { backgroundColor: background }]}
+            style={[styles.card, { backgroundColor: background, borderColor: onCard }]}
           >
             <Suspense
               fallback={
@@ -218,7 +224,10 @@ export default function RouteDetailScreen() {
               )}
             </View>
 
-            <ThemedText style={styles.name} testID="route-detail-name">
+            <ThemedText
+              style={[styles.name, { color: onCard }]}
+              testID="route-detail-name"
+            >
               {route.name}
             </ThemedText>
 
@@ -228,14 +237,19 @@ export default function RouteDetailScreen() {
                   {route.grade.systemId} / {route.grade.name}
                 </ThemedText>
               </View>
-              <View style={styles.disciplineTag}>
-                <ThemedText style={styles.disciplineTagText}>
+              <View style={[styles.disciplineTag, { backgroundColor: onCard }]}>
+                <ThemedText
+                  style={[styles.disciplineTagText, { color: background }]}
+                >
                   {route.discipline}
                 </ThemedText>
               </View>
             </View>
 
-            <ThemedText style={styles.timestamp} testID="route-detail-created">
+            <ThemedText
+              style={[styles.timestamp, { color: onCard }]}
+              testID="route-detail-created"
+            >
               {dateFormatter.format(route.createdAt)}
             </ThemedText>
 
@@ -267,7 +281,7 @@ export default function RouteDetailScreen() {
 
             <View style={styles.attemptsBlock} testID="route-detail-attempts">
               <View style={styles.attemptsHeader}>
-                <ThemedText style={styles.descriptionLabel}>
+                <ThemedText style={[styles.descriptionLabel, { color: onCard }]}>
                   ATTEMPTS
                 </ThemedText>
                 {!loggingAttempt && (
@@ -348,8 +362,8 @@ const makeStyles = (theme: Theme) =>
       width: "100%",
       borderRadius: Radius.small,
       borderWidth: BorderWidth.thick,
-      borderColor: "#0F172A",
-      backgroundColor: "#FFFFFF",
+      borderColor: theme.border,
+      backgroundColor: theme.surface,
       overflow: "hidden",
     },
     editRow: {
@@ -363,7 +377,7 @@ const makeStyles = (theme: Theme) =>
     name: {
       fontSize: 28,
       fontWeight: "800",
-      color: "#0F172A",
+      color: theme.text,
       letterSpacing: -0.5,
     },
     metaRow: {
@@ -372,26 +386,26 @@ const makeStyles = (theme: Theme) =>
       flexWrap: "wrap",
     },
     gradeTag: {
-      backgroundColor: "#FFFFFF",
+      backgroundColor: theme.surface,
       borderWidth: BorderWidth.thick,
-      borderColor: "#0F172A",
+      borderColor: theme.border,
       borderRadius: Radius.small,
       paddingVertical: Spacing.one,
       paddingHorizontal: Spacing.two,
     },
     gradeTagText: {
-      color: "#0F172A",
+      color: theme.text,
       fontWeight: "800",
       fontSize: 13,
     },
     disciplineTag: {
-      backgroundColor: "#0F172A",
+      backgroundColor: theme.text,
       borderRadius: Radius.small,
       paddingVertical: Spacing.one,
       paddingHorizontal: Spacing.two,
     },
     disciplineTagText: {
-      color: "#FFFFFF",
+      color: theme.base,
       fontWeight: "800",
       fontSize: 11,
       letterSpacing: 1,
@@ -400,7 +414,7 @@ const makeStyles = (theme: Theme) =>
     timestamp: {
       fontSize: 12,
       fontWeight: "700",
-      color: "#0F172A",
+      color: theme.text,
       opacity: 0.7,
     },
     tagRow: {
@@ -409,24 +423,24 @@ const makeStyles = (theme: Theme) =>
       gap: Spacing.two,
     },
     tagChip: {
-      backgroundColor: "rgba(255,255,255,0.7)",
+      backgroundColor: theme.overlay,
       borderWidth: BorderWidth.thick,
-      borderColor: "#0F172A",
+      borderColor: theme.border,
       borderRadius: Radius.pill,
       paddingVertical: Spacing.half,
       paddingHorizontal: Spacing.three,
     },
     tagChipText: {
-      color: "#0F172A",
+      color: theme.text,
       fontSize: 12,
       fontWeight: "800",
       letterSpacing: 0.4,
     },
     descriptionBlock: {
       gap: Spacing.one,
-      backgroundColor: "rgba(255,255,255,0.7)",
+      backgroundColor: theme.overlay,
       borderWidth: BorderWidth.thick,
-      borderColor: "#0F172A",
+      borderColor: theme.border,
       borderRadius: Radius.small,
       padding: Spacing.three,
     },
@@ -434,13 +448,13 @@ const makeStyles = (theme: Theme) =>
       fontSize: 10,
       fontWeight: "800",
       letterSpacing: 1.5,
-      color: "#0F172A",
+      color: theme.text,
       opacity: 0.7,
     },
     descriptionText: {
       fontSize: 15,
       fontWeight: "500",
-      color: "#0F172A",
+      color: theme.text,
       lineHeight: 22,
     },
     attemptsBlock: {

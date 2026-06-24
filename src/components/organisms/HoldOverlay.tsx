@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
 import { Canvas, Path, Skia } from "@shopify/react-native-skia";
 
+import { Theme } from "@/constants/theme";
 import { Hold, HoldPoint } from "@/domain/route/Hold";
+import { useTheme } from "@/hooks/use-theme";
 
 const buildPath = (
   points: readonly HoldPoint[],
@@ -39,6 +41,8 @@ export default function HoldOverlay({
   testID,
   style,
 }: HoldOverlayProps) {
+  const theme = useTheme();
+  const styles = useMemo(() => makeStyles(theme), [theme]);
   const [size, setSize] = useState({ width: 1, height: 1 });
   const aspect =
     photoWidth > 0 && photoHeight > 0 ? photoWidth / photoHeight : 4 / 3;
@@ -85,10 +89,11 @@ export default function HoldOverlay({
   );
 }
 
-const styles = StyleSheet.create({
-  frame: {
-    width: "100%",
-    overflow: "hidden",
-    backgroundColor: "#FFFFFF",
-  },
-});
+const makeStyles = (theme: Theme) =>
+  StyleSheet.create({
+    frame: {
+      width: "100%",
+      overflow: "hidden",
+      backgroundColor: theme.surface,
+    },
+  });

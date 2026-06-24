@@ -42,7 +42,14 @@ export function Chip({
         state.focused && styles.focused,
         typeof style === 'function' ? style(state) : style,
       ]}>
-      <ThemedText style={[styles.text, { color: selectedTextColor }]}>
+      <ThemedText
+        style={[
+          styles.text,
+          { color: selectedTextColor },
+          selected && styles.selectedText,
+        ]}
+      >
+        {selected ? "✓ " : null}
         {children}
       </ThemedText>
     </Pressable>
@@ -68,7 +75,10 @@ const makeStyles = (theme: Theme) =>
     focused: focusRing(theme),
     text: {
       fontSize: 14,
-      fontWeight: '800',
+      fontWeight: '700',
       letterSpacing: 0.3,
+    },
+    selectedText: {
+      fontWeight: '900',
     },
   });

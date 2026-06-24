@@ -6,7 +6,7 @@ import { Discipline } from "@/domain/route/Discipline";
 
 const OPTIONS: { value: Discipline; label: string; color: string }[] = [
   { value: "bouldering", label: "Boulder", color: Rainbow[1] },
-  { value: "lead-sport", label: "Sport", color: Rainbow[5] },
+  { value: "lead-sport", label: "Sport", color: Rainbow[3] },
   { value: "lead-trad", label: "Trad", color: Rainbow[6] },
 ];
 

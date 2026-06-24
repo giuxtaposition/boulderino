@@ -19,6 +19,7 @@ import { Button } from "@/components/atoms/Button";
 import { ThemedText } from "@/components/themed-text";
 import {
   BorderWidth,
+  Media,
   Radius,
   Rainbow,
   Spacing,
@@ -662,7 +663,7 @@ const makeStyles = (theme: Theme) =>
       borderWidth: BorderWidth.thick,
       borderColor: theme.border,
       overflow: "hidden",
-      backgroundColor: "#000",
+      backgroundColor: Media.backdrop,
     },
     pressArea: { flex: 1 },
     overlay: {
@@ -673,7 +674,7 @@ const makeStyles = (theme: Theme) =>
       bottom: 0,
       alignItems: "center",
       justifyContent: "center",
-      backgroundColor: "rgba(255,255,255,0.35)",
+      backgroundColor: Media.scrim,
       gap: Spacing.one,
     },
     overlayText: {
@@ -686,7 +687,7 @@ const makeStyles = (theme: Theme) =>
       position: "absolute",
       top: Spacing.two,
       right: Spacing.two,
-      backgroundColor: "rgba(0,0,0,0.6)",
+      backgroundColor: Media.badge,
       borderRadius: Radius.small,
       paddingHorizontal: Spacing.two,
       paddingVertical: Spacing.one,
@@ -694,7 +695,7 @@ const makeStyles = (theme: Theme) =>
     zoomText: {
       fontSize: 11,
       fontWeight: "800",
-      color: "#fff",
+      color: Media.onMedia,
     },
     controls: {
       flexDirection: "row",

@@ -6,12 +6,7 @@ import { Chip } from "@/components/atoms/Chip";
 import { Input } from "@/components/atoms/Input";
 import { Label } from "@/components/atoms/Label";
 import { ThemedText } from "@/components/themed-text";
-import {
-  BorderWidth,
-  Radius,
-  Spacing,
-  Theme,
-} from "@/constants/theme";
+import { BorderWidth, Radius, Spacing, Theme, outcomeColor } from "@/constants/theme";
 import { AttemptOutcome } from "@/domain/route/Attempt";
 import { Hold } from "@/domain/route/Hold";
 import { useTheme } from "@/hooks/use-theme";
@@ -19,12 +14,6 @@ import { useTheme } from "@/hooks/use-theme";
 const HoldEditor = lazy(() => import("./HoldEditor"));
 
 const OUTCOMES: readonly AttemptOutcome[] = ["sent", "fell", "flash"];
-
-const outcomeColor: Record<AttemptOutcome, string> = {
-  sent: "#22C55E",
-  flash: "#FACC15",
-  fell: "#EF4444",
-};
 
 export interface AttemptFormInput {
   readonly outcome: AttemptOutcome;
@@ -57,10 +46,8 @@ export function AttemptForm({
   const [fallHold, setFallHold] = useState<Hold | null>(null);
   const [markingFall, setMarkingFall] = useState(false);
 
-  const editorHolds = useMemo(
-    () => (fallHold ? [fallHold] : []),
-    [fallHold],
-  );
+
+  const editorHolds = useMemo(() => (fallHold ? [fallHold] : []), [fallHold]);
 
   const handleEditorChange = useCallback((next: readonly Hold[]) => {
     setFallHold(next.length > 0 ? next[next.length - 1] : null);
@@ -79,7 +66,7 @@ export function AttemptForm({
             <Chip
               key={value}
               selected={outcome === value}
-              selectedColor={outcomeColor[value]}
+              selectedColor={outcomeColor(theme, value)}
               onPress={() => setOutcome(value)}
               testID={`attempt-form-outcome-${value}`}
             >
@@ -119,14 +106,14 @@ export function AttemptForm({
                 photoHeight={photoHeight}
                 holds={editorHolds}
                 onChange={handleEditorChange}
-                color={outcomeColor.fell}
+                color={outcomeColor(theme, "fell")}
                 testID="attempt-form-hold-editor"
               />
             </Suspense>
             <View style={styles.editorActions}>
               <Button
                 size="small"
-                variant="ghost"
+                variant="outline"
                 onPress={() => {
                   setFallHold(null);
                   setMarkingFall(false);
@@ -151,7 +138,7 @@ export function AttemptForm({
             </ThemedText>
             <Button
               size="small"
-              variant="dashed"
+              variant="outline"
               onPress={() => setMarkingFall(true)}
               testID="attempt-form-mark-fall"
             >
@@ -166,7 +153,8 @@ export function AttemptForm({
           SAVE ATTEMPT
         </Button>
         <Button
-          variant="ghost"
+          variant="outline"
+          action="secondary"
           onPress={onCancel}
           testID="attempt-form-cancel"
         >
@@ -182,9 +170,9 @@ const makeStyles = (theme: Theme) =>
     form: {
       gap: Spacing.three,
       padding: Spacing.three,
-      backgroundColor: "rgba(255,255,255,0.85)",
+      backgroundColor: theme.surface,
       borderWidth: BorderWidth.thick,
-      borderColor: "#0F172A",
+      borderColor: theme.border,
       borderRadius: Radius.small,
     },
     field: { gap: Spacing.one },

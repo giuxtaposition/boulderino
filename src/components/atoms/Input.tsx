@@ -1,13 +1,8 @@
-import { forwardRef, useMemo } from 'react';
-import { StyleSheet, TextInput, TextInputProps } from 'react-native';
+import { forwardRef, useMemo } from "react";
+import { StyleSheet, TextInput, TextInputProps } from "react-native";
 
-import {
-  BorderWidth,
-  Radius,
-  Spacing,
-  Theme,
-} from '@/constants/theme';
-import { useTheme } from '@/hooks/use-theme';
+import { BorderWidth, Radius, Spacing, Theme } from "@/constants/theme";
+import { useTheme } from "@/hooks/use-theme";
 
 type InputProps = TextInputProps & {
   error?: boolean;
@@ -29,7 +24,7 @@ export const Input = forwardRef<TextInput, InputProps>(
   },
 );
 
-Input.displayName = 'Input';
+Input.displayName = "Input";
 
 const makeStyles = (theme: Theme) =>
   StyleSheet.create({
@@ -40,12 +35,12 @@ const makeStyles = (theme: Theme) =>
       paddingVertical: Spacing.three,
       paddingHorizontal: Spacing.three,
       fontSize: 16,
-      fontWeight: '600',
+      fontWeight: "600",
       color: theme.text,
       backgroundColor: theme.inputBackground,
       minHeight: 48,
     },
     inputError: {
-      borderColor: theme.dangerBorder,
+      borderColor: theme.errorBorder,
     },
   });

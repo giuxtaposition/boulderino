@@ -73,7 +73,8 @@ export function GradeRowEditor({
 
       {removable && (
         <Button
-          variant="danger"
+          variant="solid"
+          action="negative"
           size="small"
           onPress={onRemove}
           accessibilityLabel={`remove grade ${index + 1}`}

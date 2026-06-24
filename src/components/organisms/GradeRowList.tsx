@@ -33,7 +33,7 @@ export function GradeRowList({
           />
         ))}
       </View>
-      <Button variant="dashed" onPress={onAddRow} testID="add-grade-row">
+      <Button variant="outline" onPress={onAddRow} testID="add-grade-row">
         + ADD GRADE
       </Button>
     </View>

@@ -111,7 +111,7 @@ const makeStyles = (theme: Theme) =>
       borderColor: theme.border,
     },
     previewInvalid: {
-      borderColor: theme.dangerBorder,
+      borderColor: theme.errorBorder,
       borderStyle: "dashed",
     },
     hexInput: {

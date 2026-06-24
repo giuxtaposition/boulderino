@@ -7,7 +7,21 @@ export type PressableState = PressableStateCallbackType & {
 };
 
 export type Theme = {
+  base: string;
+  surface: string;
+  overlay: string;
+  muted: string;
+  subtle: string;
   text: string;
+  red: string;
+  yellow: string;
+  green: string;
+  blue: string;
+  purple: string;
+  dark_blue: string;
+  highlightLow: string;
+  highlightMedium: string;
+  highlightHigh: string;
   textSecondary: string;
   textMuted: string;
   background: string;
@@ -20,10 +34,15 @@ export type Theme = {
   shadow: string;
   accent: string;
   accentText: string;
+  success: string;
+  warning: string;
   danger: string;
   dangerSurface: string;
   dangerBorder: string;
   dangerText: string;
+  errorSurface: string;
+  errorBorder: string;
+  errorText: string;
   brand: string;
   brandText: string;
   tabBar: string;
@@ -32,70 +51,112 @@ export type Theme = {
   focusRing: string;
 };
 
+export const Rainbow = {
+  0: "#F3F4F6",
+  1: "#FFD166",
+  2: "#06D6A0",
+  3: "#118AB2",
+  4: "#EF476F",
+  5: "#073B4C",
+  6: "#7B61FF",
+} as const;
+
 export const Colors: { light: Theme; dark: Theme } = {
   light: {
+    base: "#F8FAFC",
+    surface: "#FFFFFF",
+    overlay: "#F1F5F9",
+    muted: "#64748B",
+    subtle: "#CBD5E1",
     text: "#0F172A",
-    textSecondary: "#475569",
+
+    red: "#EF476F",
+    yellow: "#FFD166",
+    green: "#06D6A0",
+    blue: "#118AB2",
+    purple: "#7B61FF",
+    dark_blue: "#073B4C",
+
+    highlightLow: "#E2E8F0",
+    highlightMedium: "#CBD5E1",
+    highlightHigh: "#94A3B8",
+
+    textSecondary: "#64748B",
     textMuted: "#64748B",
-    background: "#FAFAFA",
+    background: "#F8FAFC",
     backgroundElement: "#FFFFFF",
-    backgroundSelected: "#FDE047",
+    backgroundSelected: "#FFD166",
     inputBackground: "#FFFFFF",
     inputPlaceholder: "#64748B",
-    border: "#0F172A",
-    borderMuted: "rgba(15,23,42,0.18)",
-    shadow: "#0F172A",
-    accent: "#22C55E",
+    border: "#64748B",
+    borderMuted: "#94A3B8",
+    shadow: "#CBD5E1",
+    accent: "#06D6A0",
     accentText: "#0F172A",
-    danger: "#DC2626",
+    success: "#06D6A0",
+    warning: "#FFD166",
+    danger: "#EF476F",
     dangerSurface: "#FEE2E2",
-    dangerBorder: "#991B1B",
-    dangerText: "#7F1D1D",
-    brand: "#EF4444",
-    brandText: "#FFFFFF",
-    tabBar: "#FFFFFFEE",
-    tabBarInactive: "#FFFFFF",
-    link: "#1D4ED8",
-    focusRing: "#1D4ED8",
+    dangerBorder: "#EF476F",
+    dangerText: "#B91C1C",
+    errorSurface: "#FEE2E2",
+    errorBorder: "#EF476F",
+    errorText: "#B91C1C",
+    brand: "#7B61FF",
+    brandText: "#F8FAFC",
+    tabBar: "#FFFFFF",
+    tabBarInactive: "#F8FAFC",
+    link: "#118AB2",
+    focusRing: "#118AB2",
   },
   dark: {
+    base: "#0B1320",
+    surface: "#141E30",
+    overlay: "#1D2A40",
+    muted: "#4A5568",
+    subtle: "#94A3B8",
     text: "#F8FAFC",
-    textSecondary: "#CBD5E1",
+    red: "#EF476F",
+    yellow: "#FFD166",
+    green: "#06D6A0",
+    blue: "#118AB2",
+    purple: "#7B61FF",
+    dark_blue: "#073B4C",
+    highlightLow: "#1A2436",
+    highlightMedium: "#25324A",
+    highlightHigh: "#334155",
+
+    textSecondary: "#94A3B8",
     textMuted: "#94A3B8",
-    background: "#0B1120",
-    backgroundElement: "#1E293B",
-    backgroundSelected: "#FACC15",
-    inputBackground: "#0F172A",
+    background: "#0B1320",
+    backgroundElement: "#141E30",
+    backgroundSelected: "#FFD166",
+    inputBackground: "#141E30",
     inputPlaceholder: "#94A3B8",
-    border: "#F8FAFC",
-    borderMuted: "rgba(248,250,252,0.22)",
-    shadow: "#000000",
-    accent: "#34D399",
-    accentText: "#0B1120",
-    danger: "#F87171",
-    dangerSurface: "#7F1D1D",
-    dangerBorder: "#FCA5A5",
-    dangerText: "#FEE2E2",
-    brand: "#F87171",
-    brandText: "#0B1120",
-    tabBar: "#1E293BEE",
-    tabBarInactive: "#0F172A",
-    link: "#60A5FA",
-    focusRing: "#60A5FA",
+    border: "#94A3B8",
+    borderMuted: "#4A5568",
+    shadow: "#25324A",
+    accent: "#06D6A0",
+    accentText: "#0F172A",
+    success: "#06D6A0",
+    warning: "#FFD166",
+    danger: "#EF476F",
+    dangerSurface: "#1A2436",
+    dangerBorder: "#EF476F",
+    dangerText: "#EF476F",
+    errorSurface: "#1A2436",
+    errorBorder: "#EF476F",
+    errorText: "#EF476F",
+    brand: "#7B61FF",
+    brandText: "#F8FAFC",
+    tabBar: "#141E30",
+    tabBarInactive: "#0B1320",
+    link: "#118AB2",
+    focusRing: "#118AB2",
   },
 };
 
 export type ThemeColor = keyof Theme;
-
-export const Rainbow = {
-  0: "#f3f4f6",
-  1: "#f59e0b",
-  2: "#10b981",
-  3: "#3b82f6",
-  4: "#ef4444",
-  5: "#0B1120",
-  6: "#F97316",
-} as const;
 
 export type RainbowKey = keyof typeof Rainbow;
 
@@ -108,6 +169,19 @@ export const pickRainbowColor = (index: number): string =>
         rainbowOrder.length
     ]
   ];
+
+export type Outcome = "sent" | "flash" | "fell";
+
+export const outcomeColor = (theme: Theme, outcome: Outcome): string => {
+  switch (outcome) {
+    case "flash":
+      return theme.success;
+    case "sent":
+      return theme.warning;
+    case "fell":
+      return theme.danger;
+  }
+};
 
 const srgbChannel = (value: number): number =>
   value <= 0.03928 ? value / 12.92 : Math.pow((value + 0.055) / 1.055, 2.4);
@@ -123,7 +197,7 @@ const relativeLuminance = (hex: string): number => {
 };
 
 export const onColor = (background: string): string =>
-  relativeLuminance(background) > 0.5 ? "#0F172A" : "#F8FAFC";
+  relativeLuminance(background) > 0.36 ? "#0F172A" : "#F8FAFC";
 
 export const focusRing = (theme: Theme) =>
   Platform.select({
@@ -177,7 +251,7 @@ export const Radius = {
 } as const;
 
 export const BorderWidth = {
-  hairline: 1,
+  thin: 1,
   thick: 2,
   chunky: 3,
 } as const;
@@ -193,6 +267,13 @@ export const blockShadow = (theme: Theme, offset = 5) =>
       elevation: 0,
     },
   }) as object;
+
+export const Media = {
+  backdrop: "#000000",
+  scrim: "rgba(0,0,0,0.45)",
+  badge: "rgba(0,0,0,0.6)",
+  onMedia: "#FFFFFF",
+} as const;
 
 export const BottomTabHeight = 64;
 export const MaxContentWidth = 560;

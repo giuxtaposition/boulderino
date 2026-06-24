@@ -19,6 +19,7 @@ import {
   Rainbow,
   Theme,
   blockShadow,
+  onColor,
 } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
 
@@ -63,7 +64,9 @@ export function TabButton({
         pressed && styles.tabPressed,
       ]}
     >
-      <ThemedText style={[styles.tabLabel, isFocused && styles.tabLabelActive]}>
+      <ThemedText
+        style={[styles.tabLabel, isFocused && { color: onColor(color) }]}
+      >
         {children}
       </ThemedText>
     </Pressable>
@@ -126,8 +129,5 @@ const makeStyles = (theme: Theme) =>
       fontSize: 14,
       fontWeight: "800",
       letterSpacing: 1,
-    },
-    tabLabelActive: {
-      color: "#0F172A",
     },
   });
