@@ -46,8 +46,13 @@ export default function RouteDetailScreen() {
   const styles = useMemo(() => makeStyles(theme), [theme]);
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { routeRepository, gradingSystemRegistry, updateRouteHolds, logAttempt } =
-    useContainer();
+  const {
+    routeRepository,
+    gradingSystemRegistry,
+    updateRouteHolds,
+    logAttempt,
+    deleteRoute,
+  } = useContainer();
 
   const route = id ? routeRepository.findById(id) : undefined;
   const [editing, setEditing] = useState(false);
@@ -58,6 +63,7 @@ export default function RouteDetailScreen() {
     route?.attempts ?? [],
   );
   const [loggingAttempt, setLoggingAttempt] = useState(false);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   const handleStartEdit = useCallback(() => {
     if (!route) return;
@@ -78,6 +84,12 @@ export default function RouteDetailScreen() {
     });
     setEditing(false);
   }, [route, draftHolds, updateRouteHolds]);
+
+  const handleDelete = useCallback(() => {
+    if (!route) return;
+    deleteRoute.execute({ routeId: route.id.value });
+    router.replace("/routes");
+  }, [route, deleteRoute, router]);
 
   const handleLogAttempt = useCallback(
     (input: AttemptFormInput) => {
@@ -214,13 +226,39 @@ export default function RouteDetailScreen() {
                     CANCEL
                   </Button>
                 </>
+              ) : confirmingDelete ? (
+                <>
+                  <Button
+                    action="negative"
+                    onPress={handleDelete}
+                    testID="route-detail-confirm-delete"
+                  >
+                    CONFIRM DELETE
+                  </Button>
+                  <Button
+                    onPress={() => setConfirmingDelete(false)}
+                    testID="route-detail-cancel-delete"
+                    style={styles.cancelButton}
+                  >
+                    CANCEL
+                  </Button>
+                </>
               ) : (
-                <Button
-                  onPress={handleStartEdit}
-                  testID="route-detail-edit-holds"
-                >
-                  EDIT HOLDS
-                </Button>
+                <>
+                  <Button
+                    onPress={handleStartEdit}
+                    testID="route-detail-edit-holds"
+                  >
+                    EDIT HOLDS
+                  </Button>
+                  <Button
+                    action="negative"
+                    onPress={() => setConfirmingDelete(true)}
+                    testID="route-detail-delete"
+                  >
+                    DELETE ROUTE
+                  </Button>
+                </>
               )}
             </View>
 

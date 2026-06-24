@@ -83,4 +83,31 @@ describe("InMemoryRouteRepository", () => {
       `Route "${route.id.value}" not found`,
     );
   });
+
+  it("should remove a route via delete", () => {
+    const route = buildRoute();
+    repository.save(route);
+
+    repository.delete(route.id.value);
+
+    expect(repository.findById(route.id.value)).toBeUndefined();
+    expect(repository.findAll()).toEqual([]);
+  });
+
+  it("should leave other routes untouched when deleting one", () => {
+    const first = buildRoute();
+    const second = buildRoute();
+    repository.save(first);
+    repository.save(second);
+
+    repository.delete(first.id.value);
+
+    expect(repository.findAll()).toEqual([second]);
+  });
+
+  it("should throw when deleting a route that does not exist", () => {
+    expect(() => repository.delete("missing")).toThrow(
+      `Route "missing" not found`,
+    );
+  });
 });

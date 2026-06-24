@@ -64,6 +64,15 @@ export class AsyncStorageRouteRepository implements RouteRepository {
     this.persist();
   }
 
+  public delete(id: string): void {
+    const index = this.routes.findIndex((route) => route.id.value === id);
+    if (index === -1) {
+      throw new Error(`Route "${id}" not found`);
+    }
+    this.routes.splice(index, 1);
+    this.persist();
+  }
+
   public findAll(): Route[] {
     return [...this.routes];
   }

@@ -16,6 +16,14 @@ export class InMemoryRouteRepository implements RouteRepository {
     this.routes[index] = route;
   }
 
+  public delete(id: string): void {
+    const index = this.routes.findIndex((route) => route.id.value === id);
+    if (index === -1) {
+      throw new Error(`Route "${id}" not found`);
+    }
+    this.routes.splice(index, 1);
+  }
+
   public findAll(): Route[] {
     return [...this.routes];
   }
