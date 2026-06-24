@@ -6,6 +6,7 @@ import {
   View,
 } from "react-native";
 
+import { Button } from "@/components/atoms/Button";
 import { ThemedText } from "@/components/themed-text";
 import {
   BorderWidth,
@@ -35,6 +36,7 @@ export interface AttemptListProps {
   readonly photoUri: string;
   readonly photoWidth: number;
   readonly photoHeight: number;
+  readonly onDelete?: (attemptId: string) => void;
   readonly testID?: string;
 }
 
@@ -43,6 +45,7 @@ export function AttemptList({
   photoUri,
   photoWidth,
   photoHeight,
+  onDelete,
   testID,
 }: AttemptListProps) {
   const theme = useTheme();
@@ -73,6 +76,7 @@ export function AttemptList({
           photoHeight={photoHeight}
           styles={styles}
           theme={theme}
+          onDelete={onDelete}
         />
       ))}
     </View>
@@ -86,6 +90,7 @@ interface AttemptItemProps {
   readonly photoHeight: number;
   readonly styles: ReturnType<typeof makeStyles>;
   readonly theme: Theme;
+  readonly onDelete?: (attemptId: string) => void;
 }
 
 function AttemptItem({
@@ -95,8 +100,10 @@ function AttemptItem({
   photoHeight,
   styles,
   theme,
+  onDelete,
 }: AttemptItemProps) {
   const [expanded, setExpanded] = useState(false);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
   const toggle = useCallback(() => setExpanded((prev) => !prev), []);
   const bg = outcomeColor(theme, attempt.outcome);
 
@@ -154,6 +161,41 @@ function AttemptItem({
             </Suspense>
           ) : null}
         </>
+      ) : null}
+      {onDelete ? (
+        <View style={styles.actionRow}>
+          {confirmingDelete ? (
+            <>
+              <Button
+                size="small"
+                action="negative"
+                onPress={() => {
+                  onDelete(attempt.id);
+                  setConfirmingDelete(false);
+                }}
+                testID={`attempt-item-${attempt.id}-confirm-delete`}
+              >
+                CONFIRM
+              </Button>
+              <Button
+                size="small"
+                onPress={() => setConfirmingDelete(false)}
+                testID={`attempt-item-${attempt.id}-cancel-delete`}
+              >
+                CANCEL
+              </Button>
+            </>
+          ) : (
+            <Button
+              size="small"
+              action="negative"
+              onPress={() => setConfirmingDelete(true)}
+              testID={`attempt-item-${attempt.id}-delete`}
+            >
+              DELETE
+            </Button>
+          )}
+        </View>
       ) : null}
     </View>
   );
@@ -233,5 +275,10 @@ const makeStyles = (theme: Theme) =>
       fontWeight: "800",
       letterSpacing: 0.5,
       color: theme.text,
+    },
+    actionRow: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      gap: Spacing.two,
     },
   });

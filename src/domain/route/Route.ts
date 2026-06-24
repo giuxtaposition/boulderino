@@ -108,4 +108,15 @@ export const Route = {
       attempts: freezeAttempts([...route.attempts, attempt]),
     });
   },
+
+  removeAttempt(route: Route, attemptId: string): Route {
+    const next = route.attempts.filter((attempt) => attempt.id !== attemptId);
+    if (next.length === route.attempts.length) {
+      throw new Error(`Attempt "${attemptId}" not found on route`);
+    }
+    return Object.freeze({
+      ...route,
+      attempts: freezeAttempts(next),
+    });
+  },
 };

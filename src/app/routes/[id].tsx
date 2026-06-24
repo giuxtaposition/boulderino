@@ -52,6 +52,7 @@ export default function RouteDetailScreen() {
     updateRouteHolds,
     logAttempt,
     deleteRoute,
+    deleteAttempt,
   } = useContainer();
 
   const route = id ? routeRepository.findById(id) : undefined;
@@ -104,6 +105,17 @@ export default function RouteDetailScreen() {
       setLoggingAttempt(false);
     },
     [route, logAttempt],
+  );
+
+  const handleDeleteAttempt = useCallback(
+    (attemptId: string) => {
+      if (!route) return;
+      deleteAttempt.execute({ routeId: route.id.value, attemptId });
+      setAttempts((current) =>
+        current.filter((attempt) => attempt.id !== attemptId),
+      );
+    },
+    [route, deleteAttempt],
   );
 
   if (!route) {
@@ -352,6 +364,7 @@ export default function RouteDetailScreen() {
                   photoUri={route.photo.url}
                   photoWidth={route.photo.width}
                   photoHeight={route.photo.height}
+                  onDelete={handleDeleteAttempt}
                   testID="route-detail-attempt-list"
                 />
               )}

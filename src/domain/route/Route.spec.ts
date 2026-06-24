@@ -148,6 +148,27 @@ describe("Route", () => {
     expect(route.attempts).toEqual([]);
   });
 
+  it("should remove an attempt by id without mutating the source route", () => {
+    const route = Route.create(validInput);
+    const a = Attempt.create({ outcome: "fell" });
+    const b = Attempt.create({ outcome: "sent" });
+    const withTwo = Route.addAttempt(Route.addAttempt(route, a), b);
+
+    const updated = Route.removeAttempt(withTwo, a.id);
+
+    expect(updated).not.toBe(withTwo);
+    expect(updated.attempts).toEqual([b]);
+    expect(withTwo.attempts).toHaveLength(2);
+  });
+
+  it("should throw when removing an attempt that does not exist", () => {
+    const route = Route.create(validInput);
+
+    expect(() => Route.removeAttempt(route, "missing")).toThrow(
+      'Attempt "missing" not found on route',
+    );
+  });
+
   it("should restore attempts from a snapshot", () => {
     const route = Route.restore({
       id: "route-1",
