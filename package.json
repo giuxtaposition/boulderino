@@ -49,6 +49,7 @@
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo run:android",
+    "build:apk": "expo prebuild -p android --no-install && cd android && ./gradlew assembleRelease && cd .. && mv android/app/build/outputs/apk/release/app-release.apk boulderino.apk",
     "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "expo lint",

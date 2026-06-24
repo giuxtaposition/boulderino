@@ -6,8 +6,7 @@ import { useColorScheme } from 'react-native';
 
 import AppTabs from '@/components/app-tabs';
 import { ContainerProvider } from '@/composition/Container';
-
-const CANVASKIT_VERSION = '0.41.0';
+import { loadSkia } from '@/infrastructure/skia/loadSkia';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -16,19 +15,9 @@ export default function RootLayout() {
   useEffect(() => {
     if (Platform.OS !== 'web') return;
     let alive = true;
-    import('@shopify/react-native-skia/lib/module/web')
-      .then(({ LoadSkiaWeb }) =>
-        LoadSkiaWeb({
-          locateFile: (file: string) =>
-            `https://cdn.jsdelivr.net/npm/canvaskit-wasm@${CANVASKIT_VERSION}/bin/full/${file}`,
-        }),
-      )
-      .then(() => {
-        if (alive) setSkiaReady(true);
-      })
-      .catch(() => {
-        if (alive) setSkiaReady(true);
-      });
+    loadSkia().finally(() => {
+      if (alive) setSkiaReady(true);
+    });
     return () => {
       alive = false;
     };
