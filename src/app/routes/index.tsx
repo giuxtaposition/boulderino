@@ -7,7 +7,7 @@ import * as ImagePicker from "expo-image-picker";
 import { Button } from "@/components/atoms/Button";
 import { EmptyBlock } from "@/components/atoms/EmptyBlock";
 import { ErrorBlock } from "@/components/atoms/ErrorBlock";
-import { FormCard } from "@/components/atoms/FormCard";
+import { FormCardDrawer } from "@/components/atoms/FormCardDrawer";
 import { Input } from "@/components/atoms/Input";
 import { DisciplineSelector } from "@/components/molecules/DisciplineSelector";
 import { FormField } from "@/components/molecules/FormField";
@@ -34,6 +34,7 @@ import { GradingSystem } from "@/domain/grading/GradingSystem";
 import { Hold } from "@/domain/route/Hold";
 import { Route } from "@/domain/route/Route";
 import { useTheme } from "@/hooks/use-theme";
+import { Fab } from "../../components/atoms/Fab";
 
 export default function RoutesScreen() {
   const theme = useTheme();
@@ -54,6 +55,7 @@ export default function RoutesScreen() {
   const [routes, setRoutes] = useState<Route[]>(() =>
     routeRepository.findAll(),
   );
+  const [showAddForm, setShowAddForm] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useFocusEffect(
@@ -138,10 +140,40 @@ export default function RoutesScreen() {
         >
           <View style={styles.header}>
             <ThemedText style={styles.kicker}>ROUTES · LEVEL 02</ThemedText>
-            <ThemedText style={styles.heading}>Add your routes</ThemedText>
+            <ThemedText style={styles.heading}>Routes</ThemedText>
           </View>
 
-          <FormCard testID="form-route">
+          <View testID="list-routes" style={styles.list}>
+            {routes.length === 0 ? (
+              <EmptyBlock message="No routes. Add your first route." />
+            ) : (
+              routes.map((route, index) => {
+                let background: string = Rainbow[3];
+                try {
+                  background = gradingSystemRegistry
+                    .requireByName(route.grade.systemId)
+                    .definitionFor(route.grade.name).color;
+                } catch {
+                  background = Rainbow[3];
+                }
+                return (
+                  <RouteCard
+                    key={route.id.value}
+                    route={route}
+                    index={index}
+                    background={background}
+                  />
+                );
+              })
+            )}
+          </View>
+
+          <FormCardDrawer
+            visible={showAddForm}
+            setVisible={setShowAddForm}
+            title="Add new route"
+            testID="form-route"
+          >
             <FormField label="Name">
               <Input
                 value={name}
@@ -237,33 +269,10 @@ export default function RoutesScreen() {
             </Button>
 
             {error && <ErrorBlock testID="error-route" message={error} />}
-          </FormCard>
-
-          <View testID="list-routes" style={styles.list}>
-            {routes.length === 0 ? (
-              <EmptyBlock message="No routes. Add your first route." />
-            ) : (
-              routes.map((route, index) => {
-                let background: string = Rainbow[3];
-                try {
-                  background = gradingSystemRegistry
-                    .requireByName(route.grade.systemId)
-                    .definitionFor(route.grade.name).color;
-                } catch {
-                  background = Rainbow[3];
-                }
-                return (
-                  <RouteCard
-                    key={route.id.value}
-                    route={route}
-                    index={index}
-                    background={background}
-                  />
-                );
-              })
-            )}
-          </View>
+          </FormCardDrawer>
         </ScrollView>
+
+        <Fab onPress={() => setShowAddForm(true)} />
       </SafeAreaView>
     </ThemedView>
   );

@@ -1,0 +1,75 @@
+diff --git a/dist/cjs/context.js b/dist/cjs/context.js
+index bc066f54e5143da9001e9d413444a5f112df6437..e0513921b2bc841bb771ca2a9b9917d8b6d45ea2 100644
+--- a/dist/cjs/context.js
++++ b/dist/cjs/context.js
+@@ -15,7 +15,27 @@ const LucideContext = react.createContext({
+   strokeWidth: 2,
+   absoluteStrokeWidth: false
+ });
++
++function LucideProvider({
++  children,
++  size,
++  color,
++  strokeWidth,
++  absoluteStrokeWidth
++}) {
++  const value = react.useMemo(
++    () => ({
++      size,
++      color,
++      strokeWidth,
++      absoluteStrokeWidth
++    }),
++    [size, color, strokeWidth, absoluteStrokeWidth]
++  );
++  return react.createElement(LucideContext.Provider, { value }, children);
++}
++
+ const useLucideContext = () => react.useContext(LucideContext);
+ 
++exports.LucideProvider = LucideProvider;
+ exports.useLucideContext = useLucideContext;
+-//# sourceMappingURL=context.js.map
+diff --git a/dist/esm/context.mjs b/dist/esm/context.mjs
+index 608f501f968d1d59cdf1211cfae7effb862e1116..f8d84e8639d17e55e2075c2ad0ef6214d1106f8b 100644
+--- a/dist/esm/context.mjs
++++ b/dist/esm/context.mjs
+@@ -5,7 +5,7 @@
+  * See the LICENSE file in the root directory of this source tree.
+  */
+ 
+-import { createContext, useContext } from 'react';
++import { createContext, createElement, useContext, useMemo } from 'react';
+ 
+ const LucideContext = createContext({
+   size: 24,
+@@ -13,7 +13,26 @@ const LucideContext = createContext({
+   strokeWidth: 2,
+   absoluteStrokeWidth: false
+ });
++
++function LucideProvider({
++  children,
++  size,
++  color,
++  strokeWidth,
++  absoluteStrokeWidth
++}) {
++  const value = useMemo(
++    () => ({
++      size,
++      color,
++      strokeWidth,
++      absoluteStrokeWidth
++    }),
++    [size, color, strokeWidth, absoluteStrokeWidth]
++  );
++  return createElement(LucideContext.Provider, { value }, children);
++}
++
+ const useLucideContext = () => useContext(LucideContext);
+ 
+-export { useLucideContext };
+-//# sourceMappingURL=context.mjs.map
++export { LucideProvider, useLucideContext };

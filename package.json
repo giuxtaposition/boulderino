@@ -15,6 +15,7 @@
     "expo-router": "~56.2.11",
     "expo-splash-screen": "~56.0.10",
     "expo-system-ui": "~56.0.5",
+    "lucide-react-native": "^1.21.0",
     "onnxruntime-react-native": "^1.24.3",
     "onnxruntime-web": "^1.27.0",
     "react": "19.2.3",

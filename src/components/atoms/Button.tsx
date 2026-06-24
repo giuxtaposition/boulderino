@@ -40,7 +40,9 @@ export function Button({
     <Pressable
       accessibilityRole="button"
       accessibilityState={{ disabled: disabled === true }}
-      hitSlop={size === "small" ? { top: 4, bottom: 4, left: 4, right: 4 } : undefined}
+      hitSlop={
+        size === "small" ? { top: 4, bottom: 4, left: 4, right: 4 } : undefined
+      }
       {...rest}
       style={(state: PressableState) => [
         styles.base,

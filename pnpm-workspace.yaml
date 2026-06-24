@@ -4,4 +4,4 @@ allowBuilds:
   esbuild: false
   protobufjs: true
   unrs-resolver: set this to true or false
-patchedDependencies: { onnxruntime-react-native@1.24.3: patches/onnxruntime-react-native@1.24.3.patch }
+patchedDependencies: { lucide-react-native@1.21.0: patches/lucide-react-native@1.21.0.patch, onnxruntime-react-native@1.24.3: patches/onnxruntime-react-native@1.24.3.patch }

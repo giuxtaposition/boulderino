@@ -5,7 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "@/components/atoms/Button";
 import { EmptyBlock } from "@/components/atoms/EmptyBlock";
 import { ErrorBlock } from "@/components/atoms/ErrorBlock";
-import { FormCard } from "@/components/atoms/FormCard";
+import { FormCardDrawer } from "@/components/atoms/FormCardDrawer";
 import { Input } from "@/components/atoms/Input";
 import { FormField } from "@/components/molecules/FormField";
 import {
@@ -26,6 +26,7 @@ import { useContainer } from "@/composition/Container";
 import { GradeDefinition } from "@/domain/grading/GradeDefinition";
 import { GradingSystem } from "@/domain/grading/GradingSystem";
 import { useTheme } from "@/hooks/use-theme";
+import { Fab } from "../components/atoms/Fab";
 
 const emptyRow = (index: number): GradeRowValue => ({
   name: "",
@@ -58,6 +59,7 @@ export default function GradingSystemsScreen() {
   const [systems, setSystems] = useState<GradingSystem[]>(() =>
     gradingSystemRegistry.findAll(),
   );
+  const [showAddForm, setShowAddForm] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const updateRow = (index: number, patch: Partial<GradeRowValue>) =>
@@ -93,6 +95,7 @@ export default function GradingSystemsScreen() {
   const handleEdit = (target: string) => {
     const system = gradingSystemRegistry.getByName(target);
     if (!system) return;
+    setShowAddForm(true);
     setEditingName(system.name);
     setName(system.name);
     setRows(
@@ -138,7 +141,27 @@ export default function GradingSystemsScreen() {
             <ThemedText style={styles.heading}>Grading systems</ThemedText>
           </View>
 
-          <FormCard testID="form-grading-system">
+          <View testID="list-systems" style={styles.list}>
+            {systems.length === 0 ? (
+              <EmptyBlock message="No grading systems yet. Add your first." />
+            ) : (
+              systems.map((system, index) => (
+                <SystemCard
+                  key={system.name}
+                  system={system}
+                  background={pickRainbowColor(index)}
+                  onDelete={handleDelete}
+                  onEdit={handleEdit}
+                />
+              ))
+            )}
+          </View>
+          <FormCardDrawer
+            testID="form-grading-system"
+            visible={showAddForm}
+            title={editingName ? "Edit grading system" : "Add grading system"}
+            setVisible={setShowAddForm}
+          >
             <FormField label="System name">
               <Input
                 placeholder="e.g. YDS"
@@ -187,24 +210,10 @@ export default function GradingSystemsScreen() {
             ) : null}
 
             {error && <ErrorBlock testID="error-system" message={error} />}
-          </FormCard>
-
-          <View testID="list-systems" style={styles.list}>
-            {systems.length === 0 ? (
-              <EmptyBlock message="No grading systems yet. Add your first." />
-            ) : (
-              systems.map((system, index) => (
-                <SystemCard
-                  key={system.name}
-                  system={system}
-                  background={pickRainbowColor(index)}
-                  onDelete={handleDelete}
-                  onEdit={handleEdit}
-                />
-              ))
-            )}
-          </View>
+          </FormCardDrawer>
         </ScrollView>
+
+        <Fab onPress={() => setShowAddForm(true)} />
       </SafeAreaView>
     </ThemedView>
   );
