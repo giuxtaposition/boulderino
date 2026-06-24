@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { RouteRepository } from "../../application/RouteRepository";
+import { AttemptSnapshot } from "../../domain/route/Attempt";
 import { Discipline } from "../../domain/route/Discipline";
 import { HoldSnapshot } from "../../domain/route/Hold";
 import { Photo } from "../../domain/route/Photo";
@@ -18,6 +19,7 @@ type Snapshot = {
   photo: Photo;
   createdAt: string;
   holds?: readonly HoldSnapshot[];
+  attempts?: readonly AttemptSnapshot[];
 };
 
 export class AsyncStorageRouteRepository implements RouteRepository {
@@ -39,6 +41,7 @@ export class AsyncStorageRouteRepository implements RouteRepository {
           ...snapshot,
           tags: snapshot.tags ?? [],
           holds: snapshot.holds ?? [],
+          attempts: snapshot.attempts ?? [],
         }),
       );
       return new AsyncStorageRouteRepository(routes);
@@ -83,6 +86,19 @@ export class AsyncStorageRouteRepository implements RouteRepository {
         id: hold.id,
         color: hold.color,
         points: hold.points.map((p) => ({ x: p.x, y: p.y })),
+      })),
+      attempts: route.attempts.map((attempt) => ({
+        id: attempt.id,
+        date: attempt.date.toISOString(),
+        outcome: attempt.outcome,
+        notes: attempt.notes,
+        fallHold: attempt.fallHold
+          ? {
+              id: attempt.fallHold.id,
+              color: attempt.fallHold.color,
+              points: attempt.fallHold.points.map((p) => ({ x: p.x, y: p.y })),
+            }
+          : null,
       })),
     }));
     AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(snapshots)).catch(() => {

@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { Attempt } from "./Attempt";
 import { Hold } from "./Hold";
 import { Route, RouteInput } from "./Route";
 
@@ -125,5 +126,50 @@ describe("Route", () => {
     expect(updated.id).toBe(route.id);
     expect(updated.holds).toHaveLength(1);
     expect(route.holds).toEqual([]);
+  });
+
+  it("should default attempts to an empty frozen array", () => {
+    const route = Route.create(validInput);
+
+    expect(route.attempts).toEqual([]);
+    expect(Object.isFrozen(route.attempts)).toBe(true);
+  });
+
+  it("should append an attempt without mutating the source route", () => {
+    const route = Route.create(validInput);
+    const attempt = Attempt.create({ outcome: "fell", notes: "slip" });
+
+    const updated = Route.addAttempt(route, attempt);
+
+    expect(updated).not.toBe(route);
+    expect(updated.id).toBe(route.id);
+    expect(updated.attempts).toHaveLength(1);
+    expect(updated.attempts[0]).toBe(attempt);
+    expect(route.attempts).toEqual([]);
+  });
+
+  it("should restore attempts from a snapshot", () => {
+    const route = Route.restore({
+      id: "route-1",
+      name: "x",
+      description: null,
+      tags: [],
+      discipline: "bouldering",
+      grade: { systemId: "s", name: "g" },
+      photo: { url: "u", width: 1, height: 1 },
+      createdAt: new Date().toISOString(),
+      attempts: [
+        {
+          id: "attempt-1",
+          date: "2026-06-23T10:00:00.000Z",
+          outcome: "sent",
+          notes: null,
+          fallHold: null,
+        },
+      ],
+    });
+
+    expect(route.attempts).toHaveLength(1);
+    expect(route.attempts[0].id).toBe("attempt-1");
   });
 });

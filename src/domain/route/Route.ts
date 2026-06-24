@@ -1,4 +1,5 @@
 import { Grade } from "../grading/Grade";
+import { Attempt, AttemptSnapshot } from "./Attempt";
 import { Discipline } from "./Discipline";
 import { Hold, HoldSnapshot } from "./Hold";
 import { Photo } from "./Photo";
@@ -13,6 +14,7 @@ export interface Route {
   readonly grade: Grade;
   readonly photo: Photo;
   readonly holds: readonly Hold[];
+  readonly attempts: readonly Attempt[];
   readonly createdAt: Date;
 }
 
@@ -24,6 +26,7 @@ export interface RouteInput {
   readonly grade: Grade;
   readonly photo: Photo;
   readonly holds?: readonly Hold[];
+  readonly attempts?: readonly Attempt[];
 }
 
 export interface RouteSnapshot {
@@ -36,6 +39,7 @@ export interface RouteSnapshot {
   photo: Photo;
   createdAt: string | Date;
   holds?: readonly HoldSnapshot[];
+  attempts?: readonly AttemptSnapshot[];
 }
 
 const normalizeTags = (tags: readonly string[] | undefined): readonly string[] =>
@@ -45,6 +49,10 @@ const normalizeTags = (tags: readonly string[] | undefined): readonly string[] =
 
 const freezeHolds = (holds: readonly Hold[] | undefined): readonly Hold[] =>
   Object.freeze([...(holds ?? [])]);
+
+const freezeAttempts = (
+  attempts: readonly Attempt[] | undefined,
+): readonly Attempt[] => Object.freeze([...(attempts ?? [])]);
 
 export const Route = {
   create(input: RouteInput): Route {
@@ -62,6 +70,7 @@ export const Route = {
       grade: input.grade,
       photo: input.photo,
       holds: freezeHolds(input.holds),
+      attempts: freezeAttempts(input.attempts),
       createdAt: new Date(),
     });
   },
@@ -76,6 +85,9 @@ export const Route = {
       grade: snapshot.grade,
       photo: snapshot.photo,
       holds: freezeHolds(snapshot.holds?.map((hold) => Hold.restore(hold))),
+      attempts: freezeAttempts(
+        snapshot.attempts?.map((attempt) => Attempt.restore(attempt)),
+      ),
       createdAt:
         snapshot.createdAt instanceof Date
           ? snapshot.createdAt
@@ -87,6 +99,13 @@ export const Route = {
     return Object.freeze({
       ...route,
       holds: freezeHolds(holds),
+    });
+  },
+
+  addAttempt(route: Route, attempt: Attempt): Route {
+    return Object.freeze({
+      ...route,
+      attempts: freezeAttempts([...route.attempts, attempt]),
     });
   },
 };

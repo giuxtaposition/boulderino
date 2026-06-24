@@ -10,8 +10,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 
 import { Button } from "@/components/atoms/Button";
+import { AttemptForm, AttemptFormInput } from "@/components/organisms/AttemptForm";
+import { AttemptList } from "@/components/organisms/AttemptList";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
+import { Attempt } from "@/domain/route/Attempt";
 import { Hold } from "@/domain/route/Hold";
 
 const HoldEditor = lazy(() => import("@/components/organisms/HoldEditor"));
@@ -42,7 +45,7 @@ export default function RouteDetailScreen() {
   const styles = useMemo(() => makeStyles(theme), [theme]);
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { routeRepository, gradingSystemRegistry, updateRouteHolds } =
+  const { routeRepository, gradingSystemRegistry, updateRouteHolds, logAttempt } =
     useContainer();
 
   const route = id ? routeRepository.findById(id) : undefined;
@@ -50,6 +53,10 @@ export default function RouteDetailScreen() {
   const [draftHolds, setDraftHolds] = useState<readonly Hold[]>(
     route?.holds ?? [],
   );
+  const [attempts, setAttempts] = useState<readonly Attempt[]>(
+    route?.attempts ?? [],
+  );
+  const [loggingAttempt, setLoggingAttempt] = useState(false);
 
   const handleStartEdit = useCallback(() => {
     if (!route) return;
@@ -70,6 +77,21 @@ export default function RouteDetailScreen() {
     });
     setEditing(false);
   }, [route, draftHolds, updateRouteHolds]);
+
+  const handleLogAttempt = useCallback(
+    (input: AttemptFormInput) => {
+      if (!route) return;
+      const attempt = logAttempt.execute({
+        routeId: route.id.value,
+        outcome: input.outcome,
+        notes: input.notes,
+        fallHold: input.fallHold,
+      });
+      setAttempts((current) => [...current, attempt]);
+      setLoggingAttempt(false);
+    },
+    [route, logAttempt],
+  );
 
   if (!route) {
     return (
@@ -242,6 +264,42 @@ export default function RouteDetailScreen() {
                 </ThemedText>
               </View>
             ) : null}
+
+            <View style={styles.attemptsBlock} testID="route-detail-attempts">
+              <View style={styles.attemptsHeader}>
+                <ThemedText style={styles.descriptionLabel}>
+                  ATTEMPTS
+                </ThemedText>
+                {!loggingAttempt && (
+                  <Button
+                    size="small"
+                    onPress={() => setLoggingAttempt(true)}
+                    testID="route-detail-log-attempt"
+                  >
+                    LOG ATTEMPT
+                  </Button>
+                )}
+              </View>
+
+              {loggingAttempt ? (
+                <AttemptForm
+                  photoUri={route.photo.url}
+                  photoWidth={route.photo.width}
+                  photoHeight={route.photo.height}
+                  onSubmit={handleLogAttempt}
+                  onCancel={() => setLoggingAttempt(false)}
+                  testID="route-detail-attempt-form"
+                />
+              ) : (
+                <AttemptList
+                  attempts={attempts}
+                  photoUri={route.photo.url}
+                  photoWidth={route.photo.width}
+                  photoHeight={route.photo.height}
+                  testID="route-detail-attempt-list"
+                />
+              )}
+            </View>
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -384,6 +442,15 @@ const makeStyles = (theme: Theme) =>
       fontWeight: "500",
       color: "#0F172A",
       lineHeight: 22,
+    },
+    attemptsBlock: {
+      gap: Spacing.three,
+    },
+    attemptsHeader: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      gap: Spacing.two,
     },
     missingBlock: {
       padding: Spacing.five,
