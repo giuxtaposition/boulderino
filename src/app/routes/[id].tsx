@@ -10,7 +10,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 
 import { Button } from "@/components/atoms/Button";
-import { AttemptForm, AttemptFormInput } from "@/components/organisms/AttemptForm";
+import {
+  AttemptForm,
+  AttemptFormInput,
+} from "@/components/organisms/AttemptForm";
 import { AttemptList } from "@/components/organisms/AttemptList";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
@@ -100,6 +103,7 @@ export default function RouteDetailScreen() {
         outcome: input.outcome,
         notes: input.notes,
         fallHold: input.fallHold,
+        date: input.date,
       });
       setAttempts((current) => [...current, attempt]);
       setLoggingAttempt(false);
@@ -180,7 +184,10 @@ export default function RouteDetailScreen() {
 
           <View
             testID="route-detail-card"
-            style={[styles.card, { backgroundColor: background, borderColor: onCard }]}
+            style={[
+              styles.card,
+              { backgroundColor: background, borderColor: onCard },
+            ]}
           >
             <Suspense
               fallback={
@@ -335,7 +342,9 @@ export default function RouteDetailScreen() {
 
             <View style={styles.attemptsBlock} testID="route-detail-attempts">
               <View style={styles.attemptsHeader}>
-                <ThemedText style={[styles.descriptionLabel, { color: onCard }]}>
+                <ThemedText
+                  style={[styles.descriptionLabel, { color: onCard }]}
+                >
                   ATTEMPTS
                 </ThemedText>
                 {!loggingAttempt && (

@@ -3,10 +3,17 @@ import { ActivityIndicator, StyleSheet, View } from "react-native";
 
 import { Button } from "@/components/atoms/Button";
 import { Chip } from "@/components/atoms/Chip";
+import { DateTimePicker } from "@/components/atoms/DateTimePicker";
 import { Input } from "@/components/atoms/Input";
 import { Label } from "@/components/atoms/Label";
 import { ThemedText } from "@/components/themed-text";
-import { BorderWidth, Radius, Spacing, Theme, outcomeColor } from "@/constants/theme";
+import {
+  BorderWidth,
+  Radius,
+  Spacing,
+  Theme,
+  outcomeColor,
+} from "@/constants/theme";
 import { AttemptOutcome } from "@/domain/route/Attempt";
 import { Hold } from "@/domain/route/Hold";
 import { useTheme } from "@/hooks/use-theme";
@@ -19,6 +26,7 @@ export interface AttemptFormInput {
   readonly outcome: AttemptOutcome;
   readonly notes: string;
   readonly fallHold: Hold | null;
+  readonly date?: Date;
 }
 
 export interface AttemptFormProps {
@@ -45,7 +53,7 @@ export function AttemptForm({
   const [notes, setNotes] = useState("");
   const [fallHold, setFallHold] = useState<Hold | null>(null);
   const [markingFall, setMarkingFall] = useState(false);
-
+  const [date, setDate] = useState<Date>(() => new Date());
 
   const editorHolds = useMemo(() => (fallHold ? [fallHold] : []), [fallHold]);
 
@@ -54,8 +62,8 @@ export function AttemptForm({
   }, []);
 
   const handleSubmit = useCallback(() => {
-    onSubmit({ outcome, notes, fallHold });
-  }, [outcome, notes, fallHold, onSubmit]);
+    onSubmit({ outcome, notes, fallHold, date });
+  }, [outcome, notes, fallHold, date, onSubmit]);
 
   return (
     <View style={styles.form} testID={testID}>
@@ -74,6 +82,15 @@ export function AttemptForm({
             </Chip>
           ))}
         </View>
+      </View>
+
+      <View style={styles.field}>
+        <Label>DATE</Label>
+        <DateTimePicker
+          value={date}
+          onChange={setDate}
+          testID="attempt-form-date"
+        />
       </View>
 
       <View style={styles.field}>
