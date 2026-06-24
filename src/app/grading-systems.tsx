@@ -143,7 +143,7 @@ export default function GradingSystemsScreen() {
 
           <View testID="list-systems" style={styles.list}>
             {systems.length === 0 ? (
-              <EmptyBlock message="No grading systems yet. Add your first." />
+              <EmptyBlock message="No grading systems yet. Add your first by clicking the + button." />
             ) : (
               systems.map((system, index) => (
                 <SystemCard

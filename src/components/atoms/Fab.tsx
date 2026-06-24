@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Pressable, PressableProps, StyleSheet } from "react-native";
+import { Platform, Pressable, PressableProps, StyleSheet } from "react-native";
 
 import {
   onColor,
@@ -48,7 +48,7 @@ const makeStyles = (theme: Theme) => {
       width: 56,
       height: 56,
       position: "absolute",
-      bottom: 80,
+      bottom: Platform.OS === "web" ? 80 : 20,
       right: 30,
       elevation: 5,
       shadowColor: "#000", // For iOS shadow

@@ -145,7 +145,7 @@ export default function RoutesScreen() {
 
           <View testID="list-routes" style={styles.list}>
             {routes.length === 0 ? (
-              <EmptyBlock message="No routes. Add your first route." />
+              <EmptyBlock message="No routes. Add your first route by clicking the + button." />
             ) : (
               routes.map((route, index) => {
                 let background: string = Rainbow[3];
