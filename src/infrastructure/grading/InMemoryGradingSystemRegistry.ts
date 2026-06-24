@@ -11,6 +11,19 @@ export class InMemoryGradingSystemRegistry implements GradingSystemRegistry {
     this.gradingSystems.set(system.name, system);
   }
 
+  public replace(system: GradingSystem): void {
+    if (!this.gradingSystems.has(system.name)) {
+      throw new Error(`Grading system "${system.name}" not found in registry`);
+    }
+    this.gradingSystems.set(system.name, system);
+  }
+
+  public delete(name: string): void {
+    if (!this.gradingSystems.delete(name)) {
+      throw new Error(`Grading system "${name}" not found in registry`);
+    }
+  }
+
   public getByName(name: string): GradingSystem | undefined {
     return this.gradingSystems.get(name);
   }

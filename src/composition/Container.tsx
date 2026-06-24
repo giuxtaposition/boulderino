@@ -9,6 +9,7 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 import { AddGradingSystem } from '@/application/AddGradingSystem';
 import { AddRoute } from '@/application/AddRoute';
+import { DeleteGradingSystem } from '@/application/DeleteGradingSystem';
 import { DeleteRoute } from '@/application/DeleteRoute';
 import { GradingSystemRegistry } from '@/application/GradingSystemRegistry';
 import { LogAttempt } from '@/application/LogAttempt';
@@ -21,6 +22,7 @@ export interface Container {
   gradingSystemRegistry: GradingSystemRegistry;
   routeRepository: RouteRepository;
   addGradingSystem: AddGradingSystem;
+  deleteGradingSystem: DeleteGradingSystem;
   addRoute: AddRoute;
   deleteRoute: DeleteRoute;
   updateRouteHolds: UpdateRouteHolds;
@@ -36,6 +38,7 @@ export async function createContainer(): Promise<Container> {
     gradingSystemRegistry,
     routeRepository,
     addGradingSystem: new AddGradingSystem(gradingSystemRegistry),
+    deleteGradingSystem: new DeleteGradingSystem(gradingSystemRegistry),
     addRoute: new AddRoute(gradingSystemRegistry, routeRepository),
     deleteRoute: new DeleteRoute(routeRepository),
     updateRouteHolds: new UpdateRouteHolds(routeRepository),

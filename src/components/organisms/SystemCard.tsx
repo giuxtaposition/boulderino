@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
+import { Button } from "../atoms/Button";
 import { ThemedText } from "../themed-text";
 import {
   BorderWidth,
@@ -15,9 +17,11 @@ import { useTheme } from "@/hooks/use-theme";
 type SystemCardProps = {
   system: GradingSystem;
   background: string;
+  onDelete?: (name: string) => void;
 };
 
-export function SystemCard({ system, background }: SystemCardProps) {
+export function SystemCard({ system, background, onDelete }: SystemCardProps) {
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
   const theme = useTheme();
   const styles = makeStyles(theme);
   const cardTextColor = onColor(background);
@@ -67,6 +71,41 @@ export function SystemCard({ system, background }: SystemCardProps) {
           );
         })}
       </View>
+      {onDelete ? (
+        <View style={styles.actionRow}>
+          {confirmingDelete ? (
+            <>
+              <Button
+                size="small"
+                action="negative"
+                onPress={() => {
+                  onDelete(system.name);
+                  setConfirmingDelete(false);
+                }}
+                testID={`system-confirm-delete-${system.name}`}
+              >
+                CONFIRM
+              </Button>
+              <Button
+                size="small"
+                onPress={() => setConfirmingDelete(false)}
+                testID={`system-cancel-delete-${system.name}`}
+              >
+                CANCEL
+              </Button>
+            </>
+          ) : (
+            <Button
+              size="small"
+              action="negative"
+              onPress={() => setConfirmingDelete(true)}
+              testID={`system-delete-${system.name}`}
+            >
+              DELETE
+            </Button>
+          )}
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -111,4 +150,9 @@ const makeStyles = (theme: Theme) =>
     },
     chipText: { fontSize: 13, fontWeight: "800" },
     chipMeta: { fontSize: 10, fontWeight: "700" },
+    actionRow: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      gap: Spacing.two,
+    },
   });

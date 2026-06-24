@@ -45,7 +45,8 @@ const rowsToDefinitions = (rows: GradeRowValue[]): GradeDefinition[] =>
 export default function GradingSystemsScreen() {
   const theme = useTheme();
   const styles = useMemo(() => makeStyles(theme), [theme]);
-  const { addGradingSystem, gradingSystemRegistry } = useContainer();
+  const { addGradingSystem, deleteGradingSystem, gradingSystemRegistry } =
+    useContainer();
 
   const [name, setName] = useState("");
   const [rows, setRows] = useState<GradeRowValue[]>(() => [emptyRow(0)]);
@@ -65,6 +66,16 @@ export default function GradingSystemsScreen() {
     setRows((prev) =>
       prev.length <= 1 ? prev : prev.filter((_, i) => i !== index),
     );
+
+  const handleDelete = (name: string) => {
+    try {
+      deleteGradingSystem.execute({ name });
+      setSystems(gradingSystemRegistry.findAll());
+      setError(null);
+    } catch (err) {
+      setError((err as Error).message);
+    }
+  };
 
   const handleSubmit = () => {
     try {
@@ -143,6 +154,7 @@ export default function GradingSystemsScreen() {
                   key={system.name}
                   system={system}
                   background={pickRainbowColor(index)}
+                  onDelete={handleDelete}
                 />
               ))
             )}

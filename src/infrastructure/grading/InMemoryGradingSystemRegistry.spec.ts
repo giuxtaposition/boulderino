@@ -61,4 +61,54 @@ describe("InMemoryGradingSystemRegistry", () => {
 
     expect(registry.findAll()).toEqual([yds, v]);
   });
+
+  it("should remove a system via delete", () => {
+    registry.register(yds);
+
+    registry.delete("YDS");
+
+    expect(registry.getByName("YDS")).toBeUndefined();
+    expect(registry.findAll()).toEqual([]);
+  });
+
+  it("should throw when deleting a system that does not exist", () => {
+    expect(() => registry.delete("Unknown")).toThrow(
+      'Grading system "Unknown" not found in registry',
+    );
+  });
+
+  it("should replace an existing system in place", () => {
+    registry.register(yds);
+    const updated = GradingSystem.create({
+      name: "YDS",
+      grades: [{ name: "5.11a", color: "#EF4444", order: 1 }],
+    });
+
+    registry.replace(updated);
+
+    expect(registry.getByName("YDS")).toBe(updated);
+  });
+
+  it("should preserve insertion order when replacing a system", () => {
+    const v = GradingSystem.create({
+      name: "V-Scale",
+      grades: [{ name: "V0", color: "#2563EB", order: 1 }],
+    });
+    registry.register(yds);
+    registry.register(v);
+    const updated = GradingSystem.create({
+      name: "YDS",
+      grades: [{ name: "5.11a", color: "#EF4444", order: 1 }],
+    });
+
+    registry.replace(updated);
+
+    expect(registry.findAll()).toEqual([updated, v]);
+  });
+
+  it("should throw when replacing a system that is not registered", () => {
+    expect(() => registry.replace(yds)).toThrow(
+      'Grading system "YDS" not found in registry',
+    );
+  });
 });

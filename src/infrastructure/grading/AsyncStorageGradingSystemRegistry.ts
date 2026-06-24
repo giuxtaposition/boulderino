@@ -44,6 +44,21 @@ export class AsyncStorageGradingSystemRegistry implements GradingSystemRegistry 
     this.persist();
   }
 
+  public replace(system: GradingSystem): void {
+    if (!this.gradingSystems.has(system.name)) {
+      throw new Error(`Grading system "${system.name}" not found in registry`);
+    }
+    this.gradingSystems.set(system.name, system);
+    this.persist();
+  }
+
+  public delete(name: string): void {
+    if (!this.gradingSystems.delete(name)) {
+      throw new Error(`Grading system "${name}" not found in registry`);
+    }
+    this.persist();
+  }
+
   public getByName(name: string): GradingSystem | undefined {
     return this.gradingSystems.get(name);
   }
