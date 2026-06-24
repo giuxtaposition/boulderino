@@ -1,12 +1,19 @@
-import { lazy, Suspense, useMemo } from "react";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { lazy, Suspense, useCallback, useMemo, useState } from "react";
+import {
+  ActivityIndicator,
+  Pressable,
+  StyleSheet,
+  View,
+} from "react-native";
 
 import { ThemedText } from "@/components/themed-text";
 import {
   BorderWidth,
+  PressableState,
   Radius,
   Spacing,
   Theme,
+  focusRing,
   onColor,
   outcomeColor,
 } from "@/constants/theme";
@@ -58,35 +65,77 @@ export function AttemptList({
   return (
     <View style={styles.list} testID={testID}>
       {sorted.map((attempt) => (
-        <View
+        <AttemptItem
           key={attempt.id}
-          style={styles.item}
-          testID={`attempt-item-${attempt.id}`}
-        >
-          <View style={styles.header}>
-            <ThemedText style={styles.date}>
-              {dateFormatter.format(attempt.date)}
+          attempt={attempt}
+          photoUri={photoUri}
+          photoWidth={photoWidth}
+          photoHeight={photoHeight}
+          styles={styles}
+          theme={theme}
+        />
+      ))}
+    </View>
+  );
+}
+
+interface AttemptItemProps {
+  readonly attempt: Attempt;
+  readonly photoUri: string;
+  readonly photoWidth: number;
+  readonly photoHeight: number;
+  readonly styles: ReturnType<typeof makeStyles>;
+  readonly theme: Theme;
+}
+
+function AttemptItem({
+  attempt,
+  photoUri,
+  photoWidth,
+  photoHeight,
+  styles,
+  theme,
+}: AttemptItemProps) {
+  const [expanded, setExpanded] = useState(false);
+  const toggle = useCallback(() => setExpanded((prev) => !prev), []);
+  const bg = outcomeColor(theme, attempt.outcome);
+
+  return (
+    <View
+      style={styles.item}
+      testID={`attempt-item-${attempt.id}`}
+    >
+      <View style={styles.header}>
+        <ThemedText style={styles.date}>
+          {dateFormatter.format(attempt.date)}
+        </ThemedText>
+        <View style={[styles.outcomeTag, { backgroundColor: bg }]}>
+          <ThemedText style={[styles.outcomeText, { color: onColor(bg) }]}>
+            {attempt.outcome.toUpperCase()}
+          </ThemedText>
+        </View>
+      </View>
+      {attempt.notes ? (
+        <ThemedText style={styles.notes}>{attempt.notes}</ThemedText>
+      ) : null}
+      {attempt.fallHold ? (
+        <>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityState={{ expanded }}
+            onPress={toggle}
+            testID={`attempt-item-${attempt.id}-toggle`}
+            style={(state: PressableState) => [
+              styles.toggle,
+              state.pressed && styles.togglePressed,
+              state.focused && styles.toggleFocused,
+            ]}
+          >
+            <ThemedText style={styles.toggleText}>
+              {expanded ? "Hide fall hold ▴" : "Show fall hold ▾"}
             </ThemedText>
-            <View
-              style={[
-                styles.outcomeTag,
-                { backgroundColor: outcomeColor(theme, attempt.outcome) },
-              ]}
-            >
-              <ThemedText
-                style={[
-                  styles.outcomeText,
-                  { color: onColor(outcomeColor(theme, attempt.outcome)) },
-                ]}
-              >
-                {attempt.outcome.toUpperCase()}
-              </ThemedText>
-            </View>
-          </View>
-          {attempt.notes ? (
-            <ThemedText style={styles.notes}>{attempt.notes}</ThemedText>
-          ) : null}
-          {attempt.fallHold ? (
+          </Pressable>
+          {expanded ? (
             <Suspense
               fallback={
                 <View style={styles.fallFrame}>
@@ -104,8 +153,8 @@ export function AttemptList({
               />
             </Suspense>
           ) : null}
-        </View>
-      ))}
+        </>
+      ) : null}
     </View>
   );
 }
@@ -165,5 +214,24 @@ const makeStyles = (theme: Theme) =>
       borderWidth: BorderWidth.thick,
       borderColor: theme.border,
       overflow: "hidden",
+    },
+    toggle: {
+      alignSelf: "flex-start",
+      paddingVertical: Spacing.one,
+      paddingHorizontal: Spacing.two,
+      borderRadius: Radius.small,
+      borderWidth: BorderWidth.thick,
+      borderColor: theme.border,
+      backgroundColor: theme.inputBackground,
+      minHeight: 32,
+      justifyContent: "center",
+    },
+    togglePressed: { transform: [{ translateX: 2 }, { translateY: 2 }] },
+    toggleFocused: focusRing(theme),
+    toggleText: {
+      fontSize: 12,
+      fontWeight: "800",
+      letterSpacing: 0.5,
+      color: theme.text,
     },
   });

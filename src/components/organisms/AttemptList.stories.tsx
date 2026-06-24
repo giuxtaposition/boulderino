@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { expect, within } from "storybook/test";
+import { expect, userEvent, within } from "storybook/test";
 
 import { AttemptList } from "./AttemptList";
 import { Rainbow } from "@/constants/theme";
@@ -83,5 +83,30 @@ export const RendersEmptyState: Story = {
     await expect(
       await canvas.findByText("No attempts logged yet."),
     ).toBeVisible();
+  },
+};
+
+export const FallHoldCollapsedByDefault: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const toggle = await canvas.findByTestId(
+      "attempt-item-22222222-2222-2222-2222-222222222222-toggle",
+    );
+    await expect(toggle).toHaveTextContent("Show fall hold");
+    await expect(canvas.queryByLabelText("fall hold")).toBeNull();
+  },
+};
+
+export const TogglesFallHold: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const toggle = await canvas.findByTestId(
+      "attempt-item-22222222-2222-2222-2222-222222222222-toggle",
+    );
+    await userEvent.click(toggle);
+    await expect(await canvas.findByLabelText("fall hold")).toBeVisible();
+    await expect(toggle).toHaveTextContent("Hide fall hold");
+    await userEvent.click(toggle);
+    await expect(canvas.queryByLabelText("fall hold")).toBeNull();
   },
 };

@@ -232,7 +232,11 @@ export default function RouteDetailScreen() {
             </ThemedText>
 
             <View style={styles.metaRow}>
-              <View style={styles.gradeTag}>
+              <View style={styles.gradeTag} testID="route-detail-grade">
+                <View
+                  style={[styles.gradeSwatch, { backgroundColor: background }]}
+                  testID="route-detail-grade-swatch"
+                />
                 <ThemedText style={styles.gradeTagText}>
                   {route.grade.systemId} / {route.grade.name}
                 </ThemedText>
@@ -386,12 +390,22 @@ const makeStyles = (theme: Theme) =>
       flexWrap: "wrap",
     },
     gradeTag: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: Spacing.one,
       backgroundColor: theme.surface,
       borderWidth: BorderWidth.thick,
       borderColor: theme.border,
       borderRadius: Radius.small,
       paddingVertical: Spacing.one,
       paddingHorizontal: Spacing.two,
+    },
+    gradeSwatch: {
+      width: 14,
+      height: 14,
+      borderRadius: Radius.small,
+      borderWidth: BorderWidth.thin,
+      borderColor: theme.border,
     },
     gradeTagText: {
       color: theme.text,

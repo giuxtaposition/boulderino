@@ -138,7 +138,7 @@ export default function RoutesScreen() {
         >
           <View style={styles.header}>
             <ThemedText style={styles.kicker}>ROUTES · LEVEL 02</ThemedText>
-            <ThemedText style={styles.heading}>Send your routes</ThemedText>
+            <ThemedText style={styles.heading}>Add your routes</ThemedText>
           </View>
 
           <FormCard testID="form-route">
