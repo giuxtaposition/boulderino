@@ -2,5 +2,6 @@ allowBuilds:
   '@shopify/react-native-skia': set this to true or false
   '@swc/core': set this to true or false
   esbuild: false
+  protobufjs: true
   unrs-resolver: set this to true or false
 patchedDependencies: { onnxruntime-react-native@1.24.3: patches/onnxruntime-react-native@1.24.3.patch }
