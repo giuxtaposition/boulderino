@@ -17,7 +17,7 @@ describe("Attempt", () => {
       date,
       outcome: "fell",
       notes: "  slipped on the crux  ",
-      fallHold,
+      fallHolds: [fallHold],
     });
 
     expect(attempt.id).toBeDefined();
@@ -25,7 +25,7 @@ describe("Attempt", () => {
     expect(attempt.date).toEqual(date);
     expect(attempt.outcome).toBe("fell");
     expect(attempt.notes).toBe("slipped on the crux");
-    expect(attempt.fallHold).toBe(fallHold);
+    expect(attempt.fallHolds).toEqual([fallHold]);
   });
 
   it("should default date to now when omitted", () => {
@@ -49,10 +49,10 @@ describe("Attempt", () => {
     expect(attempt.notes).toBeNull();
   });
 
-  it("should default fallHold to null when omitted", () => {
+  it("should default fallHolds to empty array when omitted", () => {
     const attempt = Attempt.create({ outcome: "sent" });
 
-    expect(attempt.fallHold).toBeNull();
+    expect(attempt.fallHolds).toEqual([]);
   });
 
   it("should create attempts with unique ids", () => {
@@ -80,7 +80,7 @@ describe("Attempt", () => {
       date: "2026-06-23T10:00:00.000Z",
       outcome: "fell",
       notes: "wet hold",
-      fallHold: { id: "h", color: "#000", points: samplePoints },
+      fallHolds: [{ id: "h", color: "#000", points: samplePoints }],
     });
 
     expect(attempt.id).toBe("attempt-1");
@@ -88,20 +88,33 @@ describe("Attempt", () => {
     expect(attempt.date.toISOString()).toBe("2026-06-23T10:00:00.000Z");
     expect(attempt.outcome).toBe("fell");
     expect(attempt.notes).toBe("wet hold");
-    expect(attempt.fallHold?.id).toBe("h");
+    expect(attempt.fallHolds[0]?.id).toBe("h");
   });
 
-  it("should restore an attempt with null fields", () => {
+  it("should restore an attempt with empty fallHolds", () => {
     const attempt = Attempt.restore({
       id: "attempt-1",
       date: new Date("2026-06-23T10:00:00Z"),
       outcome: "sent",
       notes: null,
-      fallHold: null,
+      fallHolds: [],
     });
 
     expect(attempt.notes).toBeNull();
-    expect(attempt.fallHold).toBeNull();
+    expect(attempt.fallHolds).toEqual([]);
+  });
+
+  it("should migrate legacy fallHold to fallHolds", () => {
+    const attempt = Attempt.restore({
+      id: "attempt-1",
+      date: new Date("2026-06-23T10:00:00Z"),
+      outcome: "fell",
+      notes: null,
+      fallHold: { id: "h", color: "#000", points: samplePoints },
+    });
+
+    expect(attempt.fallHolds).toHaveLength(1);
+    expect(attempt.fallHolds[0]?.id).toBe("h");
   });
 
   it("should throw when restoring an attempt with an empty id", () => {
@@ -111,7 +124,7 @@ describe("Attempt", () => {
         date: new Date(),
         outcome: "sent",
         notes: null,
-        fallHold: null,
+        fallHolds: [],
       }),
     ).toThrow("Attempt id cannot be empty");
   });

@@ -25,7 +25,7 @@ const OUTCOMES: readonly AttemptOutcome[] = ["sent", "fell", "flash"];
 export interface AttemptFormInput {
   readonly outcome: AttemptOutcome;
   readonly notes: string;
-  readonly fallHold: Hold | null;
+  readonly fallHolds: readonly Hold[];
   readonly date?: Date;
 }
 
@@ -51,19 +51,17 @@ export function AttemptForm({
 
   const [outcome, setOutcome] = useState<AttemptOutcome>("fell");
   const [notes, setNotes] = useState("");
-  const [fallHold, setFallHold] = useState<Hold | null>(null);
+  const [fallHolds, setFallHolds] = useState<readonly Hold[]>([]);
   const [markingFall, setMarkingFall] = useState(false);
   const [date, setDate] = useState<Date>(() => new Date());
 
-  const editorHolds = useMemo(() => (fallHold ? [fallHold] : []), [fallHold]);
-
   const handleEditorChange = useCallback((next: readonly Hold[]) => {
-    setFallHold(next.length > 0 ? next[next.length - 1] : null);
+    setFallHolds(next);
   }, []);
 
   const handleSubmit = useCallback(() => {
-    onSubmit({ outcome, notes, fallHold, date });
-  }, [outcome, notes, fallHold, date, onSubmit]);
+    onSubmit({ outcome, notes, fallHolds, date });
+  }, [outcome, notes, fallHolds, date, onSubmit]);
 
   return (
     <View style={styles.form} testID={testID}>
@@ -107,7 +105,7 @@ export function AttemptForm({
       </View>
 
       <View style={styles.field}>
-        <Label>FALL HOLD</Label>
+        <Label>FALL HOLDS</Label>
         {markingFall ? (
           <View style={styles.editorBlock}>
             <Suspense
@@ -121,7 +119,7 @@ export function AttemptForm({
                 photoUri={photoUri}
                 photoWidth={photoWidth}
                 photoHeight={photoHeight}
-                holds={editorHolds}
+                holds={fallHolds}
                 onChange={handleEditorChange}
                 color={outcomeColor(theme, "fell")}
                 testID="attempt-form-hold-editor"
@@ -132,7 +130,7 @@ export function AttemptForm({
                 size="small"
                 variant="outline"
                 onPress={() => {
-                  setFallHold(null);
+                  setFallHolds([]);
                   setMarkingFall(false);
                 }}
                 testID="attempt-form-clear-fall"
@@ -151,7 +149,9 @@ export function AttemptForm({
         ) : (
           <View style={styles.fallSummary}>
             <ThemedText style={styles.fallSummaryText}>
-              {fallHold ? "Fall hold marked." : "No fall hold marked."}
+              {fallHolds.length > 0
+                ? `${fallHolds.length} fall hold${fallHolds.length > 1 ? "s" : ""} marked.`
+                : "No fall holds marked."}
             </ThemedText>
             <Button
               size="small"
@@ -159,7 +159,7 @@ export function AttemptForm({
               onPress={() => setMarkingFall(true)}
               testID="attempt-form-mark-fall"
             >
-              {fallHold ? "EDIT FALL HOLD" : "MARK FALL HOLD"}
+              {fallHolds.length > 0 ? "EDIT FALL HOLDS" : "MARK FALL HOLDS"}
             </Button>
           </View>
         )}

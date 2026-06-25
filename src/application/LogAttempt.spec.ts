@@ -50,7 +50,7 @@ describe("LogAttempt", () => {
     expect(repository.findById(route.id.value)?.attempts).toHaveLength(1);
   });
 
-  it("should persist optional notes and fall hold", () => {
+  it("should persist optional notes and fall holds", () => {
     const route = buildRoute();
     repository.save(route);
     const fallHold = buildHold();
@@ -59,12 +59,12 @@ describe("LogAttempt", () => {
       routeId: route.id.value,
       outcome: "fell",
       notes: "wet hold",
-      fallHold,
+      fallHolds: [fallHold],
     });
 
     const stored = repository.findById(route.id.value)?.attempts[0];
     expect(stored?.notes).toBe("wet hold");
-    expect(stored?.fallHold?.id).toBe(fallHold.id);
+    expect(stored?.fallHolds[0]?.id).toBe(fallHold.id);
   });
 
   it("should accept a custom date", () => {

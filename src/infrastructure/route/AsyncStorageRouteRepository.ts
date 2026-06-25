@@ -101,13 +101,11 @@ export class AsyncStorageRouteRepository implements RouteRepository {
         date: attempt.date.toISOString(),
         outcome: attempt.outcome,
         notes: attempt.notes,
-        fallHold: attempt.fallHold
-          ? {
-              id: attempt.fallHold.id,
-              color: attempt.fallHold.color,
-              points: attempt.fallHold.points.map((p) => ({ x: p.x, y: p.y })),
-            }
-          : null,
+        fallHolds: attempt.fallHolds.map((hold) => ({
+          id: hold.id,
+          color: hold.color,
+          points: hold.points.map((p) => ({ x: p.x, y: p.y })),
+        })),
       })),
     }));
     AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(snapshots)).catch(() => {

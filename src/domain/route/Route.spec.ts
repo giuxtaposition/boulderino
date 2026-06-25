@@ -185,7 +185,7 @@ describe("Route", () => {
           date: "2026-06-23T10:00:00.000Z",
           outcome: "sent",
           notes: null,
-          fallHold: null,
+          fallHolds: [],
         },
       ],
     });

@@ -109,7 +109,7 @@ export default function RouteDetailScreen() {
         routeId: route.id.value,
         outcome: input.outcome,
         notes: input.notes,
-        fallHold: input.fallHold,
+        fallHolds: input.fallHolds,
         date: input.date,
       });
       setAttempts((current) => [...current, attempt]);

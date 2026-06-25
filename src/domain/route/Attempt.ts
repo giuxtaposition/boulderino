@@ -26,14 +26,14 @@ export interface Attempt {
   readonly date: Date;
   readonly outcome: AttemptOutcome;
   readonly notes: string | null;
-  readonly fallHold: Hold | null;
+  readonly fallHolds: readonly Hold[];
 }
 
 export interface AttemptInput {
   readonly date?: Date;
   readonly outcome: AttemptOutcome;
   readonly notes?: string | null;
-  readonly fallHold?: Hold | null;
+  readonly fallHolds?: readonly Hold[];
 }
 
 export interface AttemptSnapshot {
@@ -41,7 +41,8 @@ export interface AttemptSnapshot {
   readonly date: string | Date;
   readonly outcome: AttemptOutcome;
   readonly notes: string | null;
-  readonly fallHold: HoldSnapshot | null;
+  readonly fallHolds?: readonly HoldSnapshot[];
+  readonly fallHold?: HoldSnapshot | null;
 }
 
 export const Attempt = {
@@ -52,7 +53,7 @@ export const Attempt = {
       date: input.date ?? new Date(),
       outcome: input.outcome,
       notes: normalizeNotes(input.notes),
-      fallHold: input.fallHold ?? null,
+      fallHolds: Object.freeze(input.fallHolds ?? []),
     });
   },
 
@@ -61,13 +62,20 @@ export const Attempt = {
       throw new Error("Attempt id cannot be empty");
     }
     assertOutcome(snapshot.outcome);
+
+    const fallHolds = snapshot.fallHolds
+      ? snapshot.fallHolds.map(Hold.restore)
+      : snapshot.fallHold
+        ? [Hold.restore(snapshot.fallHold)]
+        : [];
+
     return Object.freeze({
       id: snapshot.id,
       date:
         snapshot.date instanceof Date ? snapshot.date : new Date(snapshot.date),
       outcome: snapshot.outcome,
       notes: normalizeNotes(snapshot.notes),
-      fallHold: snapshot.fallHold ? Hold.restore(snapshot.fallHold) : null,
+      fallHolds: Object.freeze(fallHolds),
     });
   },
 };

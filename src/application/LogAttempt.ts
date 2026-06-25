@@ -8,7 +8,7 @@ export interface LogAttemptInput {
   readonly outcome: AttemptOutcome;
   readonly date?: Date;
   readonly notes?: string | null;
-  readonly fallHold?: Hold | null;
+  readonly fallHolds?: readonly Hold[];
 }
 
 export class LogAttempt {
@@ -23,7 +23,7 @@ export class LogAttempt {
       date: input.date,
       outcome: input.outcome,
       notes: input.notes,
-      fallHold: input.fallHold,
+      fallHolds: input.fallHolds,
     });
     const updated = Route.addAttempt(route, attempt);
     this.repository.update(updated);

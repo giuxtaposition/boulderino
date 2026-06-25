@@ -111,7 +111,7 @@ function AttemptItem({
       {attempt.notes ? (
         <ThemedText style={styles.notes}>{attempt.notes}</ThemedText>
       ) : null}
-      {attempt.fallHold ? (
+      {attempt.fallHolds.length > 0 ? (
         <>
           <Pressable
             accessibilityRole="button"
@@ -124,7 +124,9 @@ function AttemptItem({
             ]}
           >
             <ThemedText style={styles.toggleText}>
-              {expanded ? "Hide fall hold ▴" : "Show fall hold ▾"}
+              {expanded
+                ? `Hide fall hold${attempt.fallHolds.length > 1 ? "s" : ""} ▴`
+                : `Show fall hold${attempt.fallHolds.length > 1 ? "s" : ""} ▾`}
             </ThemedText>
           </Pressable>
           {expanded ? (
@@ -139,8 +141,8 @@ function AttemptItem({
                 photoUri={photoUri}
                 photoWidth={photoWidth}
                 photoHeight={photoHeight}
-                holds={[attempt.fallHold]}
-                accessibilityLabel="fall hold"
+                holds={attempt.fallHolds}
+                accessibilityLabel="fall holds"
                 style={styles.fallFrame}
               />
             </Suspense>
