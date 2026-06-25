@@ -56,6 +56,7 @@ const meta = {
     photoHeight: 300,
     testID: "attempt-list",
   },
+  tags: ["autodocs"],
 } satisfies Meta<typeof AttemptList>;
 
 export default meta;

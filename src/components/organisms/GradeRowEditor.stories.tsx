@@ -15,6 +15,7 @@ const meta = {
     onChange: fn(),
     onRemove: fn(),
   },
+  tags: ["autodocs"],
 } satisfies Meta<typeof GradeRowEditor>;
 
 export default meta;

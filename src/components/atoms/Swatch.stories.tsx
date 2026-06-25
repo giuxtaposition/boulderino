@@ -14,6 +14,7 @@ const meta = {
     accessibilityLabel: "green swatch",
     onPress: fn(),
   },
+  tags: ["autodocs"],
 } satisfies Meta<typeof Swatch>;
 
 export default meta;

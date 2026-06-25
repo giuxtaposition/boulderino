@@ -14,6 +14,7 @@ const meta = {
     selectedColor: Rainbow[1],
     onPress: fn(),
   },
+  tags: ["autodocs"],
 } satisfies Meta<typeof Chip>;
 
 export default meta;

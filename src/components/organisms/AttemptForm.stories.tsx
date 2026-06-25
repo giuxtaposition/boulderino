@@ -15,6 +15,7 @@ const meta = {
     onCancel: fn(),
     testID: "attempt-form",
   },
+  tags: ["autodocs"],
 } satisfies Meta<typeof AttemptForm>;
 
 export default meta;

@@ -12,6 +12,7 @@ const meta = {
     children: <X size={24} color="black" />,
     onPress: fn(),
   },
+  tags: ["autodocs"],
 } satisfies Meta<typeof IconButton>;
 
 export default meta;

@@ -29,6 +29,7 @@ const meta = {
     onChange: () => {},
     testID: "hold-editor",
   },
+  tags: ["autodocs"],
 } satisfies Meta<typeof HoldEditor>;
 
 export default meta;

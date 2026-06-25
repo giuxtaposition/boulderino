@@ -22,6 +22,7 @@ const meta = {
     size: "medium",
     onPress: fn(),
   },
+  tags: ["autodocs"],
 } satisfies Meta<typeof Button>;
 
 export default meta;

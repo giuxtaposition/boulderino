@@ -24,6 +24,7 @@ const meta = {
     system: vScale,
     background: Rainbow[1],
   },
+  tags: ["autodocs"],
 } satisfies Meta<typeof SystemCard>;
 
 export default meta;

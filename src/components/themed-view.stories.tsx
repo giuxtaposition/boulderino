@@ -1,26 +1,27 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from "@storybook/react";
 
-import { ThemedText } from './themed-text';
-import { ThemedView } from './themed-view';
+import { ThemedText } from "./themed-text";
+import { ThemedView } from "./themed-view";
 
 const meta = {
-  title: 'Themed/ThemedView',
+  title: "Themed/ThemedView",
   component: ThemedView,
   argTypes: {
     type: {
-      control: 'select',
+      control: "select",
       options: [
-        'background',
-        'backgroundElement',
-        'backgroundSelected',
-        'inputBackground',
+        "background",
+        "backgroundElement",
+        "backgroundSelected",
+        "inputBackground",
       ],
     },
   },
   args: {
-    type: 'background',
+    type: "background",
     style: { padding: 24, borderRadius: 10 },
   },
+  tags: ["autodocs"],
 } satisfies Meta<typeof ThemedView>;
 
 export default meta;
@@ -32,14 +33,14 @@ export const Background: Story = {
 
 export const Element: Story = {
   args: {
-    type: 'backgroundElement',
+    type: "backgroundElement",
     children: <ThemedText>backgroundElement</ThemedText>,
   },
 };
 
 export const Selected: Story = {
   args: {
-    type: 'backgroundSelected',
+    type: "backgroundSelected",
     children: <ThemedText>backgroundSelected</ThemedText>,
   },
 };

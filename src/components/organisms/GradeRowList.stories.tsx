@@ -20,6 +20,7 @@ const meta = {
     onRemoveRow: fn(),
     onAddRow: fn(),
   },
+  tags: ["autodocs"],
 } satisfies Meta<typeof GradeRowList>;
 
 export default meta;

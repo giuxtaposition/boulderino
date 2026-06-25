@@ -22,6 +22,7 @@ const meta = {
   args: {
     onPress: fn(),
   },
+  tags: ["autodocs"],
 } satisfies Meta<typeof Fab>;
 
 export default meta;

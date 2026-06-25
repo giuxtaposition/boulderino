@@ -1,19 +1,20 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from "@storybook/react";
 
-import { FormField } from './FormField';
-import { Input } from '../atoms/Input';
-import { ThemedText } from '../themed-text';
+import { FormField } from "./FormField";
+import { Input } from "../atoms/Input";
+import { ThemedText } from "../themed-text";
 
 const meta = {
-  title: 'Molecules/FormField',
+  title: "Molecules/FormField",
   component: FormField,
   args: {
-    label: 'Route name',
-    variant: 'default',
+    label: "Route name",
+    variant: "default",
   },
   argTypes: {
-    variant: { control: 'radio', options: ['default', 'small'] },
+    variant: { control: "radio", options: ["default", "small"] },
   },
+  tags: ["autodocs"],
 } satisfies Meta<typeof FormField>;
 
 export default meta;
@@ -32,8 +33,8 @@ export const WithHelper: Story = {
 
 export const Small: Story = {
   args: {
-    variant: 'small',
-    label: 'Order',
+    variant: "small",
+    label: "Order",
     children: <Input keyboardType="numeric" placeholder="1" />,
   },
 };

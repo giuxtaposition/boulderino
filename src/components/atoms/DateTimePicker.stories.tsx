@@ -12,6 +12,7 @@ const meta = {
     onChange: fn(),
     value: new Date(2026, 5, 24, 14, 30),
   },
+  tags: ["autodocs"],
 } satisfies Meta<typeof DateTimePicker>;
 
 export default meta;

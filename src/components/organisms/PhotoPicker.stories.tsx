@@ -1,22 +1,23 @@
-import { useState } from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-import { expect, fn, userEvent, within } from 'storybook/test';
+import { useState } from "react";
+import type { Meta, StoryObj } from "@storybook/react";
+import { expect, fn, userEvent, within } from "storybook/test";
 
-import { PhotoPicker, PickedPhoto } from './PhotoPicker';
+import { PhotoPicker, PickedPhoto } from "./PhotoPicker";
 
 const samplePhoto: PickedPhoto = {
-  uri: 'https://images.unsplash.com/photo-1522163182402-834f871fd851?w=400',
+  uri: "https://images.unsplash.com/photo-1522163182402-834f871fd851?w=400",
   width: 400,
   height: 300,
 };
 
 const meta = {
-  title: 'Organisms/PhotoPicker',
+  title: "Organisms/PhotoPicker",
   component: PhotoPicker,
   args: {
     photo: null,
     onPick: fn(),
   },
+  tags: ["autodocs"],
 } satisfies Meta<typeof PhotoPicker>;
 
 export default meta;
@@ -43,7 +44,7 @@ export const Interactive: Story = {
 export const InvokesOnPick: Story = {
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement);
-    const button = await canvas.findByTestId('pick-photo-button');
+    const button = await canvas.findByTestId("pick-photo-button");
     await userEvent.click(button);
     await expect(args.onPick).toHaveBeenCalledTimes(1);
   },

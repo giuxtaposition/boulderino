@@ -6,6 +6,7 @@ import { ThemedText } from "../themed-text";
 const meta = {
   title: "Atoms/FormCardDrawer",
   component: FormCardDrawer,
+  tags: ["autodocs"],
 } satisfies Meta<typeof FormCardDrawer>;
 
 export default meta;

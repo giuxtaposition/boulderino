@@ -13,6 +13,7 @@ const meta = {
     testIDPrefix: "sb-color",
     onChange: fn(),
   },
+  tags: ["autodocs"],
 } satisfies Meta<typeof ColorPicker>;
 
 export default meta;

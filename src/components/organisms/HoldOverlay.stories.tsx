@@ -46,6 +46,7 @@ const meta = {
     holds: [star],
     testID: "hold-overlay",
   },
+  tags: ["autodocs"],
 } satisfies Meta<typeof HoldOverlay>;
 
 export default meta;

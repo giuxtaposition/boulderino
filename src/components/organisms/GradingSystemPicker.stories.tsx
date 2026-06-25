@@ -42,6 +42,7 @@ const meta = {
     selected: "V-scale",
     onSelect: fn(),
   },
+  tags: ["autodocs"],
 } satisfies Meta<typeof GradingSystemPicker>;
 
 export default meta;

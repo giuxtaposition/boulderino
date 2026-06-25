@@ -19,6 +19,7 @@ const meta = {
   title: "Organisms/GradePicker",
   component: GradePicker,
   args: { grades, selected: "V2", onSelect: fn() },
+  tags: ["autodocs"],
 } satisfies Meta<typeof GradePicker>;
 
 export default meta;

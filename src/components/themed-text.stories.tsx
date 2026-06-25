@@ -24,6 +24,7 @@ const meta = {
     children: "The quick brown fox",
     type: "default",
   },
+  tags: ["autodocs"],
 } satisfies Meta<typeof ThemedText>;
 
 export default meta;

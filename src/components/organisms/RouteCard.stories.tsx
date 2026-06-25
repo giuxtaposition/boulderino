@@ -28,6 +28,7 @@ const meta = {
     index: 0,
     background: Rainbow[1],
   },
+  tags: ["autodocs"],
 } satisfies Meta<typeof RouteCard>;
 
 export default meta;

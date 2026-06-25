@@ -9,6 +9,7 @@ const meta = {
   args: {
     color: Rainbow[3],
   },
+  tags: ["autodocs"],
 } satisfies Meta<typeof Tag>;
 
 export default meta;
