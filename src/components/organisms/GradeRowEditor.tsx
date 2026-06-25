@@ -1,9 +1,9 @@
 import { useMemo } from "react";
 import { StyleSheet, View } from "react-native";
 
-import { Button } from "../atoms/Button";
 import { Input } from "../atoms/Input";
 import { ColorPicker } from "../molecules/ColorPicker";
+import { DeleteIconButton } from "../molecules/DeleteIconButton";
 import { FormField } from "../molecules/FormField";
 import { BorderWidth, Radius, Spacing, Theme } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
@@ -72,17 +72,12 @@ export function GradeRowEditor({
       </FormField>
 
       {removable && (
-        <Button
-          variant="solid"
-          action="negative"
-          size="small"
+        <DeleteIconButton
           onPress={onRemove}
           accessibilityLabel={`remove grade ${index + 1}`}
           testID={`remove-grade-row-${index}`}
           style={styles.removeButton}
-        >
-          REMOVE
-        </Button>
+        />
       )}
     </View>
   );

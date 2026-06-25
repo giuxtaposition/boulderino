@@ -1,7 +1,6 @@
 import { lazy, Suspense, useCallback, useMemo, useState } from "react";
 import {
   ActivityIndicator,
-  Pressable,
   ScrollView,
   StyleSheet,
   View,
@@ -9,7 +8,12 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 
+import { ChevronLeft } from "lucide-react-native";
+
 import { Button } from "@/components/atoms/Button";
+import { IconButton } from "@/components/atoms/IconButton";
+import { DeleteIconButton } from "@/components/molecules/DeleteIconButton";
+import { EditIconButton } from "@/components/molecules/EditIconButton";
 import {
   AttemptForm,
   AttemptFormInput,
@@ -137,19 +141,17 @@ export default function RouteDetailScreen() {
       <ThemedView style={styles.container}>
         <SafeAreaView style={styles.safeArea} edges={["top"]}>
           <ScrollView contentContainerStyle={styles.scroll}>
-            <Pressable
-              accessibilityRole="button"
+            <IconButton
+              border
+              accessibilityLabel="Back"
               onPress={() =>
                 router.canGoBack() ? router.back() : router.replace("/routes")
               }
               testID="route-detail-back"
-              style={({ pressed }) => [
-                styles.backButton,
-                pressed && styles.pressed,
-              ]}
+              style={styles.backButton}
             >
-              <ThemedText style={styles.backText}>← BACK</ThemedText>
-            </Pressable>
+              <ChevronLeft color={theme.text} size={20} />
+            </IconButton>
             <View testID="route-detail-missing" style={styles.missingBlock}>
               <ThemedText style={styles.missingText}>
                 Route not found.
@@ -251,19 +253,17 @@ export default function RouteDetailScreen() {
           contentContainerStyle={styles.scroll}
           showsVerticalScrollIndicator={false}
         >
-          <Pressable
-            accessibilityRole="button"
+          <IconButton
+            border
+            accessibilityLabel="Back"
             onPress={() =>
               router.canGoBack() ? router.back() : router.replace("/routes")
             }
             testID="route-detail-back"
-            style={({ pressed }) => [
-              styles.backButton,
-              pressed && styles.pressed,
-            ]}
+            style={styles.backButton}
           >
-            <ThemedText style={styles.backText}>← BACK</ThemedText>
-          </Pressable>
+            <ChevronLeft color={theme.text} size={20} />
+          </IconButton>
 
           <View
             testID="route-detail-card"
@@ -347,19 +347,16 @@ export default function RouteDetailScreen() {
                 </>
               ) : (
                 <>
-                  <Button
+                  <EditIconButton
                     onPress={handleStartEdit}
                     testID="route-detail-edit-holds"
-                  >
-                    EDIT HOLDS
-                  </Button>
-                  <Button
-                    action="negative"
+                    accessibilityLabel="Edit holds"
+                  />
+                  <DeleteIconButton
                     onPress={() => setConfirmingDelete(true)}
                     testID="route-detail-delete"
-                  >
-                    DELETE ROUTE
-                  </Button>
+                    accessibilityLabel="Delete route"
+                  />
                 </>
               )}
             </View>
@@ -497,19 +494,7 @@ const makeStyles = (theme: Theme) =>
     },
     backButton: {
       alignSelf: "flex-start",
-      paddingVertical: Spacing.md,
-      paddingHorizontal: Spacing.lg,
-      borderWidth: BorderWidth.thick,
-      borderColor: theme.border,
       backgroundColor: theme.surface1,
-      borderRadius: Radius.sm,
-    },
-    pressed: { transform: [{ translateX: 2 }, { translateY: 2 }] },
-    backText: {
-      color: theme.text,
-      fontSize: 12,
-      fontWeight: "800",
-      letterSpacing: 1.5,
     },
     card: {
       borderWidth: BorderWidth.thick,

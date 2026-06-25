@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
-import { Button } from "../atoms/Button";
 import { ThemedText } from "../themed-text";
 import {
   BorderWidth,
@@ -14,12 +13,15 @@ import {
 import { GradingSystem } from "@/domain/grading/GradingSystem";
 import { useTheme } from "@/hooks/use-theme";
 import { Tag } from "../atoms/Tag";
+import { EditIconButton } from "../molecules/EditIconButton";
+import { DeleteIconButton } from "../molecules/DeleteIconButton";
+import { Button } from "../atoms/Button";
 
 type SystemCardProps = {
   system: GradingSystem;
   background: string;
-  onDelete?: (name: string) => void;
-  onEdit?: (name: string) => void;
+  onDelete: (name: string) => void;
+  onEdit: (name: string) => void;
 };
 
 export function SystemCard({
@@ -42,38 +44,26 @@ export function SystemCard({
       ]}
     >
       <View style={styles.header}>
-        <ThemedText style={[styles.name, { color: cardTextColor }]}>
+        <ThemedText
+          style={[styles.name, { color: cardTextColor }]}
+          numberOfLines={1}
+          ellipsizeMode="tail"
+        >
           {system.name}
         </ThemedText>
-        <ThemedText
-          style={[styles.meta, { color: cardTextColor, opacity: 0.75 }]}
-        >
-          {system.grades.length} grades
-        </ThemedText>
-      </View>
-      <View style={styles.chipRow}>
-        {system.grades.map((grade) => {
-          return (
-            <Tag
-              border={true}
-              key={grade.name}
-              color={grade.color}
-              size="large"
-            >
-              {grade.name}
-            </Tag>
-          );
-        })}
-      </View>
-      {onDelete || onEdit ? (
         <View style={styles.actionRow}>
+          <ThemedText
+            style={[styles.meta, { color: cardTextColor, opacity: 0.75 }]}
+          >
+            {system.grades.length} grades
+          </ThemedText>
           {confirmingDelete ? (
             <>
               <Button
                 size="small"
                 action="negative"
                 onPress={() => {
-                  onDelete?.(system.name);
+                  onDelete(system.name);
                   setConfirmingDelete(false);
                 }}
                 testID={`system-confirm-delete-${system.name}`}
@@ -90,29 +80,32 @@ export function SystemCard({
             </>
           ) : (
             <>
-              {onEdit ? (
-                <Button
-                  size="small"
-                  onPress={() => onEdit(system.name)}
-                  testID={`system-edit-${system.name}`}
-                >
-                  EDIT
-                </Button>
-              ) : null}
-              {onDelete ? (
-                <Button
-                  size="small"
-                  action="negative"
-                  onPress={() => setConfirmingDelete(true)}
-                  testID={`system-delete-${system.name}`}
-                >
-                  DELETE
-                </Button>
-              ) : null}
+              <EditIconButton
+                onPress={() => onEdit(system.name)}
+                testID={`system-edit-${system.name}`}
+              />
+              <DeleteIconButton
+                onPress={() => setConfirmingDelete(true)}
+                testID={`system-delete-${system.name}`}
+              />
             </>
           )}
         </View>
-      ) : null}
+      </View>
+      <View style={styles.chipRow}>
+        {system.grades.map((grade) => {
+          return (
+            <Tag
+              border={true}
+              key={grade.name}
+              color={grade.color}
+              size="large"
+            >
+              {grade.name}
+            </Tag>
+          );
+        })}
+      </View>
     </View>
   );
 }
@@ -129,9 +122,13 @@ const makeStyles = (theme: Theme) =>
     header: {
       flexDirection: "row",
       justifyContent: "space-between",
-      alignItems: "baseline",
+      alignItems: "center",
+      gap: Spacing.md,
     },
     name: {
+      flex: 1,
+      flexShrink: 1,
+      minWidth: 0,
       fontSize: 22,
       fontWeight: "800",
       letterSpacing: -0.3,
@@ -146,8 +143,10 @@ const makeStyles = (theme: Theme) =>
       gap: Spacing.md,
     },
     actionRow: {
+      justifyContent: "flex-end",
+      alignItems: "center",
       flexDirection: "row",
-      flexWrap: "wrap",
+      flexShrink: 0,
       gap: Spacing.md,
     },
   });

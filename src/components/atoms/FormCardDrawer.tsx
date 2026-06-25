@@ -81,7 +81,7 @@ export function FormCardDrawer({
           >
             {header}
             {fullscreen ? (
-              <View style={styles.fullscreenContent}>{children}</View>
+              children
             ) : (
               <ScrollView
                 contentContainerStyle={styles.sheetContent}
@@ -106,7 +106,7 @@ export function FormCardDrawer({
     >
       {header}
       {fullscreen ? (
-        <View style={styles.fullscreenContent}>{children}</View>
+        children
       ) : (
         <ScrollView
           contentContainerStyle={styles.sheetContent}
@@ -190,9 +190,5 @@ const makeStyles = (
       top: Spacing.xl,
       maxHeight: "100%",
       flex: 1,
-    },
-    fullscreenContent: {
-      flex: 1,
-      overflow: "hidden",
     },
   });

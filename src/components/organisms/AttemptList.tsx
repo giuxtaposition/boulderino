@@ -2,6 +2,7 @@ import { lazy, Suspense, useCallback, useMemo, useState } from "react";
 import { ActivityIndicator, Pressable, StyleSheet, View } from "react-native";
 
 import { Button } from "@/components/atoms/Button";
+import { DeleteIconButton } from "@/components/molecules/DeleteIconButton";
 import { ThemedText } from "@/components/themed-text";
 import {
   BorderWidth,
@@ -173,14 +174,10 @@ function AttemptItem({
               </Button>
             </>
           ) : (
-            <Button
-              size="small"
-              action="negative"
+            <DeleteIconButton
               onPress={() => setConfirmingDelete(true)}
               testID={`attempt-item-${attempt.id}-delete`}
-            >
-              DELETE
-            </Button>
+            />
           )}
         </View>
       ) : null}

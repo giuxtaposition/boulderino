@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { expect, within } from "storybook/test";
+import { expect, fn, within } from "storybook/test";
 
 import { SystemCard } from "./SystemCard";
 import { RainbowTokens } from "@/constants/theme";
@@ -23,6 +23,8 @@ const meta = {
   args: {
     system: vScale,
     background: RainbowTokens.yellow.bg,
+    onDelete: fn(),
+    onEdit: fn(),
   },
   tags: ["autodocs"],
 } satisfies Meta<typeof SystemCard>;
@@ -34,6 +36,15 @@ export const Default: Story = {};
 
 export const Blue: Story = {
   args: { background: RainbowTokens.white.bg },
+};
+
+export const LongName: Story = {
+  args: {
+    system: GradingSystem.create({
+      name: "Super long grading system name that overflows",
+      grades: [...vScale.grades],
+    }),
+  },
 };
 
 export const RendersAllGradeChips: Story = {
