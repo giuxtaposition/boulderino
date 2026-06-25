@@ -13,6 +13,7 @@ import {
 } from "@/constants/theme";
 import { GradingSystem } from "@/domain/grading/GradingSystem";
 import { useTheme } from "@/hooks/use-theme";
+import { Tag } from "../atoms/Tag";
 
 type SystemCardProps = {
   system: GradingSystem;
@@ -35,7 +36,10 @@ export function SystemCard({
   return (
     <View
       testID={`system-row-${system.name}`}
-      style={[styles.card, { backgroundColor: background, borderColor: cardTextColor }]}
+      style={[
+        styles.card,
+        { backgroundColor: background, borderColor: cardTextColor },
+      ]}
     >
       <View style={styles.header}>
         <ThemedText style={[styles.name, { color: cardTextColor }]}>
@@ -49,31 +53,15 @@ export function SystemCard({
       </View>
       <View style={styles.chipRow}>
         {system.grades.map((grade) => {
-          const chipTextColor = onColor(grade.color);
           return (
-            <View
+            <Tag
+              border={true}
               key={grade.name}
-              style={[
-                styles.chip,
-                {
-                  backgroundColor: grade.color,
-                  borderColor: chipTextColor,
-                },
-              ]}
-              testID={`system-grade-${system.name}-${grade.name}`}
+              color={grade.color}
+              size="large"
             >
-              <ThemedText style={[styles.chipText, { color: chipTextColor }]}>
-                {grade.name}
-              </ThemedText>
-              <ThemedText
-                style={[
-                  styles.chipMeta,
-                  { color: chipTextColor, opacity: 0.75 },
-                ]}
-              >
-                #{grade.order}
-              </ThemedText>
-            </View>
+              {grade.name}
+            </Tag>
           );
         })}
       </View>
@@ -157,17 +145,6 @@ const makeStyles = (theme: Theme) =>
       flexWrap: "wrap",
       gap: Spacing.md,
     },
-    chip: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: Spacing.md,
-      borderWidth: BorderWidth.thick,
-      borderRadius: Radius.sm,
-      paddingVertical: Spacing.md,
-      paddingHorizontal: Spacing.md,
-    },
-    chipText: { fontSize: 13, fontWeight: "800" },
-    chipMeta: { fontSize: 10, fontWeight: "700" },
     actionRow: {
       flexDirection: "row",
       flexWrap: "wrap",

@@ -16,15 +16,28 @@ type TagProps = {
   border?: boolean;
   testID?: string;
   leftIcon?: React.ReactNode;
+  size?: "small" | "medium" | "large";
   children: React.ReactNode;
 };
 
-export function Tag({ color, border, children, testID, leftIcon }: TagProps) {
+export function Tag({
+  color,
+  size = "small",
+  border,
+  children,
+  testID,
+  leftIcon,
+}: TagProps) {
   const theme = useTheme();
   const styles = useMemo(() => makeStyles(theme, color), [theme]);
   return (
     <View
-      style={[styles.tag, { backgroundColor: color }, border && styles.border]}
+      style={[
+        styles.tag,
+        styles[size],
+        { backgroundColor: color },
+        border && styles.border,
+      ]}
       testID={testID}
     >
       {leftIcon && leftIcon}
@@ -42,12 +55,22 @@ const makeStyles = (theme: Theme, color: string) =>
   StyleSheet.create({
     tag: {
       borderRadius: Radius.sm,
-      paddingHorizontal: Spacing.md,
-      height: 20,
       justifyContent: "center",
       alignItems: "center",
       flexDirection: "row",
       gap: Spacing.md,
+    },
+    small: {
+      height: 20,
+      paddingHorizontal: Spacing.md,
+    },
+    medium: {
+      height: 24,
+      paddingHorizontal: Spacing.lg,
+    },
+    large: {
+      height: 28,
+      paddingHorizontal: Spacing.xl,
     },
     border: {
       borderWidth: BorderWidth.thin,
