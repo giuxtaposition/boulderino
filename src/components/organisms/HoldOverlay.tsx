@@ -70,7 +70,7 @@ export default function HoldOverlay({
               key={hold.id}
               path={buildPath(hold.points, size.width, size.height)}
               color={hold.color}
-              opacity={0.4}
+              opacity={0.3}
               style="fill"
             />
           ))}

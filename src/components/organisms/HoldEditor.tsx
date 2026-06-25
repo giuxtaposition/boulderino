@@ -772,7 +772,7 @@ export default function HoldEditor({
                     key={hold.id}
                     path={buildClosedPath(hold.points, imageRect)}
                     color={hold.color}
-                    opacity={0.4}
+                    opacity={0.3}
                     style="fill"
                   />
                 ))}
