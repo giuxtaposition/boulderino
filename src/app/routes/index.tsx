@@ -1,5 +1,5 @@
 import { lazy, Suspense, useCallback, useMemo, useState } from "react";
-import { ActivityIndicator, ScrollView, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Platform, ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
@@ -84,11 +84,18 @@ export default function RoutesScreen() {
       });
       if (result.canceled || result.assets.length === 0) return;
       const asset = result.assets[0];
-      setPhoto({
-        uri: asset.uri,
-        width: asset.width,
-        height: asset.height,
-      });
+      let uri = asset.uri;
+      if (Platform.OS === "web" && uri.startsWith("blob:")) {
+        const response = await fetch(uri);
+        const blob = await response.blob();
+        uri = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        });
+      }
+      setPhoto({ uri, width: asset.width, height: asset.height });
       setHolds([]);
       setMarkingHolds(true);
       setError(null);

@@ -440,7 +440,7 @@ const makeStyles = (theme: Theme) =>
     editorToolbar: {
       flexDirection: "row",
       gap: Spacing.md,
-      paddingBottom: Spacing.xl,
+      paddingBottom: BottomTabHeight + Spacing.md,
     },
     scroll: {
       paddingHorizontal: Spacing.xl,

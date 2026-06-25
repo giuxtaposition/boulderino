@@ -342,9 +342,13 @@ export default function HoldEditor({
     return () => node.removeEventListener("wheel", handleWheel);
   }, [canvasSize.width, canvasSize.height, clampPan]);
 
+  const measuredRef = useRef(false);
   const handleLayout = useCallback((event: LayoutChangeEvent) => {
     const { width, height } = event.nativeEvent.layout;
-    setCanvasSize({ width: Math.max(width, 1), height: Math.max(height, 1) });
+    if (width < 2 || height < 2) return;
+    if (measuredRef.current) return;
+    measuredRef.current = true;
+    setCanvasSize({ width, height });
   }, []);
 
   const tryRemoveHoldAt = useCallback(
