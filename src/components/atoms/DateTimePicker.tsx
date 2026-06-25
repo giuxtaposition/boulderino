@@ -251,7 +251,7 @@ function Wheel({ label, data, value, onChange, format }: WheelProps) {
     <View style={styles.wheel}>
       <ThemedText style={styles.wheelLabel}>{label}</ThemedText>
       <View style={styles.wheelBody}>
-        <View pointerEvents="none" style={styles.wheelSelection} />
+        <View style={[styles.wheelSelection, { pointerEvents: "none" }]} />
         <FlatList
           ref={ref}
           data={data as number[]}

@@ -11,15 +11,15 @@ const buildPath = (
   width: number,
   height: number,
 ) => {
-  const path = Skia.Path.Make();
+  const builder = Skia.PathBuilder.Make();
   points.forEach((p, i) => {
     const x = p.x * width;
     const y = p.y * height;
-    if (i === 0) path.moveTo(x, y);
-    else path.lineTo(x, y);
+    if (i === 0) builder.moveTo(x, y);
+    else builder.lineTo(x, y);
   });
-  path.close();
-  return path;
+  builder.close();
+  return builder.build();
 };
 
 export interface HoldOverlayProps {

@@ -51,10 +51,7 @@ const makeStyles = (theme: Theme) => {
       bottom: Platform.OS === "web" ? 80 : 20,
       right: 30,
       elevation: 5,
-      shadowColor: "#000", // For iOS shadow
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
+      boxShadow: "0px 2px 3.84px rgba(0, 0, 0, 0.25)",
     },
     pressed: {
       transform: [{ translateX: 3 }, { translateY: 3 }],

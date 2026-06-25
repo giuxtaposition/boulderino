@@ -81,15 +81,15 @@ const buildClosedPath = (
   width: number,
   height: number,
 ) => {
-  const path = Skia.Path.Make();
+  const builder = Skia.PathBuilder.Make();
   points.forEach((p, i) => {
     const x = p.x * width;
     const y = p.y * height;
-    if (i === 0) path.moveTo(x, y);
-    else path.lineTo(x, y);
+    if (i === 0) builder.moveTo(x, y);
+    else builder.lineTo(x, y);
   });
-  path.close();
-  return path;
+  builder.close();
+  return builder.build();
 };
 
 const polygonsOverlap = (
@@ -608,7 +608,7 @@ export default function HoldEditor({
           </View>
         </GestureDetector>
         {isLoading && (
-          <View style={styles.overlay} pointerEvents="none">
+          <View style={[styles.overlay, { pointerEvents: "none" }]}>
             <ActivityIndicator size="small" />
             {statusLabel && (
               <ThemedText style={styles.overlayText}>{statusLabel}</ThemedText>
@@ -616,7 +616,7 @@ export default function HoldEditor({
           </View>
         )}
         {zoom > 1.05 && (
-          <View style={styles.zoomBadge} pointerEvents="none">
+          <View style={[styles.zoomBadge, { pointerEvents: "none" }]}>
             <ThemedText style={styles.zoomText}>
               {zoom.toFixed(1)}x
             </ThemedText>
