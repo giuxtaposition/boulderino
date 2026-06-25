@@ -14,8 +14,7 @@ import {
 } from "@/constants/theme";
 import { Route } from "@/domain/route/Route";
 import { useTheme } from "@/hooks/use-theme";
-import { Tag } from "../atoms/Tag";
-import { DISCIPLINES_OPTIONS } from "../molecules/DisciplineSelector";
+import { DisciplineTag } from "../molecules/DisciplineTag";
 
 type RouteCardProps = {
   route: Route;
@@ -38,10 +37,6 @@ export function RouteCard({ route, index, background }: RouteCardProps) {
   const styles = makeStyles(theme);
   const router = useRouter();
   const cardTextColor = onColor(background);
-
-  const tagBackground =
-    DISCIPLINES_OPTIONS.find((option) => option.value === route.discipline)
-      ?.color ?? theme.background;
 
   return (
     <Pressable
@@ -70,9 +65,7 @@ export function RouteCard({ route, index, background }: RouteCardProps) {
           >
             {route.name}
           </ThemedText>
-          <Tag border={true} color={tagBackground}>
-            {route.discipline}
-          </Tag>
+          <DisciplineTag discipline={route.discipline} />
         </View>
         <View style={styles.headerRow}>
           <ThemedText style={[styles.grade, { color: cardTextColor }]}>

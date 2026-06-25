@@ -32,9 +32,12 @@ import {
   Theme,
   blockShadow,
   onColor,
+  pickRainbowColor,
 } from "@/constants/theme";
 import { useContainer } from "@/composition/Container";
 import { useTheme } from "@/hooks/use-theme";
+import { DisciplineTag } from "../../components/molecules/DisciplineTag";
+import { Tag } from "../../components/atoms/Tag";
 
 const dateFormatter = new Intl.DateTimeFormat(undefined, {
   year: "numeric",
@@ -171,10 +174,7 @@ export default function RouteDetailScreen() {
               />
             </Suspense>
             <View style={styles.editorToolbar}>
-              <Button
-                onPress={handleSaveEdit}
-                testID="route-detail-save-holds"
-              >
+              <Button onPress={handleSaveEdit} testID="route-detail-save-holds">
                 SAVE HOLDS
               </Button>
               <Button
@@ -329,22 +329,23 @@ export default function RouteDetailScreen() {
             </ThemedText>
 
             <View style={styles.metaRow}>
-              <View style={styles.gradeTag} testID="route-detail-grade">
-                <View
-                  style={[styles.gradeSwatch, { backgroundColor: background }]}
-                  testID="route-detail-grade-swatch"
-                />
-                <ThemedText style={styles.gradeTagText}>
-                  {route.grade.systemId} / {route.grade.name}
-                </ThemedText>
-              </View>
-              <View style={[styles.disciplineTag, { backgroundColor: onCard }]}>
-                <ThemedText
-                  style={[styles.disciplineTagText, { color: background }]}
-                >
-                  {route.discipline}
-                </ThemedText>
-              </View>
+              <Tag
+                color={theme.base}
+                border={true}
+                testID="route-detail-grade-tag"
+                leftIcon={
+                  <View
+                    style={[
+                      styles.gradeSwatch,
+                      { backgroundColor: background },
+                    ]}
+                    testID="route-detail-grade-swatch"
+                  />
+                }
+              >
+                {route.grade.name}
+              </Tag>
+              <DisciplineTag discipline={route.discipline} />
             </View>
 
             <ThemedText
@@ -356,14 +357,15 @@ export default function RouteDetailScreen() {
 
             {route.tags.length > 0 && (
               <View style={styles.tagRow} testID="route-detail-tags">
-                {route.tags.map((tag) => (
-                  <View
+                {route.tags.map((tag, index) => (
+                  <Tag
                     key={tag}
-                    style={styles.tagChip}
+                    color={pickRainbowColor(index)}
+                    border={true}
                     testID={`route-detail-tag-${tag}`}
                   >
-                    <ThemedText style={styles.tagChipText}>#{tag}</ThemedText>
-                  </View>
+                    #{tag}
+                  </Tag>
                 ))}
               </View>
             )}
@@ -500,41 +502,12 @@ const makeStyles = (theme: Theme) =>
       gap: Spacing.two,
       flexWrap: "wrap",
     },
-    gradeTag: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: Spacing.one,
-      backgroundColor: theme.surface,
-      borderWidth: BorderWidth.thick,
-      borderColor: theme.border,
-      borderRadius: Radius.small,
-      paddingVertical: Spacing.one,
-      paddingHorizontal: Spacing.two,
-    },
     gradeSwatch: {
-      width: 14,
-      height: 14,
+      width: 10,
+      height: 10,
       borderRadius: Radius.small,
       borderWidth: BorderWidth.thin,
       borderColor: theme.border,
-    },
-    gradeTagText: {
-      color: theme.text,
-      fontWeight: "800",
-      fontSize: 13,
-    },
-    disciplineTag: {
-      backgroundColor: theme.text,
-      borderRadius: Radius.small,
-      paddingVertical: Spacing.one,
-      paddingHorizontal: Spacing.two,
-    },
-    disciplineTagText: {
-      color: theme.base,
-      fontWeight: "800",
-      fontSize: 11,
-      letterSpacing: 1,
-      textTransform: "uppercase",
     },
     timestamp: {
       fontSize: 12,
