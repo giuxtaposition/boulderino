@@ -25,11 +25,11 @@ export function EmptyBlock({ message, testID }: EmptyBlockProps) {
 const makeStyles = (theme: Theme) =>
   StyleSheet.create({
     block: {
-      padding: Spacing.five,
+      padding: Spacing.xxl,
       borderWidth: BorderWidth.thick,
       borderStyle: 'dashed',
       borderColor: theme.borderMuted,
-      borderRadius: Radius.medium,
+      borderRadius: Radius.md,
       alignItems: 'center',
     },
     text: { color: theme.textSecondary, fontWeight: '600' },

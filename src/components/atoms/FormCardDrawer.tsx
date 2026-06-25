@@ -13,11 +13,10 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import {
   BorderWidth,
   MaxContentWidth,
-  Media,
   Radius,
   Spacing,
   Theme,
-  blockShadow,
+  elevation,
 } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
 import { X } from "lucide-react-native";
@@ -76,7 +75,10 @@ export function FormCardDrawer({
             onPress={() => setVisible(false)}
             accessibilityLabel="close drawer"
           />
-          <View {...rest} style={[styles.card, fullscreen && styles.cardFullscreen, style]}>
+          <View
+            {...rest}
+            style={[styles.card, fullscreen && styles.cardFullscreen, style]}
+          >
             {header}
             {fullscreen ? (
               <View style={styles.fullscreenContent}>{children}</View>
@@ -98,7 +100,10 @@ export function FormCardDrawer({
   if (!visible) return null;
 
   return (
-    <View {...rest} style={[styles.card, fullscreen && styles.cardFullscreen, style]}>
+    <View
+      {...rest}
+      style={[styles.card, fullscreen && styles.cardFullscreen, style]}
+    >
       {header}
       {fullscreen ? (
         <View style={styles.fullscreenContent}>{children}</View>
@@ -115,41 +120,45 @@ export function FormCardDrawer({
   );
 }
 
-const makeStyles = (theme: Theme, isMobile: boolean, desktopMaxHeight: number) =>
+const makeStyles = (
+  theme: Theme,
+  isMobile: boolean,
+  desktopMaxHeight: number,
+) =>
   StyleSheet.create({
     card: isMobile
       ? {
-          backgroundColor: theme.backgroundElement,
-          borderTopWidth: BorderWidth.chunky,
-          borderLeftWidth: BorderWidth.chunky,
-          borderRightWidth: BorderWidth.chunky,
+          backgroundColor: theme.surface1,
+          borderTopWidth: BorderWidth.thick,
+          borderLeftWidth: BorderWidth.thick,
+          borderRightWidth: BorderWidth.thick,
           borderColor: theme.border,
-          borderTopLeftRadius: Radius.large,
-          borderTopRightRadius: Radius.large,
-          paddingHorizontal: Spacing.four,
-          paddingTop: Spacing.four,
-          paddingBottom: Spacing.two,
-          gap: Spacing.two,
+          borderTopLeftRadius: Radius.lg,
+          borderTopRightRadius: Radius.lg,
+          paddingHorizontal: Spacing.xl,
+          paddingTop: Spacing.xl,
+          paddingBottom: Spacing.md,
+          gap: Spacing.md,
           maxHeight: "85%",
         }
       : {
-          backgroundColor: theme.backgroundElement,
-          borderWidth: BorderWidth.chunky,
+          backgroundColor: theme.surface1,
+          borderWidth: BorderWidth.thick,
           borderColor: theme.border,
-          borderRadius: Radius.medium,
-          paddingHorizontal: Spacing.four,
-          paddingTop: Spacing.four,
-          paddingBottom: Spacing.two,
-          gap: Spacing.two,
+          borderRadius: Radius.md,
+          paddingHorizontal: Spacing.xl,
+          paddingTop: Spacing.xl,
+          paddingBottom: Spacing.md,
+          gap: Spacing.md,
           position: "fixed",
           bottom: 80,
-          left: Spacing.four,
-          right: Spacing.four,
+          left: Spacing.xl,
+          right: Spacing.xl,
           marginHorizontal: "auto",
           width: "100%",
           maxWidth: MaxContentWidth,
           maxHeight: desktopMaxHeight,
-          ...blockShadow(theme),
+          ...elevation(theme, "md"),
         },
     sheetRoot: {
       flex: 1,
@@ -161,11 +170,11 @@ const makeStyles = (theme: Theme, isMobile: boolean, desktopMaxHeight: number) =
       left: 0,
       right: 0,
       bottom: 0,
-      backgroundColor: Media.scrim,
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
     },
     sheetContent: {
-      paddingBottom: Spacing.six,
-      gap: Spacing.two,
+      paddingBottom: Spacing.xxl,
+      gap: Spacing.md,
     },
     header: {
       flexDirection: "row",
@@ -178,7 +187,7 @@ const makeStyles = (theme: Theme, isMobile: boolean, desktopMaxHeight: number) =
       color: theme.text,
     },
     cardFullscreen: {
-      top: Spacing.four,
+      top: Spacing.xl,
       maxHeight: "100%",
       flex: 1,
     },

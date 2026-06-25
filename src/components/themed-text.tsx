@@ -1,99 +1,32 @@
-import { Platform, StyleSheet, Text, type TextProps } from "react-native";
-
-import { Fonts, ThemeColor } from "@/constants/theme";
+import { Text, type TextProps } from "react-native";
 import { useTheme } from "@/hooks/use-theme";
+import { Typography } from "@/constants/theme";
+
+type Variant = keyof typeof Typography;
+
+type Tone = "default" | "link" | "code";
 
 export type ThemedTextProps = TextProps & {
-  type?:
-    | "default"
-    | "title"
-    | "extraSmall"
-    | "extraSmallBold"
-    | "small"
-    | "smallBold"
-    | "subtitle"
-    | "link"
-    | "linkPrimary"
-    | "code";
-  themeColor?: ThemeColor;
+  variant?: Variant;
+  tone?: Tone;
 };
 
 export function ThemedText({
   style,
-  type = "default",
-  themeColor,
+  variant = "body",
+  tone = "default",
   ...rest
 }: ThemedTextProps) {
   const theme = useTheme();
 
-  return (
-    <Text
-      style={[
-        { color: theme[themeColor ?? "text"] },
-        type === "default" && styles.default,
-        type === "title" && styles.title,
-        type === "extraSmall" && styles.extraSmall,
-        type === "extraSmallBold" && styles.extraSmallBold,
-        type === "small" && styles.small,
-        type === "smallBold" && styles.smallBold,
-        type === "subtitle" && styles.subtitle,
-        type === "link" && styles.link,
-        type === "linkPrimary" && [styles.linkPrimary, { color: theme.link }],
-        type === "code" && styles.code,
-        style,
-      ]}
-      {...rest}
-    />
-  );
-}
+  const baseStyle = Typography[variant];
 
-const styles = StyleSheet.create({
-  extraSmall: {
-    fontSize: 12,
-    lineHeight: 16,
-    fontWeight: 500,
-  },
-  extraSmallBold: {
-    fontSize: 12,
-    lineHeight: 16,
-    fontWeight: 800,
-  },
-  small: {
-    fontSize: 14,
-    lineHeight: 20,
-    fontWeight: 500,
-  },
-  smallBold: {
-    fontSize: 14,
-    lineHeight: 20,
-    fontWeight: 700,
-  },
-  default: {
-    fontSize: 16,
-    lineHeight: 24,
-    fontWeight: 500,
-  },
-  title: {
-    fontSize: 48,
-    fontWeight: 600,
-    lineHeight: 52,
-  },
-  subtitle: {
-    fontSize: 32,
-    lineHeight: 44,
-    fontWeight: 600,
-  },
-  link: {
-    lineHeight: 30,
-    fontSize: 14,
-  },
-  linkPrimary: {
-    lineHeight: 30,
-    fontSize: 14,
-  },
-  code: {
-    fontFamily: Fonts.mono,
-    fontWeight: Platform.select({ android: 700 }) ?? 500,
-    fontSize: 12,
-  },
-});
+  const color =
+    tone === "link"
+      ? theme.link
+      : tone === "code"
+        ? theme.textSecondary
+        : theme.text;
+
+  return <Text style={[{ color }, baseStyle, style]} {...rest} />;
+}

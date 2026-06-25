@@ -2,13 +2,13 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { expect, userEvent, within } from "storybook/test";
 
 import { AttemptList } from "./AttemptList";
-import { Rainbow } from "@/constants/theme";
 import { Attempt } from "@/domain/route/Attempt";
 import { Hold } from "@/domain/route/Hold";
+import { RainbowTokens } from "../../constants/theme";
 
 const fallHold = Hold.restore({
   id: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
-  color: Rainbow[2],
+  color: RainbowTokens.green.bg,
   points: [
     { x: 0.3, y: 0.3 },
     { x: 0.7, y: 0.3 },

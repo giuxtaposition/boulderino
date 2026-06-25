@@ -1,4 +1,4 @@
-import { forwardRef, useMemo } from "react";
+import { forwardRef, useMemo, useState } from "react";
 import { StyleSheet, TextInput, TextInputProps } from "react-native";
 
 import { BorderWidth, Radius, Spacing, Theme } from "@/constants/theme";
@@ -9,16 +9,33 @@ type InputProps = TextInputProps & {
 };
 
 export const Input = forwardRef<TextInput, InputProps>(
-  ({ error, style, ...props }, ref) => {
+  ({ error, style, onFocus, onBlur, ...props }, ref) => {
     const theme = useTheme();
     const styles = useMemo(() => makeStyles(theme), [theme]);
+    const [focused, setFocused] = useState(false);
+
+    const handleFocus: TextInputProps["onFocus"] = (e) => {
+      setFocused(true);
+      onFocus?.(e);
+    };
+    const handleBlur: TextInputProps["onBlur"] = (e) => {
+      setFocused(false);
+      onBlur?.(e);
+    };
 
     return (
       <TextInput
         ref={ref}
-        placeholderTextColor={theme.inputPlaceholder}
+        placeholderTextColor={theme.textSecondary}
         {...props}
-        style={[styles.input, error && styles.inputError, style]}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        style={[
+          styles.input,
+          focused && !error && styles.inputFocused,
+          error && styles.inputError,
+          style,
+        ]}
       />
     );
   },
@@ -31,16 +48,19 @@ const makeStyles = (theme: Theme) =>
     input: {
       borderWidth: BorderWidth.thick,
       borderColor: theme.border,
-      borderRadius: Radius.small,
-      paddingVertical: Spacing.three,
-      paddingHorizontal: Spacing.three,
+      borderRadius: Radius.sm,
+      paddingVertical: Spacing.lg,
+      paddingHorizontal: Spacing.lg,
       fontSize: 16,
       fontWeight: "600",
       color: theme.text,
-      backgroundColor: theme.inputBackground,
+      backgroundColor: theme.surface1,
       minHeight: 48,
     },
+    inputFocused: {
+      borderColor: theme.focusRing,
+    },
     inputError: {
-      borderColor: theme.errorBorder,
+      borderColor: theme.danger,
     },
   });

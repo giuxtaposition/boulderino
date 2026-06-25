@@ -6,23 +6,19 @@ const meta = {
   title: "Themed/ThemedText",
   component: ThemedText,
   argTypes: {
-    type: {
+    variant: {
       control: "select",
-      options: [
-        "default",
-        "title",
-        "subtitle",
-        "small",
-        "smallBold",
-        "link",
-        "linkPrimary",
-        "code",
-      ],
+      options: ["title", "subtitle", "body", "small", "caption", "code"],
+    },
+    tone: {
+      control: "radio",
+      options: ["default", "link", "code"],
     },
   },
   args: {
     children: "The quick brown fox",
-    type: "default",
+    variant: "body",
+    tone: "default",
   },
   tags: ["autodocs"],
 } satisfies Meta<typeof ThemedText>;
@@ -30,17 +26,16 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
-export const Title: Story = { args: { type: "title", children: "Routes" } };
+export const Body: Story = {};
+export const Title: Story = { args: { variant: "title", children: "Routes" } };
 export const Subtitle: Story = {
-  args: { type: "subtitle", children: "New send" },
+  args: { variant: "subtitle", children: "New send" },
 };
-export const ExtraSmall: Story = { args: { type: "extraSmall" } };
-export const ExtraSmallBold: Story = { args: { type: "extraSmallBold" } };
-export const Small: Story = { args: { type: "small" } };
-export const SmallBold: Story = { args: { type: "smallBold" } };
-export const Link: Story = { args: { type: "link", children: "See all" } };
-export const LinkPrimary: Story = {
-  args: { type: "linkPrimary", children: "Open route" },
+export const Small: Story = { args: { variant: "small" } };
+export const Caption: Story = { args: { variant: "caption" } };
+export const Link: Story = {
+  args: { tone: "link", children: "See all" },
 };
-export const Code: Story = { args: { type: "code", children: "const x = 1;" } };
+export const Code: Story = {
+  args: { variant: "code", tone: "code", children: "const x = 1;" },
+};

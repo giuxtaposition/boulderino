@@ -23,16 +23,16 @@ import { Hold } from "@/domain/route/Hold";
 const HoldEditor = lazy(() => import("@/components/organisms/HoldEditor"));
 const HoldOverlay = lazy(() => import("@/components/organisms/HoldOverlay"));
 import {
-  BorderWidth,
   BottomTabHeight,
   MaxContentWidth,
   Radius,
   Spacing,
-  Rainbow,
   Theme,
-  blockShadow,
-  onColor,
+  elevation,
   pickRainbowColor,
+  RainbowTokens,
+  BorderWidth,
+  onColor,
 } from "@/constants/theme";
 import { useContainer } from "@/composition/Container";
 import { useTheme } from "@/hooks/use-theme";
@@ -191,13 +191,13 @@ export default function RouteDetailScreen() {
     );
   }
 
-  let background: string = Rainbow[3];
+  let background = RainbowTokens.green.bg;
   try {
     background = gradingSystemRegistry
       .requireByName(route.grade.systemId)
       .definitionFor(route.grade.name).color;
   } catch {
-    background = Rainbow[3];
+    background = RainbowTokens.green.bg;
   }
   const onCard = onColor(background);
 
@@ -330,7 +330,7 @@ export default function RouteDetailScreen() {
 
             <View style={styles.metaRow}>
               <Tag
-                color={theme.base}
+                color={theme.background}
                 border={true}
                 testID="route-detail-grade-tag"
                 leftIcon={
@@ -433,32 +433,32 @@ const makeStyles = (theme: Theme) =>
     safeArea: { flex: 1 },
     editorFullscreen: {
       flex: 1,
-      paddingHorizontal: Spacing.four,
-      paddingTop: Spacing.four,
-      gap: Spacing.three,
+      paddingHorizontal: Spacing.xl,
+      paddingTop: Spacing.xl,
+      gap: Spacing.lg,
     },
     editorToolbar: {
       flexDirection: "row",
-      gap: Spacing.two,
-      paddingBottom: Spacing.four,
+      gap: Spacing.md,
+      paddingBottom: Spacing.xl,
     },
     scroll: {
-      paddingHorizontal: Spacing.four,
-      paddingTop: Spacing.four,
-      paddingBottom: BottomTabHeight + Spacing.six,
-      gap: Spacing.four,
+      paddingHorizontal: Spacing.xl,
+      paddingTop: Spacing.xl,
+      paddingBottom: BottomTabHeight + Spacing.xxxl,
+      gap: Spacing.xl,
       maxWidth: MaxContentWidth,
       width: "100%",
       alignSelf: "center",
     },
     backButton: {
       alignSelf: "flex-start",
-      paddingVertical: Spacing.two,
-      paddingHorizontal: Spacing.three,
+      paddingVertical: Spacing.md,
+      paddingHorizontal: Spacing.lg,
       borderWidth: BorderWidth.thick,
       borderColor: theme.border,
-      backgroundColor: theme.inputBackground,
-      borderRadius: Radius.small,
+      backgroundColor: theme.surface1,
+      borderRadius: Radius.sm,
     },
     pressed: { transform: [{ translateX: 2 }, { translateY: 2 }] },
     backText: {
@@ -468,28 +468,28 @@ const makeStyles = (theme: Theme) =>
       letterSpacing: 1.5,
     },
     card: {
-      borderWidth: BorderWidth.chunky,
+      borderWidth: BorderWidth.thick,
       borderColor: theme.border,
-      borderRadius: Radius.medium,
-      padding: Spacing.four,
-      gap: Spacing.three,
-      ...blockShadow(theme),
+      borderRadius: Radius.md,
+      padding: Spacing.xl,
+      gap: Spacing.lg,
+      ...elevation(theme, "md"),
     },
     photoFrame: {
       width: "100%",
-      borderRadius: Radius.small,
+      borderRadius: Radius.sm,
       borderWidth: BorderWidth.thick,
       borderColor: theme.border,
-      backgroundColor: theme.surface,
+      backgroundColor: theme.surface1,
       overflow: "hidden",
     },
     editRow: {
       flexDirection: "row",
       flexWrap: "wrap",
-      gap: Spacing.two,
+      gap: Spacing.md,
     },
     cancelButton: {
-      backgroundColor: theme.inputBackground,
+      backgroundColor: theme.surface1,
     },
     name: {
       fontSize: 28,
@@ -499,13 +499,13 @@ const makeStyles = (theme: Theme) =>
     },
     metaRow: {
       flexDirection: "row",
-      gap: Spacing.two,
+      gap: Spacing.md,
       flexWrap: "wrap",
     },
     gradeSwatch: {
       width: 10,
       height: 10,
-      borderRadius: Radius.small,
+      borderRadius: Radius.sm,
       borderWidth: BorderWidth.thin,
       borderColor: theme.border,
     },
@@ -518,29 +518,15 @@ const makeStyles = (theme: Theme) =>
     tagRow: {
       flexDirection: "row",
       flexWrap: "wrap",
-      gap: Spacing.two,
-    },
-    tagChip: {
-      backgroundColor: theme.overlay,
-      borderWidth: BorderWidth.thick,
-      borderColor: theme.border,
-      borderRadius: Radius.pill,
-      paddingVertical: Spacing.half,
-      paddingHorizontal: Spacing.three,
-    },
-    tagChipText: {
-      color: theme.text,
-      fontSize: 12,
-      fontWeight: "800",
-      letterSpacing: 0.4,
+      gap: Spacing.md,
     },
     descriptionBlock: {
-      gap: Spacing.one,
-      backgroundColor: theme.overlay,
+      gap: Spacing.md,
+      backgroundColor: theme.surface3,
       borderWidth: BorderWidth.thick,
       borderColor: theme.border,
-      borderRadius: Radius.small,
-      padding: Spacing.three,
+      borderRadius: Radius.sm,
+      padding: Spacing.lg,
     },
     descriptionLabel: {
       fontSize: 10,
@@ -556,20 +542,20 @@ const makeStyles = (theme: Theme) =>
       lineHeight: 22,
     },
     attemptsBlock: {
-      gap: Spacing.three,
+      gap: Spacing.lg,
     },
     attemptsHeader: {
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
-      gap: Spacing.two,
+      gap: Spacing.md,
     },
     missingBlock: {
-      padding: Spacing.five,
+      padding: Spacing.xxl,
       borderWidth: BorderWidth.thick,
       borderStyle: "dashed",
       borderColor: theme.borderMuted,
-      borderRadius: Radius.medium,
+      borderRadius: Radius.md,
       alignItems: "center",
     },
     missingText: { color: theme.textSecondary, fontWeight: "700" },

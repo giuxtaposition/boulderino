@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { Tag } from "./Tag";
-import { Rainbow } from "@/constants/theme";
+import { RainbowTokens } from "../../constants/theme";
 
 const meta = {
   title: "Atoms/Tag",
   component: Tag,
   args: {
-    color: Rainbow[3],
+    color: RainbowTokens.navy.bg,
   },
   tags: ["autodocs"],
 } satisfies Meta<typeof Tag>;
@@ -17,28 +17,28 @@ type Story = StoryObj<typeof meta>;
 
 export const Fall: Story = {
   args: {
-    color: Rainbow[4],
+    color: RainbowTokens.red.bg,
     children: "Fall",
   },
 };
 
 export const Flash: Story = {
   args: {
-    color: Rainbow[2],
+    color: RainbowTokens.green.bg,
     children: "Flash",
   },
 };
 
 export const Sent: Story = {
   args: {
-    color: Rainbow[1],
+    color: RainbowTokens.yellow.bg,
     children: "Sent",
   },
 };
 
 export const Border: Story = {
   args: {
-    color: Rainbow[0],
+    color: RainbowTokens.white.bg,
     border: true,
     children: "Border",
   },

@@ -26,7 +26,7 @@ export const Default: Story = {
 
 export const WithHelper: Story = {
   args: {
-    helper: <ThemedText type="small">required</ThemedText>,
+    helper: <ThemedText variant="small">required</ThemedText>,
     children: <Input placeholder="Midnight Lightning" />,
   },
 };

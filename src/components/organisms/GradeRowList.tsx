@@ -41,6 +41,6 @@ export function GradeRowList({
 }
 
 const styles = StyleSheet.create({
-  container: { gap: Spacing.two },
-  list: { gap: Spacing.two },
+  container: { gap: Spacing.md },
+  list: { gap: Spacing.md },
 });

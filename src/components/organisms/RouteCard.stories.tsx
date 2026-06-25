@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { expect, within } from "storybook/test";
 
 import { RouteCard } from "./RouteCard";
-import { Rainbow } from "@/constants/theme";
+import { RainbowTokens } from "@/constants/theme";
 import { Route } from "@/domain/route/Route";
 
 const route: Route = Route.restore({
@@ -26,7 +26,7 @@ const meta = {
   args: {
     route,
     index: 0,
-    background: Rainbow[1],
+    background: RainbowTokens.yellow.bg,
   },
   tags: ["autodocs"],
 } satisfies Meta<typeof RouteCard>;
@@ -61,6 +61,6 @@ export const Sport: Story = {
       },
       createdAt: new Date("2025-09-04T08:15:00Z"),
     }),
-    background: Rainbow[3],
+    background: RainbowTokens.cyan.bg,
   },
 };

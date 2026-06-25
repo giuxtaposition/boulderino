@@ -8,7 +8,7 @@ import {
   Radius,
   Spacing,
   Theme,
-  blockShadow,
+  elevation,
   onColor,
 } from "@/constants/theme";
 import { GradingSystem } from "@/domain/grading/GradingSystem";
@@ -132,12 +132,12 @@ export function SystemCard({
 const makeStyles = (theme: Theme) =>
   StyleSheet.create({
     card: {
-      borderWidth: BorderWidth.chunky,
+      borderWidth: BorderWidth.thick,
       borderColor: theme.border,
-      borderRadius: Radius.medium,
-      padding: Spacing.three,
-      gap: Spacing.two,
-      ...blockShadow(theme),
+      borderRadius: Radius.md,
+      padding: Spacing.lg,
+      gap: Spacing.md,
+      ...elevation(theme, "md"),
     },
     header: {
       flexDirection: "row",
@@ -156,22 +156,22 @@ const makeStyles = (theme: Theme) =>
     chipRow: {
       flexDirection: "row",
       flexWrap: "wrap",
-      gap: Spacing.two,
+      gap: Spacing.md,
     },
     chip: {
       flexDirection: "row",
       alignItems: "center",
-      gap: Spacing.one,
+      gap: Spacing.md,
       borderWidth: BorderWidth.thick,
-      borderRadius: Radius.small,
-      paddingVertical: Spacing.one,
-      paddingHorizontal: Spacing.two,
+      borderRadius: Radius.sm,
+      paddingVertical: Spacing.md,
+      paddingHorizontal: Spacing.md,
     },
     chipText: { fontSize: 13, fontWeight: "800" },
     chipMeta: { fontSize: 10, fontWeight: "700" },
     actionRow: {
       flexDirection: "row",
       flexWrap: "wrap",
-      gap: Spacing.two,
+      gap: Spacing.md,
     },
   });

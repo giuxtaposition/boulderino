@@ -1,19 +1,17 @@
-import { ReactNode, useMemo } from 'react';
-import { Pressable, PressableProps, StyleSheet } from 'react-native';
+import { ReactNode, useMemo } from "react";
+import { Pressable, PressableProps, StyleSheet } from "react-native";
 
-import { ThemedText } from '../themed-text';
+import { ThemedText } from "../themed-text";
 import {
   BorderWidth,
-  PressableState,
   Radius,
   Spacing,
   Theme,
-  focusRing,
   onColor,
-} from '@/constants/theme';
-import { useTheme } from '@/hooks/use-theme';
+} from "@/constants/theme";
+import { useTheme } from "@/hooks/use-theme";
 
-type ChipProps = Omit<PressableProps, 'children'> & {
+type ChipProps = Omit<PressableProps, "children"> & {
   selected?: boolean;
   selectedColor?: string;
   children: ReactNode;
@@ -35,13 +33,13 @@ export function Chip({
       accessibilityRole="button"
       accessibilityState={{ selected }}
       {...rest}
-      style={(state: PressableState) => [
+      style={(state) => [
         styles.chip,
         selected && selectedColor ? { backgroundColor: selectedColor } : null,
         state.pressed && styles.pressed,
-        state.focused && styles.focused,
-        typeof style === 'function' ? style(state) : style,
-      ]}>
+        typeof style === "function" ? style(state) : style,
+      ]}
+    >
       <ThemedText
         style={[
           styles.text,
@@ -61,24 +59,23 @@ const makeStyles = (theme: Theme) =>
     chip: {
       flexGrow: 1,
       flexBasis: 90,
-      paddingVertical: Spacing.two,
-      paddingHorizontal: Spacing.three,
-      borderRadius: Radius.small,
+      paddingVertical: Spacing.md,
+      paddingHorizontal: Spacing.lg,
+      borderRadius: Radius.sm,
       borderWidth: BorderWidth.thick,
       borderColor: theme.border,
-      backgroundColor: theme.inputBackground,
+      backgroundColor: theme.surface1,
       minHeight: 44,
-      justifyContent: 'center',
-      alignItems: 'center',
+      justifyContent: "center",
+      alignItems: "center",
     },
     pressed: { transform: [{ translateX: 2 }, { translateY: 2 }] },
-    focused: focusRing(theme),
     text: {
       fontSize: 14,
-      fontWeight: '700',
+      fontWeight: "700",
       letterSpacing: 0.3,
     },
     selectedText: {
-      fontWeight: '900',
+      fontWeight: "900",
     },
   });

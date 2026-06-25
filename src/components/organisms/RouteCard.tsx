@@ -4,12 +4,10 @@ import { Href, useRouter } from "expo-router";
 import { ThemedText } from "../themed-text";
 import {
   BorderWidth,
-  PressableState,
   Radius,
   Spacing,
   Theme,
-  blockShadow,
-  focusRing,
+  elevation,
   onColor,
 } from "@/constants/theme";
 import { Route } from "@/domain/route/Route";
@@ -44,11 +42,10 @@ export function RouteCard({ route, index, background }: RouteCardProps) {
       accessibilityLabel={`Open ${route.name}`}
       testID={`route-row-${index}`}
       onPress={() => router.push(`/routes/${route.id.value}` as Href)}
-      style={({ pressed, focused }: PressableState) => [
+      style={({ pressed }) => [
         styles.card,
         { backgroundColor: background },
         pressed && styles.pressed,
-        focused && styles.focused,
       ]}
     >
       <Image
@@ -87,23 +84,22 @@ const makeStyles = (theme: Theme) =>
   StyleSheet.create({
     card: {
       flexDirection: "row",
-      gap: Spacing.three,
-      borderWidth: BorderWidth.chunky,
+      gap: Spacing.lg,
+      borderWidth: BorderWidth.thick,
       borderColor: theme.border,
-      borderRadius: Radius.medium,
-      padding: Spacing.three,
-      ...blockShadow(theme),
+      borderRadius: Radius.md,
+      padding: Spacing.lg,
+      ...elevation(theme, "md"),
     },
     pressed: { transform: [{ translateX: 3 }, { translateY: 3 }] },
-    focused: focusRing(theme),
     photo: {
       width: 88,
       height: 88,
-      borderRadius: Radius.small,
+      borderRadius: Radius.sm,
       borderWidth: BorderWidth.thick,
-      backgroundColor: theme.backgroundElement,
+      backgroundColor: theme.surface1,
     },
-    body: { flex: 1, gap: Spacing.one, justifyContent: "space-between" },
+    body: { flex: 1, gap: Spacing.md, justifyContent: "space-between" },
     name: {
       fontSize: 17,
       fontWeight: "800",
@@ -113,7 +109,7 @@ const makeStyles = (theme: Theme) =>
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
-      gap: Spacing.two,
+      gap: Spacing.md,
     },
     grade: {
       fontSize: 14,

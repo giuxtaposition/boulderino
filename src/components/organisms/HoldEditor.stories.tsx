@@ -2,12 +2,12 @@ import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 
 import HoldEditor from "./HoldEditor";
-import { Rainbow } from "@/constants/theme";
+import { RainbowTokens } from "@/constants/theme";
 import { Hold } from "@/domain/route/Hold";
 
 const seed: Hold = Hold.restore({
   id: "11111111-1111-1111-1111-111111111111",
-  color: Rainbow[2],
+  color: RainbowTokens.green.bg,
   points: [
     { x: 0.25, y: 0.25 },
     { x: 0.75, y: 0.25 },
@@ -25,7 +25,7 @@ const meta = {
     photoWidth: 400,
     photoHeight: 300,
     holds: [],
-    color: Rainbow[0],
+    color: RainbowTokens.white.bg,
     onChange: () => {},
     testID: "hold-editor",
   },

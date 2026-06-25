@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { expect, fn, userEvent, within } from "storybook/test";
 
 import { Chip } from "./Chip";
-import { Rainbow } from "@/constants/theme";
+import { RainbowTokens } from "../../constants/theme";
 
 const meta = {
   title: "Atoms/Chip",
@@ -11,7 +11,7 @@ const meta = {
   args: {
     children: "Boulder",
     selected: false,
-    selectedColor: Rainbow[1],
+    selectedColor: RainbowTokens.yellow.bg,
     onPress: fn(),
   },
   tags: ["autodocs"],

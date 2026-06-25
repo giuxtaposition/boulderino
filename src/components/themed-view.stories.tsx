@@ -7,18 +7,13 @@ const meta = {
   title: "Themed/ThemedView",
   component: ThemedView,
   argTypes: {
-    type: {
+    surface: {
       control: "select",
-      options: [
-        "background",
-        "backgroundElement",
-        "backgroundSelected",
-        "inputBackground",
-      ],
+      options: ["background", "surface1", "surface2", "surface3"],
     },
   },
   args: {
-    type: "background",
+    surface: "background",
     style: { padding: 24, borderRadius: 10 },
   },
   tags: ["autodocs"],
@@ -31,16 +26,23 @@ export const Background: Story = {
   args: { children: <ThemedText>background</ThemedText> },
 };
 
-export const Element: Story = {
+export const Surface1: Story = {
   args: {
-    type: "backgroundElement",
-    children: <ThemedText>backgroundElement</ThemedText>,
+    surface: "surface1",
+    children: <ThemedText>surface1</ThemedText>,
   },
 };
 
-export const Selected: Story = {
+export const Surface2: Story = {
   args: {
-    type: "backgroundSelected",
-    children: <ThemedText>backgroundSelected</ThemedText>,
+    surface: "surface2",
+    children: <ThemedText>surface2</ThemedText>,
+  },
+};
+
+export const Surface3: Story = {
+  args: {
+    surface: "surface3",
+    children: <ThemedText>surface3</ThemedText>,
   },
 };

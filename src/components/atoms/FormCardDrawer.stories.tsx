@@ -16,7 +16,7 @@ export const Default: Story = {
   args: {
     children: (
       <>
-        <ThemedText type="subtitle">New route</ThemedText>
+        <ThemedText variant="subtitle">New route</ThemedText>
         <ThemedText>Drop form fields inside this card.</ThemedText>
       </>
     ),

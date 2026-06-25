@@ -1,13 +1,7 @@
 import { ReactNode, useMemo } from "react";
 import { Pressable, PressableProps, StyleSheet } from "react-native";
 
-import {
-  PressableState,
-  Radius,
-  Spacing,
-  Theme,
-  focusRing,
-} from "@/constants/theme";
+import { Radius, Spacing, Theme } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
 
 type IconButtonProps = Omit<PressableProps, "children"> & {
@@ -28,10 +22,9 @@ export function IconButton({
       accessibilityRole="button"
       accessibilityState={{ disabled: disabled === true }}
       {...rest}
-      style={(state: PressableState) => [
+      style={(state) => [
         styles.base,
         state.pressed && !disabled && styles.pressed,
-        state.focused && styles.focused,
         disabled && styles.disabled,
         typeof style === "function" ? style(state) : style,
       ]}
@@ -44,18 +37,17 @@ export function IconButton({
 const makeStyles = (theme: Theme) => {
   return StyleSheet.create({
     base: {
-      borderRadius: Radius.small,
-      paddingVertical: Spacing.two,
-      paddingHorizontal: Spacing.two,
+      borderRadius: Radius.sm,
+      paddingVertical: Spacing.md,
+      paddingHorizontal: Spacing.md,
       alignItems: "center",
       justifyContent: "center",
     },
     pressed: {
       transform: [{ translateX: 3 }, { translateY: 3 }],
       opacity: 0.85,
-      backgroundColor: theme.highlightMedium,
+      backgroundColor: theme.surface3,
     },
-    focused: focusRing(theme),
     disabled: {
       opacity: 0.5,
     },

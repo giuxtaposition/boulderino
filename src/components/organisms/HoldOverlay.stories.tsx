@@ -1,12 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
 import HoldOverlay from "./HoldOverlay";
-import { Rainbow } from "@/constants/theme";
+import { RainbowTokens } from "@/constants/theme";
 import { Hold } from "@/domain/route/Hold";
 
 const star: Hold = Hold.restore({
   id: "11111111-1111-1111-1111-111111111111",
-  color: Rainbow[1],
+  color: RainbowTokens.yellow.bg,
   points: [
     { x: 0.5, y: 0.15 },
     { x: 0.6, y: 0.4 },
@@ -23,7 +23,7 @@ const star: Hold = Hold.restore({
 
 const blob: Hold = Hold.restore({
   id: "22222222-2222-2222-2222-222222222222",
-  color: Rainbow[3],
+  color: RainbowTokens.cyan.bg,
   points: [
     { x: 0.2, y: 0.2 },
     { x: 0.5, y: 0.1 },

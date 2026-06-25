@@ -7,15 +7,10 @@ import {
   BorderWidth,
   Radius,
   Spacing,
-  Rainbow,
-  RainbowKey,
   Theme,
+  RainbowColors,
 } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
-
-const PALETTE: { key: RainbowKey; hex: string }[] = (
-  [0, 1, 2, 3, 4, 5, 6] as RainbowKey[]
-).map((key) => ({ key, hex: Rainbow[key] }));
 
 const HEX_REGEX = /^#[0-9A-F]{6}$/;
 
@@ -47,18 +42,18 @@ export function ColorPicker({
   return (
     <View style={styles.container}>
       <View style={styles.palette} testID={`${testIDPrefix}-row`}>
-        {PALETTE.map(({ key, hex }) => (
+        {RainbowColors.map((color) => (
           <Swatch
-            key={key}
-            color={hex}
-            selected={value === hex}
-            onPress={() => onChange(hex)}
+            key={color}
+            color={color}
+            selected={value === color}
+            onPress={() => onChange(color)}
             accessibilityLabel={
               accessibilityPrefix
-                ? `${accessibilityPrefix} color ${key}`
-                : `color ${key}`
+                ? `${accessibilityPrefix} color ${color}`
+                : `color ${color}`
             }
-            testID={`${testIDPrefix}-${key}`}
+            testID={`${testIDPrefix}-${color}`}
           />
         ))}
       </View>
@@ -96,22 +91,22 @@ export function ColorPicker({
 
 const makeStyles = (theme: Theme) =>
   StyleSheet.create({
-    container: { gap: Spacing.two },
-    palette: { flexDirection: "row", flexWrap: "wrap", gap: Spacing.two },
+    container: { gap: Spacing.md },
+    palette: { flexDirection: "row", flexWrap: "wrap", gap: Spacing.md },
     hexRow: {
       flexDirection: "row",
       alignItems: "center",
-      gap: Spacing.two,
+      gap: Spacing.md,
     },
     preview: {
       width: 44,
       height: 44,
-      borderRadius: Radius.small,
+      borderRadius: Radius.sm,
       borderWidth: BorderWidth.thick,
       borderColor: theme.border,
     },
     previewInvalid: {
-      borderColor: theme.errorBorder,
+      borderColor: theme.danger,
       borderStyle: "dashed",
     },
     hexInput: {

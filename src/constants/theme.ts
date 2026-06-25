@@ -1,178 +1,149 @@
 import "@/global.css";
-
-import { Platform, type PressableStateCallbackType } from "react-native";
-
-export type PressableState = PressableStateCallbackType & {
-  focused?: boolean;
-};
+import { Platform } from "react-native";
 
 export type Theme = {
-  base: string;
-  surface: string;
-  overlay: string;
-  muted: string;
-  subtle: string;
-  text: string;
-  red: string;
-  yellow: string;
-  green: string;
-  blue: string;
-  purple: string;
-  dark_blue: string;
-  highlightLow: string;
-  highlightMedium: string;
-  highlightHigh: string;
-  textSecondary: string;
-  textMuted: string;
   background: string;
-  backgroundElement: string;
-  backgroundSelected: string;
-  inputBackground: string;
-  inputPlaceholder: string;
+  surface1: string;
+  surface2: string;
+  surface3: string;
+
+  text: string;
+  textSecondary: string;
+
   border: string;
   borderMuted: string;
-  shadow: string;
-  accent: string;
-  accentText: string;
+
+  brand: string;
   success: string;
   warning: string;
   danger: string;
-  dangerSurface: string;
-  dangerBorder: string;
-  dangerText: string;
-  errorSurface: string;
-  errorBorder: string;
-  errorText: string;
-  brand: string;
-  brandText: string;
-  tabBar: string;
-  tabBarInactive: string;
+
+  onBrand: string;
+  onSuccess: string;
+  onWarning: string;
+  onDanger: string;
+
   link: string;
   focusRing: string;
+
+  shadow: string;
+
+  tabBar: string;
+  tabBarInactive: string;
 };
 
-export const Rainbow = {
-  0: "#F3F4F6",
-  1: "#FFD166",
-  2: "#06D6A0",
-  3: "#118AB2",
-  4: "#EF476F",
-  5: "#073B4C",
-  6: "#7B61FF",
-} as const;
+const hsla = (h: number, s: number, l: number, a = 1) =>
+  `hsla(${h}, ${s}%, ${l}%, ${a})`;
+
+const HSLA_RE =
+  /hsla?\(\s*(\d+(?:\.\d+)?),\s*(\d+(?:\.\d+)?)%,\s*(\d+(?:\.\d+)?)%(?:,\s*([\d.]+))?\s*\)/;
+
+const clamp = (v: number, min: number, max: number) =>
+  Math.max(min, Math.min(max, v));
+
+export const withAlpha = (color: string, alpha: number) => {
+  const m = color.match(HSLA_RE);
+  if (!m) return color;
+  const [, h, s, l] = m;
+  return hsla(Number(h), Number(s), Number(l), clamp(alpha, 0, 1));
+};
+
+const BRAND = { h: 252, s: 90 };
+const SUCCESS = { h: 160, s: 85 };
+const WARNING = { h: 45, s: 95 };
+const DANGER = { h: 345, s: 85 };
+const LINK = { h: 200, s: 85 };
+
+const ON_LIGHT = "hsla(220, 40%, 10%, 1)";
+const ON_DARK = "hsla(210, 40%, 98%, 1)";
 
 export const Colors: { light: Theme; dark: Theme } = {
   light: {
-    base: "#F8FAFC",
-    surface: "#FFFFFF",
-    overlay: "#F1F5F9",
-    muted: "#64748B",
-    subtle: "#CBD5E1",
-    text: "#0F172A",
+    background: hsla(210, 40, 98),
+    surface1: hsla(210, 40, 99),
+    surface2: hsla(210, 40, 96),
+    surface3: hsla(210, 40, 92),
 
-    red: "#EF476F",
-    yellow: "#FFD166",
-    green: "#06D6A0",
-    blue: "#118AB2",
-    purple: "#7B61FF",
-    dark_blue: "#073B4C",
+    text: hsla(220, 40, 10),
+    textSecondary: hsla(220, 15, 45),
 
-    highlightLow: "#E2E8F0",
-    highlightMedium: "#CBD5E1",
-    highlightHigh: "#94A3B8",
+    border: hsla(220, 15, 60),
+    borderMuted: hsla(220, 15, 78),
 
-    textSecondary: "#64748B",
-    textMuted: "#64748B",
-    background: "#F8FAFC",
-    backgroundElement: "#FFFFFF",
-    backgroundSelected: "#FFD166",
-    inputBackground: "#FFFFFF",
-    inputPlaceholder: "#64748B",
-    border: "#64748B",
-    borderMuted: "#94A3B8",
-    shadow: "#CBD5E1",
-    accent: "#06D6A0",
-    accentText: "#0F172A",
-    success: "#06D6A0",
-    warning: "#FFD166",
-    danger: "#EF476F",
-    dangerSurface: "#FEE2E2",
-    dangerBorder: "#EF476F",
-    dangerText: "#B91C1C",
-    errorSurface: "#FEE2E2",
-    errorBorder: "#EF476F",
-    errorText: "#B91C1C",
-    brand: "#7B61FF",
-    brandText: "#F8FAFC",
-    tabBar: "#FFFFFF",
-    tabBarInactive: "#F8FAFC",
-    link: "#118AB2",
-    focusRing: "#118AB2",
+    brand: hsla(BRAND.h, BRAND.s, 60),
+    success: hsla(SUCCESS.h, SUCCESS.s, 40),
+    warning: hsla(WARNING.h, WARNING.s, 40),
+    danger: hsla(DANGER.h, DANGER.s, 50),
+
+    onBrand: ON_DARK,
+    onSuccess: ON_DARK,
+    onWarning: ON_LIGHT,
+    onDanger: ON_DARK,
+
+    link: hsla(LINK.h, LINK.s, 40),
+    focusRing: hsla(LINK.h, LINK.s, 40),
+
+    shadow: "hsla(220, 20%, 25%, 0.3)",
+
+    tabBar: hsla(210, 40, 100),
+    tabBarInactive: hsla(210, 40, 92),
   },
-  dark: {
-    base: "#0B1320",
-    surface: "#141E30",
-    overlay: "#1D2A40",
-    muted: "#4A5568",
-    subtle: "#94A3B8",
-    text: "#F8FAFC",
-    red: "#EF476F",
-    yellow: "#FFD166",
-    green: "#06D6A0",
-    blue: "#118AB2",
-    purple: "#7B61FF",
-    dark_blue: "#073B4C",
-    highlightLow: "#1A2436",
-    highlightMedium: "#25324A",
-    highlightHigh: "#334155",
 
-    textSecondary: "#94A3B8",
-    textMuted: "#94A3B8",
-    background: "#0B1320",
-    backgroundElement: "#141E30",
-    backgroundSelected: "#FFD166",
-    inputBackground: "#141E30",
-    inputPlaceholder: "#94A3B8",
-    border: "#94A3B8",
-    borderMuted: "#4A5568",
-    shadow: "#25324A",
-    accent: "#06D6A0",
-    accentText: "#0F172A",
-    success: "#06D6A0",
-    warning: "#FFD166",
-    danger: "#EF476F",
-    dangerSurface: "#1A2436",
-    dangerBorder: "#EF476F",
-    dangerText: "#EF476F",
-    errorSurface: "#1A2436",
-    errorBorder: "#EF476F",
-    errorText: "#EF476F",
-    brand: "#7B61FF",
-    brandText: "#F8FAFC",
-    tabBar: "#141E30",
-    tabBarInactive: "#0B1320",
-    link: "#118AB2",
-    focusRing: "#118AB2",
+  dark: {
+    background: hsla(220, 40, 8),
+    surface1: hsla(220, 35, 12),
+    surface2: hsla(220, 30, 16),
+    surface3: hsla(220, 25, 20),
+
+    text: hsla(210, 40, 98),
+    textSecondary: hsla(210, 15, 70),
+
+    border: hsla(220, 15, 45),
+    borderMuted: hsla(220, 15, 32),
+
+    brand: hsla(BRAND.h, BRAND.s, 65),
+    success: hsla(SUCCESS.h, SUCCESS.s, 50),
+    warning: hsla(WARNING.h, WARNING.s, 60),
+    danger: hsla(DANGER.h, DANGER.s, 60),
+
+    onBrand: ON_DARK,
+    onSuccess: ON_DARK,
+    onWarning: ON_LIGHT,
+    onDanger: ON_DARK,
+
+    link: hsla(LINK.h, LINK.s, 65),
+    focusRing: hsla(LINK.h, LINK.s, 65),
+
+    shadow: "hsla(0, 0%, 0%, 0.6)",
+
+    tabBar: hsla(220, 35, 14),
+    tabBarInactive: hsla(220, 35, 6),
   },
 };
 
-export type ThemeColor = keyof Theme;
+export const RainbowTokens = {
+  white: { bg: hsla(0, 0, 95), on: ON_LIGHT },
+  yellow: { bg: hsla(45, 95, 65), on: ON_LIGHT },
+  green: { bg: hsla(160, 85, 45), on: ON_DARK },
+  cyan: { bg: hsla(200, 85, 45), on: ON_DARK },
+  red: { bg: hsla(345, 85, 55), on: ON_DARK },
+  navy: { bg: hsla(220, 40, 20), on: ON_DARK },
+  purple: { bg: hsla(252, 90, 65), on: ON_DARK },
+} as const;
 
-export type RainbowKey = keyof typeof Rainbow;
+export const RainbowColors = Object.values(RainbowTokens).map(
+  (token) => token.bg,
+);
 
-const rainbowOrder: RainbowKey[] = [0, 1, 2, 3, 4, 5, 6];
+export const pickRainbowColor = (index: number) =>
+  Object.values(RainbowTokens)[index % Object.values(RainbowTokens).length].bg;
 
-export const pickRainbowColor = (index: number): string =>
-  Rainbow[
-    rainbowOrder[
-      ((index % rainbowOrder.length) + rainbowOrder.length) %
-        rainbowOrder.length
-    ]
-  ];
+export const findRainbowColor = (color: string) =>
+  Object.values(RainbowTokens).find((token) => token.bg === color);
 
 export type Outcome = "sent" | "flash" | "fell";
 
-export const outcomeColor = (theme: Theme, outcome: Outcome): string => {
+export const outcomeColor = (theme: Theme, outcome: Outcome) => {
   switch (outcome) {
     case "flash":
       return theme.success;
@@ -183,22 +154,6 @@ export const outcomeColor = (theme: Theme, outcome: Outcome): string => {
   }
 };
 
-const srgbChannel = (value: number): number =>
-  value <= 0.03928 ? value / 12.92 : Math.pow((value + 0.055) / 1.055, 2.4);
-
-const relativeLuminance = (hex: string): number => {
-  const normalized = hex.replace("#", "");
-  const r = parseInt(normalized.slice(0, 2), 16) / 255;
-  const g = parseInt(normalized.slice(2, 4), 16) / 255;
-  const b = parseInt(normalized.slice(4, 6), 16) / 255;
-  return (
-    0.2126 * srgbChannel(r) + 0.7152 * srgbChannel(g) + 0.0722 * srgbChannel(b)
-  );
-};
-
-export const onColor = (background: string): string =>
-  relativeLuminance(background) > 0.36 ? "#0F172A" : "#F8FAFC";
-
 export const focusRing = (theme: Theme) =>
   Platform.select({
     web: {
@@ -207,73 +162,173 @@ export const focusRing = (theme: Theme) =>
       outlineWidth: 2,
       outlineOffset: 2,
     },
-    default: { borderColor: theme.focusRing },
-  }) as object;
+    default: {
+      borderColor: theme.focusRing,
+    },
+  });
 
-export const Fonts = Platform.select({
-  ios: {
-    sans: "system-ui",
-    serif: "ui-serif",
-    rounded: "ui-rounded",
-    mono: "ui-monospace",
-  },
-  default: {
-    sans: "normal",
-    serif: "serif",
-    rounded: "normal",
-    mono: "monospace",
-  },
-  web: {
-    sans: "var(--font-display)",
-    serif: "var(--font-serif)",
-    rounded: "var(--font-rounded)",
-    mono: "var(--font-mono)",
-  },
-});
+export const Elevation = {
+  none: 0,
+  sm: 3,
+  md: 5,
+  lg: 6,
+} as const;
+
+export type ElevationLevel = keyof typeof Elevation;
+
+export const elevation = (theme: Theme, level: ElevationLevel = "md") => {
+  const offset = Elevation[level];
+  if (offset === 0) return {};
+  return Platform.select({
+    web: {
+      boxShadow: `${offset}px ${offset}px 0 ${theme.shadow}`,
+    },
+    default: {
+      shadowColor: theme.shadow,
+      shadowOffset: { width: offset, height: offset },
+      shadowOpacity: 1,
+      shadowRadius: 0,
+    },
+  });
+};
 
 export const Spacing = {
-  half: 2,
-  one: 4,
-  two: 8,
-  three: 12,
-  four: 16,
-  five: 24,
-  six: 32,
-  seven: 48,
+  sm: 4,
+  md: 8,
+  lg: 12,
+  xl: 16,
+  xxl: 24,
+  xxxl: 32,
+  huge: 48,
 } as const;
 
 export const Radius = {
   none: 0,
-  small: 6,
-  medium: 10,
-  large: 14,
+  sm: 6,
+  md: 10,
+  lg: 14,
   pill: 999,
 } as const;
 
 export const BorderWidth = {
   thin: 1,
   thick: 2,
-  chunky: 3,
-} as const;
-
-export const blockShadow = (theme: Theme, offset = 5) =>
-  Platform.select({
-    web: { boxShadow: `${offset}px ${offset}px 0 ${theme.shadow}` },
-    default: {
-      shadowColor: theme.shadow,
-      shadowOffset: { width: offset, height: offset },
-      shadowOpacity: 1,
-      shadowRadius: 0,
-      elevation: 0,
-    },
-  }) as object;
-
-export const Media = {
-  backdrop: "#000000",
-  scrim: "rgba(0,0,0,0.45)",
-  badge: "rgba(0,0,0,0.6)",
-  onMedia: "#FFFFFF",
 } as const;
 
 export const BottomTabHeight = 64;
 export const MaxContentWidth = 560;
+
+const srgb = (v: number) =>
+  v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+
+const hslToRgb = (h: number, s: number, l: number) => {
+  const sn = s / 100;
+  const ln = l / 100;
+  const c = (1 - Math.abs(2 * ln - 1)) * sn;
+  const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+  const m = ln - c / 2;
+  const [r, g, b] =
+    h < 60
+      ? [c, x, 0]
+      : h < 120
+        ? [x, c, 0]
+        : h < 180
+          ? [0, c, x]
+          : h < 240
+            ? [0, x, c]
+            : h < 300
+              ? [x, 0, c]
+              : [c, 0, x];
+  return [r + m, g + m, b + m] as const;
+};
+
+const HEX_RE = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i;
+
+const hexToRgb = (hex: string) => {
+  const m = hex.match(HEX_RE);
+  if (!m) return null;
+  const h = m[1];
+  const expanded =
+    h.length === 3
+      ? h
+          .split("")
+          .map((c) => c + c)
+          .join("")
+      : h;
+  return [
+    parseInt(expanded.slice(0, 2), 16) / 255,
+    parseInt(expanded.slice(2, 4), 16) / 255,
+    parseInt(expanded.slice(4, 6), 16) / 255,
+  ] as const;
+};
+
+const toRgb = (color: string) => {
+  const hsl = color.match(HSLA_RE);
+  if (hsl) return hslToRgb(Number(hsl[1]), Number(hsl[2]), Number(hsl[3]));
+  return hexToRgb(color);
+};
+
+const relativeLuminance = (color: string) => {
+  const rgb = toRgb(color);
+  if (!rgb) return null;
+  const [r, g, b] = rgb;
+  return 0.2126 * srgb(r) + 0.7152 * srgb(g) + 0.0722 * srgb(b);
+};
+
+export const onColor = (background: string) => {
+  const baked = findRainbowColor(background);
+  if (baked) return baked.on;
+  const l = relativeLuminance(background);
+  if (l === null) return ON_LIGHT;
+  return l > 0.5 ? ON_LIGHT : ON_DARK;
+};
+
+export const Media = {
+  backdrop: "hsla(220, 10%, 0%, 0.6)",
+  scrim: "hsla(220, 10%, 0%, 0.5)",
+  badge: "hsla(220, 10%, 0%, 0.55)",
+  onMedia: "hsla(0, 0%, 100%, 1)",
+} as const;
+
+export const Typography = {
+  title: {
+    fontSize: 48,
+    lineHeight: 52,
+    fontWeight: "600",
+  },
+
+  subtitle: {
+    fontSize: 32,
+    lineHeight: 44,
+    fontWeight: "600",
+  },
+
+  body: {
+    fontSize: 16,
+    lineHeight: 24,
+    fontWeight: "400",
+  },
+
+  small: {
+    fontSize: 14,
+    lineHeight: 20,
+    fontWeight: "400",
+  },
+
+  caption: {
+    fontSize: 12,
+    lineHeight: 16,
+    fontWeight: "400",
+  },
+
+  code: {
+    fontSize: 12,
+    lineHeight: 16,
+    fontWeight: "400",
+    fontFamily: Platform.select({
+      ios: "Menlo",
+      android: "monospace",
+      default: "monospace",
+    }),
+  },
+} as const;

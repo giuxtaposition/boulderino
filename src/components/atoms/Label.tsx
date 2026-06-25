@@ -3,7 +3,9 @@ import { StyleSheet } from 'react-native';
 import { ThemedText, ThemedTextProps } from '../themed-text';
 import { useTheme } from '@/hooks/use-theme';
 
-type LabelProps = ThemedTextProps & { variant?: 'default' | 'small' };
+type LabelProps = Omit<ThemedTextProps, 'variant'> & {
+  variant?: 'default' | 'small';
+};
 
 export function Label({ variant = 'default', style, ...rest }: LabelProps) {
   const theme = useTheme();

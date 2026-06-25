@@ -3,12 +3,12 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { expect, fn, userEvent, within } from "storybook/test";
 
 import { GradeRowList, GradeRowValue } from "./GradeRowList";
-import { Rainbow } from "@/constants/theme";
+import { RainbowTokens } from "@/constants/theme";
 
 const initialRows: GradeRowValue[] = [
-  { name: "V0", color: Rainbow[0], order: "1" },
-  { name: "V1", color: Rainbow[1], order: "2" },
-  { name: "V2", color: Rainbow[2], order: "3" },
+  { name: "V0", color: RainbowTokens.white.bg, order: "1" },
+  { name: "V1", color: RainbowTokens.yellow.bg, order: "2" },
+  { name: "V2", color: RainbowTokens.green.bg, order: "3" },
 ];
 
 const meta = {
@@ -70,7 +70,7 @@ export const Interactive: Story = {
             {
               name: "",
               label: "",
-              color: Rainbow[2],
+              color: RainbowTokens.green.bg,
               order: String(prev.length + 1),
             },
           ])

@@ -24,7 +24,7 @@ import {
   BorderWidth,
   Media,
   Radius,
-  Rainbow,
+  RainbowTokens,
   Spacing,
   Theme,
 } from "@/constants/theme";
@@ -110,7 +110,10 @@ function maskToPolygon(
 ): Point[] | null {
   const contour = marchingSquares(mask, maskW, maskH);
   if (!contour || contour.length < 3) return null;
-  const epsilon = Math.max(0.5, Math.min(maskW, maskH) * DEFAULT_SIMPLIFY_FRACTION);
+  const epsilon = Math.max(
+    0.5,
+    Math.min(maskW, maskH) * DEFAULT_SIMPLIFY_FRACTION,
+  );
   let simplified = simplifyPolygon(contour, epsilon);
   if (simplified.length < 3) simplified = simplifyPolygon(contour, epsilon / 4);
   if (simplified.length < 3) simplified = contour.slice();
@@ -137,7 +140,7 @@ export default function HoldEditor({
   photoHeight,
   holds,
   onChange,
-  color = Rainbow[0],
+  color = RainbowTokens.white.bg,
   testID,
 }: HoldEditorProps) {
   const theme = useTheme();
@@ -308,7 +311,10 @@ export default function HoldEditor({
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
       const factor = e.deltaY < 0 ? 1.15 : 1 / 1.15;
-      const newScale = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, savedZoom.current * factor));
+      const newScale = Math.max(
+        MIN_ZOOM,
+        Math.min(MAX_ZOOM, savedZoom.current * factor),
+      );
 
       const rect = node.getBoundingClientRect();
       const border = BorderWidth.thick;
@@ -318,8 +324,10 @@ export default function HoldEditor({
       const cy = canvasSize.height / 2;
 
       const scaleRatio = newScale / savedZoom.current;
-      const newPanX = cursorX - cx - scaleRatio * (cursorX - cx - savedPanX.current);
-      const newPanY = cursorY - cy - scaleRatio * (cursorY - cy - savedPanY.current);
+      const newPanX =
+        cursorX - cx - scaleRatio * (cursorX - cx - savedPanX.current);
+      const newPanY =
+        cursorY - cy - scaleRatio * (cursorY - cy - savedPanY.current);
 
       const clamped = clampPan(newPanX, newPanY, newScale);
       setZoom(newScale);
@@ -376,8 +384,14 @@ export default function HoldEditor({
         return;
       }
 
-      const tapX = Math.max(0, Math.min(px.width - 1, Math.round(nx * px.width)));
-      const tapY = Math.max(0, Math.min(px.height - 1, Math.round(ny * px.height)));
+      const tapX = Math.max(
+        0,
+        Math.min(px.width - 1, Math.round(nx * px.width)),
+      );
+      const tapY = Math.max(
+        0,
+        Math.min(px.height - 1, Math.round(ny * px.height)),
+      );
 
       const result = await segmenter.segment(tapX, tapY, px.width, px.height);
 
@@ -411,26 +425,50 @@ export default function HoldEditor({
 
   const detectWithFallback = useCallback(
     (nx: number, ny: number, px: PixelData) => {
-      const tapX = Math.max(0, Math.min(px.width - 1, Math.round(nx * px.width)));
-      const tapY = Math.max(0, Math.min(px.height - 1, Math.round(ny * px.height)));
+      const tapX = Math.max(
+        0,
+        Math.min(px.width - 1, Math.round(nx * px.width)),
+      );
+      const tapY = Math.max(
+        0,
+        Math.min(px.height - 1, Math.round(ny * px.height)),
+      );
       const isFirstHold = holdsRef.current.length === 0;
 
       if (isFirstHold) {
-        const seedMask = detectHoldMaskAtTap(px.pixels, px.width, px.height, tapX, tapY, LAB_OPTIONS);
+        const seedMask = detectHoldMaskAtTap(
+          px.pixels,
+          px.width,
+          px.height,
+          tapX,
+          tapY,
+          LAB_OPTIONS,
+        );
         if (!seedMask) {
           setError("Couldn't isolate a hold there. Try tapping its center.");
           return;
         }
-        const seedPolygon = polygonFromMaskNormalized(seedMask, px.width, px.height);
+        const seedPolygon = polygonFromMaskNormalized(
+          seedMask,
+          px.width,
+          px.height,
+        );
         if (!seedPolygon) {
           setError("Detected region too thin to outline.");
           return;
         }
-        const siblings = detectSimilarHolds(px.pixels, px.width, px.height, seedMask, LAB_OPTIONS);
+        const siblings = detectSimilarHolds(
+          px.pixels,
+          px.width,
+          px.height,
+          seedMask,
+          LAB_OPTIONS,
+        );
         const polygons = [seedPolygon, ...siblings];
         const newHolds: Hold[] = [];
         for (const polygon of polygons) {
-          if (newHolds.some((h) => polygonsOverlap(h.points, polygon))) continue;
+          if (newHolds.some((h) => polygonsOverlap(h.points, polygon)))
+            continue;
           const hold = buildHoldFromPolygon(polygon);
           if (hold) newHolds.push(hold);
         }
@@ -440,7 +478,14 @@ export default function HoldEditor({
         }
         onChange(newHolds);
       } else {
-        const polygon = detectHoldAtTap(px.pixels, px.width, px.height, tapX, tapY, LAB_OPTIONS);
+        const polygon = detectHoldAtTap(
+          px.pixels,
+          px.width,
+          px.height,
+          tapX,
+          tapY,
+          LAB_OPTIONS,
+        );
         if (!polygon) {
           setError("Couldn't isolate a hold there.");
           return;
@@ -530,7 +575,11 @@ export default function HoldEditor({
             Math.min(MAX_ZOOM, savedZoom.current * event.scale),
           );
           setZoom(newScale);
-          const clamped = clampPan(savedPanX.current, savedPanY.current, newScale);
+          const clamped = clampPan(
+            savedPanX.current,
+            savedPanY.current,
+            newScale,
+          );
           setPanX(clamped.x);
           setPanY(clamped.y);
         })
@@ -630,7 +679,19 @@ export default function HoldEditor({
           if (tryRemoveHoldAt(nx, ny)) return;
           detectAtNormalized(nx, ny);
         }),
-    [canvasSize.width, canvasSize.height, detecting, encoding, zoom, panX, panY, drawMode, imageRect, detectAtNormalized, tryRemoveHoldAt],
+    [
+      canvasSize.width,
+      canvasSize.height,
+      detecting,
+      encoding,
+      zoom,
+      panX,
+      panY,
+      drawMode,
+      imageRect,
+      detectAtNormalized,
+      tryRemoveHoldAt,
+    ],
   );
 
   const composedGesture = useMemo(
@@ -663,10 +724,13 @@ export default function HoldEditor({
   })();
 
   const hintText = (() => {
-    if (drawMode === "manual") return "Tap corners of the hold to draw its outline. Press DONE when finished.";
+    if (drawMode === "manual")
+      return "Tap corners of the hold to draw its outline. Press DONE when finished.";
     if (samState.status === "error") return `Model error: ${samState.message}`;
-    if (samState.status === "unavailable") return "Using color-based detection (no native module).";
-    if (holds.length === 0) return "Tap a hold to outline it. Use DRAW for tricky holds.";
+    if (samState.status === "unavailable")
+      return "Using color-based detection (no native module).";
+    if (holds.length === 0)
+      return "Tap a hold to outline it. Use DRAW for tricky holds.";
     return "Tap empty space to add. Tap a hold to remove. Double-tap to reset zoom.";
   })();
 
@@ -678,7 +742,7 @@ export default function HoldEditor({
         onLayout={handleLayout}
       >
         <GestureDetector gesture={composedGesture}>
-            <View style={{ width: canvasSize.width, height: canvasSize.height }}>
+          <View style={{ width: canvasSize.width, height: canvasSize.height }}>
             <Canvas style={StyleSheet.absoluteFill}>
               <Group
                 transform={[
@@ -724,8 +788,14 @@ export default function HoldEditor({
                     return (
                       <Line
                         key={`manual-line-${i}`}
-                        p1={{ x: imageRect.x + prev.x * imageRect.width, y: imageRect.y + prev.y * imageRect.height }}
-                        p2={{ x: imageRect.x + p.x * imageRect.width, y: imageRect.y + p.y * imageRect.height }}
+                        p1={{
+                          x: imageRect.x + prev.x * imageRect.width,
+                          y: imageRect.y + prev.y * imageRect.height,
+                        }}
+                        p2={{
+                          x: imageRect.x + p.x * imageRect.width,
+                          y: imageRect.y + p.y * imageRect.height,
+                        }}
                         color={color}
                         strokeWidth={2 / zoom}
                         style="stroke"
@@ -755,9 +825,7 @@ export default function HoldEditor({
         )}
         {zoom > 1.05 && (
           <View style={[styles.zoomBadge, { pointerEvents: "none" }]}>
-            <ThemedText style={styles.zoomText}>
-              {zoom.toFixed(1)}x
-            </ThemedText>
+            <ThemedText style={styles.zoomText}>{zoom.toFixed(1)}x</ThemedText>
           </View>
         )}
       </View>
@@ -823,10 +891,10 @@ export default function HoldEditor({
 
 const makeStyles = (theme: Theme) =>
   StyleSheet.create({
-    wrapper: { gap: Spacing.three, flex: 1 },
+    wrapper: { gap: Spacing.lg, flex: 1 },
     canvasFrame: {
       flex: 1,
-      borderRadius: Radius.small,
+      borderRadius: Radius.sm,
       borderWidth: BorderWidth.thick,
       borderColor: theme.border,
       overflow: "hidden",
@@ -841,7 +909,7 @@ const makeStyles = (theme: Theme) =>
       alignItems: "center",
       justifyContent: "center",
       backgroundColor: Media.scrim,
-      gap: Spacing.one,
+      gap: Spacing.md,
     },
     overlayText: {
       fontSize: 11,
@@ -851,12 +919,12 @@ const makeStyles = (theme: Theme) =>
     },
     zoomBadge: {
       position: "absolute",
-      top: Spacing.two,
-      right: Spacing.two,
+      top: Spacing.md,
+      right: Spacing.md,
       backgroundColor: Media.badge,
-      borderRadius: Radius.small,
-      paddingHorizontal: Spacing.two,
-      paddingVertical: Spacing.one,
+      borderRadius: Radius.sm,
+      paddingHorizontal: Spacing.md,
+      paddingVertical: Spacing.md,
     },
     zoomText: {
       fontSize: 11,
@@ -865,12 +933,12 @@ const makeStyles = (theme: Theme) =>
     },
     controls: {
       flexDirection: "row",
-      gap: Spacing.two,
+      gap: Spacing.md,
       flexWrap: "wrap",
     },
     secondary: {
       flexGrow: 1,
-      backgroundColor: theme.inputBackground,
+      backgroundColor: theme.surface1,
     },
     hint: {
       color: theme.textSecondary,
@@ -878,11 +946,11 @@ const makeStyles = (theme: Theme) =>
       fontWeight: "600",
     },
     error: {
-      backgroundColor: theme.inputBackground,
+      backgroundColor: theme.surface1,
       borderWidth: BorderWidth.thick,
       borderColor: theme.border,
-      borderRadius: Radius.small,
-      padding: Spacing.two,
+      borderRadius: Radius.sm,
+      padding: Spacing.md,
     },
     errorText: { color: theme.text, fontSize: 12, fontWeight: "700" },
   });

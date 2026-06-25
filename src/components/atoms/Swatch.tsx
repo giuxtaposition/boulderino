@@ -1,19 +1,17 @@
-import { useMemo } from 'react';
-import { Pressable, PressableProps, StyleSheet } from 'react-native';
+import { useMemo } from "react";
+import { Pressable, PressableProps, StyleSheet } from "react-native";
 
-import { ThemedText } from '../themed-text';
+import { ThemedText } from "../themed-text";
 import {
   BorderWidth,
-  PressableState,
   Radius,
   Theme,
-  blockShadow,
-  focusRing,
+  elevation,
   onColor,
-} from '@/constants/theme';
-import { useTheme } from '@/hooks/use-theme';
+} from "@/constants/theme";
+import { useTheme } from "@/hooks/use-theme";
 
-type SwatchProps = Omit<PressableProps, 'children'> & {
+type SwatchProps = Omit<PressableProps, "children"> & {
   color: string;
   selected?: boolean;
 };
@@ -26,13 +24,13 @@ export function Swatch({ color, selected, style, ...rest }: SwatchProps) {
       accessibilityRole="button"
       accessibilityState={{ selected }}
       {...rest}
-      style={(state: PressableState) => [
+      style={(state) => [
         styles.swatch,
         { backgroundColor: color },
         selected && styles.selected,
-        state.focused && styles.focused,
-        typeof style === 'function' ? style(state) : style,
-      ]}>
+        typeof style === "function" ? style(state) : style,
+      ]}
+    >
       {selected && (
         <ThemedText style={[styles.check, { color: onColor(color) }]}>
           ✓
@@ -47,19 +45,18 @@ const makeStyles = (theme: Theme) =>
     swatch: {
       width: 44,
       height: 44,
-      borderRadius: Radius.small,
+      borderRadius: Radius.sm,
       borderWidth: BorderWidth.thick,
       borderColor: theme.border,
-      justifyContent: 'center',
-      alignItems: 'center',
+      justifyContent: "center",
+      alignItems: "center",
     },
     selected: {
-      borderWidth: BorderWidth.chunky + 1,
-      ...blockShadow(theme, 3),
+      borderWidth: BorderWidth.thick + 1,
+      ...elevation(theme, "sm"),
     },
-    focused: focusRing(theme),
     check: {
       fontSize: 18,
-      fontWeight: '900',
+      fontWeight: "900",
     },
   });

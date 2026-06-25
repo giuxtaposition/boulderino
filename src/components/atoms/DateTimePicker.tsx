@@ -13,13 +13,10 @@ import { Button } from "./Button";
 import { ThemedText } from "../themed-text";
 import {
   BorderWidth,
-  Media,
-  PressableState,
   Radius,
   Spacing,
   Theme,
-  blockShadow,
-  focusRing,
+  elevation,
 } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
 
@@ -96,8 +93,7 @@ export function DateTimePicker({
       const year = current.getFullYear();
       const month = part === "month" ? next : current.getMonth();
       const lastDay = daysInMonth(year, month);
-      const day =
-        part === "day" ? next : Math.min(current.getDate(), lastDay);
+      const day = part === "day" ? next : Math.min(current.getDate(), lastDay);
       const hour = part === "hour" ? next : current.getHours();
       const minute = part === "minute" ? next : current.getMinutes();
       return new Date(year, month, day, hour, minute);
@@ -120,10 +116,9 @@ export function DateTimePicker({
         accessibilityLabel={accessibilityLabel ?? "select date and time"}
         onPress={handleOpen}
         testID={testID}
-        style={(state: PressableState) => [
+        style={(state) => [
           styles.trigger,
           state.pressed && styles.triggerPressed,
-          state.focused && styles.triggerFocused,
         ]}
       >
         <ThemedText style={styles.triggerText}>
@@ -240,9 +235,7 @@ function Wheel({ label, data, value, onChange, format }: WheelProps) {
 
   const handleScrollEnd = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-      snapToIndex(
-        Math.round(event.nativeEvent.contentOffset.y / ITEM_HEIGHT),
-      );
+      snapToIndex(Math.round(event.nativeEvent.contentOffset.y / ITEM_HEIGHT));
     },
     [snapToIndex],
   );
@@ -296,10 +289,10 @@ const makeStyles = (theme: Theme) =>
     trigger: {
       borderWidth: BorderWidth.thick,
       borderColor: theme.border,
-      borderRadius: Radius.small,
-      paddingVertical: Spacing.three,
-      paddingHorizontal: Spacing.three,
-      backgroundColor: theme.inputBackground,
+      borderRadius: Radius.sm,
+      paddingVertical: Spacing.lg,
+      paddingHorizontal: Spacing.lg,
+      backgroundColor: theme.surface1,
       minHeight: 48,
       justifyContent: "center",
     },
@@ -307,7 +300,6 @@ const makeStyles = (theme: Theme) =>
       transform: [{ translateX: 2 }, { translateY: 2 }],
       opacity: 0.85,
     },
-    triggerFocused: focusRing(theme),
     triggerText: {
       color: theme.text,
       fontSize: 16,
@@ -317,7 +309,7 @@ const makeStyles = (theme: Theme) =>
       flex: 1,
       alignItems: "center",
       justifyContent: "center",
-      padding: Spacing.four,
+      padding: Spacing.xl,
     },
     backdrop: {
       position: "absolute",
@@ -325,18 +317,18 @@ const makeStyles = (theme: Theme) =>
       left: 0,
       right: 0,
       bottom: 0,
-      backgroundColor: Media.scrim,
+      backgroundColor: "rgba(0, 0, 0, 0.45)",
     },
     sheet: {
       width: "100%",
       maxWidth: 480,
-      backgroundColor: theme.backgroundElement,
-      borderWidth: BorderWidth.chunky,
+      backgroundColor: theme.surface1,
+      borderWidth: BorderWidth.thick,
       borderColor: theme.border,
-      borderRadius: Radius.medium,
-      padding: Spacing.four,
-      gap: Spacing.three,
-      ...blockShadow(theme),
+      borderRadius: Radius.md,
+      padding: Spacing.xl,
+      gap: Spacing.lg,
+      ...elevation(theme, "md"),
     },
     sheetTitle: {
       fontSize: 14,
@@ -347,11 +339,11 @@ const makeStyles = (theme: Theme) =>
     },
     wheels: {
       flexDirection: "row",
-      gap: Spacing.two,
+      gap: Spacing.md,
     },
     wheel: {
       flex: 1,
-      gap: Spacing.one,
+      gap: Spacing.md,
     },
     wheelLabel: {
       fontSize: 10,
@@ -364,8 +356,8 @@ const makeStyles = (theme: Theme) =>
       height: WHEEL_HEIGHT,
       borderWidth: BorderWidth.thick,
       borderColor: theme.border,
-      borderRadius: Radius.small,
-      backgroundColor: theme.inputBackground,
+      borderRadius: Radius.sm,
+      backgroundColor: theme.surface1,
       overflow: "hidden",
     },
     wheelSelection: {
@@ -377,7 +369,7 @@ const makeStyles = (theme: Theme) =>
       borderTopWidth: BorderWidth.thick,
       borderBottomWidth: BorderWidth.thick,
       borderColor: theme.border,
-      backgroundColor: theme.backgroundSelected,
+      backgroundColor: theme.brand, // TODO: check
       opacity: 0.3,
       zIndex: 1,
     },
@@ -389,7 +381,7 @@ const makeStyles = (theme: Theme) =>
     wheelText: {
       fontSize: 16,
       fontWeight: "600",
-      color: theme.textMuted,
+      color: theme.textSecondary,
     },
     wheelTextActive: {
       color: theme.text,
@@ -397,6 +389,6 @@ const makeStyles = (theme: Theme) =>
     },
     actions: {
       flexDirection: "row",
-      gap: Spacing.two,
+      gap: Spacing.md,
     },
   });

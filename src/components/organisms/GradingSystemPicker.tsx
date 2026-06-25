@@ -4,12 +4,10 @@ import { Pressable, StyleSheet, View } from "react-native";
 import { ThemedText } from "../themed-text";
 import {
   BorderWidth,
-  PressableState,
   Radius,
-  Rainbow,
+  RainbowTokens,
   Spacing,
   Theme,
-  focusRing,
   onColor,
 } from "@/constants/theme";
 import { GradingSystem } from "@/domain/grading/GradingSystem";
@@ -21,7 +19,7 @@ type GradingSystemPickerProps = {
   onSelect: (systemName: string) => void;
 };
 
-const SELECTED_BG = Rainbow[5];
+const SELECTED_BG = RainbowTokens.navy.bg;
 const SELECTED_TEXT = onColor(SELECTED_BG);
 
 export function GradingSystemPicker({
@@ -43,11 +41,10 @@ export function GradingSystemPicker({
             accessibilityRole="button"
             accessibilityState={{ selected: isSelected }}
             testID={`select-system-${system.name}`}
-            style={({ pressed, focused }: PressableState) => [
+            style={({ pressed }) => [
               styles.option,
               isSelected && styles.optionSelected,
               pressed && styles.pressed,
-              focused && styles.focused,
             ]}
           >
             <ThemedText
@@ -78,23 +75,22 @@ export function GradingSystemPicker({
 
 const makeStyles = (theme: Theme) =>
   StyleSheet.create({
-    row: { flexDirection: "row", flexWrap: "wrap", gap: Spacing.two },
+    row: { flexDirection: "row", flexWrap: "wrap", gap: Spacing.md },
     option: {
       flexGrow: 1,
       flexBasis: 140,
-      paddingVertical: Spacing.two,
-      paddingHorizontal: Spacing.three,
-      borderRadius: Radius.small,
+      paddingVertical: Spacing.md,
+      paddingHorizontal: Spacing.lg,
+      borderRadius: Radius.sm,
       borderWidth: BorderWidth.thick,
       borderColor: theme.border,
-      backgroundColor: theme.inputBackground,
+      backgroundColor: theme.surface1,
       minHeight: 56,
       justifyContent: "center",
-      gap: Spacing.half,
+      gap: Spacing.sm,
     },
     optionSelected: { backgroundColor: SELECTED_BG },
     pressed: { transform: [{ translateX: 2 }, { translateY: 2 }] },
-    focused: focusRing(theme),
     name: { fontSize: 16, fontWeight: "800" },
     meta: { fontSize: 11, fontWeight: "700" },
   });

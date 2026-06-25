@@ -28,7 +28,10 @@ export function Tag({ color, border, children, testID, leftIcon }: TagProps) {
       testID={testID}
     >
       {leftIcon && leftIcon}
-      <ThemedText type="extraSmallBold" style={[{ color: onColor(color) }]}>
+      <ThemedText
+        variant="caption"
+        style={{ color: onColor(color), fontWeight: "700" }}
+      >
         {children}
       </ThemedText>
     </View>
@@ -38,13 +41,13 @@ export function Tag({ color, border, children, testID, leftIcon }: TagProps) {
 const makeStyles = (theme: Theme, color: string) =>
   StyleSheet.create({
     tag: {
-      borderRadius: Radius.small,
-      paddingHorizontal: Spacing.two,
+      borderRadius: Radius.sm,
+      paddingHorizontal: Spacing.md,
       height: 20,
       justifyContent: "center",
       alignItems: "center",
       flexDirection: "row",
-      gap: Spacing.one,
+      gap: Spacing.md,
     },
     border: {
       borderWidth: BorderWidth.thin,

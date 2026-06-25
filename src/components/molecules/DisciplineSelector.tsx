@@ -1,7 +1,7 @@
 import { StyleSheet, View } from "react-native";
 
 import { Chip } from "../atoms/Chip";
-import { Spacing, Rainbow } from "@/constants/theme";
+import { RainbowTokens, Spacing } from "@/constants/theme";
 import { Discipline } from "@/domain/route/Discipline";
 
 export const DISCIPLINES_OPTIONS: {
@@ -9,9 +9,9 @@ export const DISCIPLINES_OPTIONS: {
   label: string;
   color: string;
 }[] = [
-  { value: "bouldering", label: "Boulder", color: Rainbow[1] },
-  { value: "lead-sport", label: "Sport", color: Rainbow[3] },
-  { value: "lead-trad", label: "Trad", color: Rainbow[6] },
+  { value: "bouldering", label: "Boulder", color: RainbowTokens.yellow.bg },
+  { value: "lead-sport", label: "Sport", color: RainbowTokens.cyan.bg },
+  { value: "lead-trad", label: "Trad", color: RainbowTokens.purple.bg },
 ];
 
 type DisciplineSelectorProps = {
@@ -41,5 +41,5 @@ export function DisciplineSelector({
 }
 
 const styles = StyleSheet.create({
-  row: { flexDirection: "row", gap: Spacing.two, flexWrap: "wrap" },
+  row: { flexDirection: "row", gap: Spacing.md, flexWrap: "wrap" },
 });

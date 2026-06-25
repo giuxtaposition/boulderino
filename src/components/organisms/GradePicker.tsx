@@ -4,12 +4,10 @@ import { Pressable, StyleSheet, View } from "react-native";
 import { ThemedText } from "../themed-text";
 import {
   BorderWidth,
-  PressableState,
   Radius,
   Spacing,
   Theme,
-  blockShadow,
-  focusRing,
+  elevation,
   onColor,
 } from "@/constants/theme";
 import { GradeDefinition } from "@/domain/grading/GradeDefinition";
@@ -37,22 +35,17 @@ export function GradePicker({ grades, selected, onSelect }: GradePickerProps) {
             accessibilityRole="button"
             accessibilityState={{ selected: isSelected }}
             testID={`select-grade-${grade.name}`}
-            style={({ pressed, focused }: PressableState) => [
+            style={({ pressed }) => [
               styles.option,
               { backgroundColor: grade.color },
               isSelected && styles.selected,
               isSelected && { borderColor: textColor },
               pressed && styles.pressed,
-              focused && styles.focused,
             ]}
           >
             {isSelected ? (
-              <View
-                style={[styles.checkBadge, { backgroundColor: textColor }]}
-              >
-                <ThemedText
-                  style={[styles.checkMark, { color: grade.color }]}
-                >
+              <View style={[styles.checkBadge, { backgroundColor: textColor }]}>
+                <ThemedText style={[styles.checkMark, { color: grade.color }]}>
                   ✓
                 </ThemedText>
               </View>
@@ -82,15 +75,15 @@ export function GradePicker({ grades, selected, onSelect }: GradePickerProps) {
 
 const makeStyles = (theme: Theme) =>
   StyleSheet.create({
-    row: { flexDirection: "row", flexWrap: "wrap", gap: Spacing.two },
+    row: { flexDirection: "row", flexWrap: "wrap", gap: Spacing.md },
     option: {
       flexGrow: 1,
       flexBasis: 140,
-      paddingVertical: Spacing.two,
-      paddingLeft: Spacing.three,
-      paddingRight: Spacing.five + Spacing.half,
-      borderRadius: Radius.small,
-      borderWidth: BorderWidth.chunky + 1,
+      paddingVertical: Spacing.md,
+      paddingLeft: Spacing.lg,
+      paddingRight: Spacing.xxl + Spacing.sm,
+      borderRadius: Radius.sm,
+      borderWidth: BorderWidth.thick + 1,
       borderColor: theme.border,
       minHeight: 52,
       justifyContent: "center",
@@ -98,10 +91,9 @@ const makeStyles = (theme: Theme) =>
     },
     selected: {
       transform: [{ translateY: -2 }],
-      ...blockShadow(theme, 6),
+      ...elevation(theme, "lg"),
     },
     pressed: { transform: [{ translateX: 2 }, { translateY: 2 }] },
-    focused: focusRing(theme),
     label: { fontSize: 15, lineHeight: 20, fontWeight: "800" },
     labelSelected: { fontWeight: "900" },
     meta: { fontSize: 11, lineHeight: 14, fontWeight: "700" },

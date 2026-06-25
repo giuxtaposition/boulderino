@@ -5,11 +5,9 @@ import { Button } from "@/components/atoms/Button";
 import { ThemedText } from "@/components/themed-text";
 import {
   BorderWidth,
-  PressableState,
   Radius,
   Spacing,
   Theme,
-  focusRing,
   outcomeColor,
 } from "@/constants/theme";
 import { Attempt } from "@/domain/route/Attempt";
@@ -120,10 +118,9 @@ function AttemptItem({
             accessibilityState={{ expanded }}
             onPress={toggle}
             testID={`attempt-item-${attempt.id}-toggle`}
-            style={(state: PressableState) => [
+            style={(state) => [
               styles.toggle,
               state.pressed && styles.togglePressed,
-              state.focused && styles.toggleFocused,
             ]}
           >
             <ThemedText style={styles.toggleText}>
@@ -191,29 +188,29 @@ function AttemptItem({
 
 const makeStyles = (theme: Theme) =>
   StyleSheet.create({
-    list: { gap: Spacing.three },
+    list: { gap: Spacing.lg },
     empty: {
-      padding: Spacing.four,
+      padding: Spacing.xl,
       borderWidth: BorderWidth.thick,
       borderStyle: "dashed",
       borderColor: theme.borderMuted,
-      borderRadius: Radius.medium,
+      borderRadius: Radius.md,
       alignItems: "center",
     },
     emptyText: { color: theme.textSecondary, fontWeight: "700" },
     item: {
-      gap: Spacing.two,
-      padding: Spacing.three,
-      backgroundColor: theme.overlay,
+      gap: Spacing.md,
+      padding: Spacing.lg,
+      backgroundColor: theme.surface3,
       borderWidth: BorderWidth.thick,
       borderColor: theme.border,
-      borderRadius: Radius.small,
+      borderRadius: Radius.sm,
     },
     header: {
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
-      gap: Spacing.two,
+      gap: Spacing.md,
     },
     date: {
       fontSize: 13,
@@ -227,24 +224,23 @@ const makeStyles = (theme: Theme) =>
     },
     fallFrame: {
       width: "100%",
-      borderRadius: Radius.small,
+      borderRadius: Radius.sm,
       borderWidth: BorderWidth.thick,
       borderColor: theme.border,
       overflow: "hidden",
     },
     toggle: {
       alignSelf: "flex-start",
-      paddingVertical: Spacing.one,
-      paddingHorizontal: Spacing.two,
-      borderRadius: Radius.small,
+      paddingVertical: Spacing.md,
+      paddingHorizontal: Spacing.md,
+      borderRadius: Radius.sm,
       borderWidth: BorderWidth.thick,
       borderColor: theme.border,
-      backgroundColor: theme.inputBackground,
+      backgroundColor: theme.surface1,
       minHeight: 32,
       justifyContent: "center",
     },
     togglePressed: { transform: [{ translateX: 2 }, { translateY: 2 }] },
-    toggleFocused: focusRing(theme),
     toggleText: {
       fontSize: 12,
       fontWeight: "800",
@@ -254,6 +250,6 @@ const makeStyles = (theme: Theme) =>
     actionRow: {
       flexDirection: "row",
       flexWrap: "wrap",
-      gap: Spacing.two,
+      gap: Spacing.md,
     },
   });

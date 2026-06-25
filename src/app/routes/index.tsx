@@ -24,8 +24,8 @@ import {
   BottomTabHeight,
   MaxContentWidth,
   Radius,
+  RainbowTokens,
   Spacing,
-  Rainbow,
   Theme,
 } from "@/constants/theme";
 import { useContainer } from "@/composition/Container";
@@ -151,13 +151,14 @@ export default function RoutesScreen() {
               <EmptyBlock message="No routes. Add your first route by clicking the + button." />
             ) : (
               routes.map((route, index) => {
-                let background: string = Rainbow[3];
+                //TODO: duplicated code for grading color
+                let background: string = RainbowTokens.green.bg;
                 try {
                   background = gradingSystemRegistry
                     .requireByName(route.grade.systemId)
                     .definitionFor(route.grade.name).color;
                 } catch {
-                  background = Rainbow[3];
+                  background = RainbowTokens.green.bg;
                 }
                 return (
                   <RouteCard
@@ -199,98 +200,101 @@ export default function RoutesScreen() {
               </>
             ) : (
               <>
-            <FormField label="Name">
-              <Input
-                value={name}
-                onChangeText={setName}
-                placeholder="e.g. Mantle Mayhem"
-                accessibilityLabel="route name"
-                autoCapitalize="words"
-                autoCorrect={false}
-                testID="input-route-name"
-              />
-            </FormField>
+                <FormField label="Name">
+                  <Input
+                    value={name}
+                    onChangeText={setName}
+                    placeholder="e.g. Mantle Mayhem"
+                    accessibilityLabel="route name"
+                    autoCapitalize="words"
+                    autoCorrect={false}
+                    testID="input-route-name"
+                  />
+                </FormField>
 
-            <FormField label="Description">
-              <Input
-                value={description}
-                onChangeText={setDescription}
-                placeholder="Beta, holds, vibes…"
-                accessibilityLabel="route description"
-                multiline
-                numberOfLines={3}
-                testID="input-route-description"
-                style={styles.multiline}
-              />
-            </FormField>
+                <FormField label="Description">
+                  <Input
+                    value={description}
+                    onChangeText={setDescription}
+                    placeholder="Beta, holds, vibes…"
+                    accessibilityLabel="route description"
+                    multiline
+                    numberOfLines={3}
+                    testID="input-route-description"
+                    style={styles.multiline}
+                  />
+                </FormField>
 
-            <FormField label="Tags">
-              <Input
-                value={tagsInput}
-                onChangeText={setTagsInput}
-                placeholder="overhang, slab, crimps"
-                accessibilityLabel="route tags"
-                autoCapitalize="none"
-                autoCorrect={false}
-                testID="input-route-tags"
-              />
-            </FormField>
+                <FormField label="Tags">
+                  <Input
+                    value={tagsInput}
+                    onChangeText={setTagsInput}
+                    placeholder="overhang, slab, crimps"
+                    accessibilityLabel="route tags"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    testID="input-route-tags"
+                  />
+                </FormField>
 
-            <FormField label="Discipline">
-              <DisciplineSelector value={discipline} onChange={setDiscipline} />
-            </FormField>
+                <FormField label="Discipline">
+                  <DisciplineSelector
+                    value={discipline}
+                    onChange={setDiscipline}
+                  />
+                </FormField>
 
-            <FormField label="Grading system">
-              {systems.length === 0 ? (
-                <View style={styles.hint} testID="no-systems-hint">
-                  <ThemedText style={styles.hintText}>
-                    No grading systems yet. Add one in the Grades tab.
-                  </ThemedText>
-                </View>
-              ) : (
-                <GradingSystemPicker
-                  systems={systems}
-                  selected={selectedSystem}
-                  onSelect={handleSelectSystem}
-                />
-              )}
-            </FormField>
+                <FormField label="Grading system">
+                  {systems.length === 0 ? (
+                    <View style={styles.hint} testID="no-systems-hint">
+                      <ThemedText style={styles.hintText}>
+                        No grading systems yet. Add one in the Grades tab.
+                      </ThemedText>
+                    </View>
+                  ) : (
+                    <GradingSystemPicker
+                      systems={systems}
+                      selected={selectedSystem}
+                      onSelect={handleSelectSystem}
+                    />
+                  )}
+                </FormField>
 
-            {activeSystem && (
-              <FormField label="Grade">
-                <GradePicker
-                  grades={activeSystem.grades}
-                  selected={selectedGrade}
-                  onSelect={setSelectedGrade}
-                />
-              </FormField>
-            )}
+                {activeSystem && (
+                  <FormField label="Grade">
+                    <GradePicker
+                      grades={activeSystem.grades}
+                      selected={selectedGrade}
+                      onSelect={setSelectedGrade}
+                    />
+                  </FormField>
+                )}
 
-            <FormField label="Photo">
-              <PhotoPicker photo={photo} onPick={handlePickPhoto} />
-            </FormField>
+                <FormField label="Photo">
+                  <PhotoPicker photo={photo} onPick={handlePickPhoto} />
+                </FormField>
 
-            {photo && holds.length > 0 && (
-              <FormField label={`Holds (${holds.length})`}>
+                {photo && holds.length > 0 && (
+                  <FormField label={`Holds (${holds.length})`}>
+                    <Button
+                      onPress={() => setMarkingHolds(true)}
+                      testID="edit-holds"
+                      style={styles.secondary}
+                    >
+                      EDIT HOLDS
+                    </Button>
+                  </FormField>
+                )}
+
                 <Button
-                  onPress={() => setMarkingHolds(true)}
-                  testID="edit-holds"
-                  style={styles.secondary}
+                  onPress={handleSubmit}
+                  testID="submit-route"
+                  style={styles.submit}
                 >
-                  EDIT HOLDS
+                  ADD NEW ROUTE
                 </Button>
-              </FormField>
-            )}
 
-            <Button
-              onPress={handleSubmit}
-              testID="submit-route"
-              style={styles.submit}
-            >
-              ADD NEW ROUTE
-            </Button>
-
-            {error && <ErrorBlock testID="error-route" message={error} />}
+                {error && <ErrorBlock testID="error-route" message={error} />}
               </>
             )}
           </FormCardDrawer>
@@ -307,15 +311,15 @@ const makeStyles = (theme: Theme) =>
     container: { flex: 1 },
     safeArea: { flex: 1 },
     scroll: {
-      paddingHorizontal: Spacing.four,
-      paddingTop: Spacing.four,
-      paddingBottom: BottomTabHeight + Spacing.six,
-      gap: Spacing.five,
+      paddingHorizontal: Spacing.xl,
+      paddingTop: Spacing.xl,
+      paddingBottom: BottomTabHeight + Spacing.xxxl,
+      gap: Spacing.xxl,
       maxWidth: MaxContentWidth,
       width: "100%",
       alignSelf: "center",
     },
-    header: { gap: Spacing.one },
+    header: { gap: Spacing.md },
     kicker: {
       fontSize: 11,
       fontWeight: "700",
@@ -328,20 +332,20 @@ const makeStyles = (theme: Theme) =>
       letterSpacing: -0.5,
       color: theme.text,
     },
-    submit: { marginTop: Spacing.three },
-    secondary: { backgroundColor: theme.inputBackground },
+    submit: { marginTop: Spacing.lg },
+    secondary: { backgroundColor: theme.surface1 },
     multiline: {
       minHeight: 84,
-      paddingTop: Spacing.three,
+      paddingTop: Spacing.lg,
       textAlignVertical: "top",
     },
     hint: {
       borderWidth: BorderWidth.thick,
       borderStyle: "dashed",
       borderColor: theme.borderMuted,
-      borderRadius: Radius.small,
-      padding: Spacing.three,
+      borderRadius: Radius.sm,
+      padding: Spacing.lg,
     },
     hintText: { color: theme.textSecondary, fontWeight: "600" },
-    list: { gap: Spacing.three },
+    list: { gap: Spacing.lg },
   });

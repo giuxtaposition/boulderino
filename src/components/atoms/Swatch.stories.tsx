@@ -3,13 +3,13 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { expect, fn, userEvent, within } from "storybook/test";
 
 import { Swatch } from "./Swatch";
-import { Rainbow } from "@/constants/theme";
+import { RainbowTokens } from "../../constants/theme";
 
 const meta = {
   title: "Atoms/Swatch",
   component: Swatch,
   args: {
-    color: Rainbow[3],
+    color: RainbowTokens.green.bg,
     selected: false,
     accessibilityLabel: "green swatch",
     onPress: fn(),

@@ -29,7 +29,7 @@ export function FormField({
 }
 
 const styles = StyleSheet.create({
-  field: { gap: Spacing.one },
+  field: { gap: Spacing.md },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',

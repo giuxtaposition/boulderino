@@ -1,21 +1,22 @@
 import { useMemo } from "react";
 import { Platform, Pressable, PressableProps, StyleSheet } from "react-native";
 
-import {
-  onColor,
-  PressableState,
-  Radius,
-  Spacing,
-  Theme,
-} from "@/constants/theme";
+import { Radius, RainbowTokens, Spacing, Theme } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
 import { Plus } from "lucide-react-native";
 
 type FabProps = Omit<PressableProps, "children"> & {
+  backgroundColor?: string;
   color?: string;
 };
 
-export function Fab({ style, color, disabled, ...rest }: FabProps) {
+export function Fab({
+  style,
+  backgroundColor,
+  color,
+  disabled,
+  ...rest
+}: FabProps) {
   const theme = useTheme();
   const styles = useMemo(() => makeStyles(theme), [theme]);
 
@@ -24,14 +25,16 @@ export function Fab({ style, color, disabled, ...rest }: FabProps) {
       accessibilityRole="button"
       accessibilityState={{ disabled: disabled === true }}
       {...rest}
-      style={(state: PressableState) => [
+      style={(state) => [
         styles.base,
-        color ? { backgroundColor: color } : { backgroundColor: theme.blue },
+        backgroundColor
+          ? { backgroundColor: backgroundColor }
+          : { backgroundColor: RainbowTokens.navy.bg },
         state.pressed && !disabled && styles.pressed,
         typeof style === "function" ? style(state) : style,
       ]}
     >
-      <Plus color={color ? onColor(color) : onColor(theme.blue)} />
+      <Plus color={color ? color : RainbowTokens.navy.on} />
     </Pressable>
   );
 }
@@ -40,8 +43,8 @@ const makeStyles = (theme: Theme) => {
   return StyleSheet.create({
     base: {
       borderRadius: Radius.pill,
-      paddingVertical: Spacing.two,
-      paddingHorizontal: Spacing.two,
+      paddingVertical: Spacing.md,
+      paddingHorizontal: Spacing.md,
       alignItems: "center",
       justifyContent: "center",
       color: theme.text,

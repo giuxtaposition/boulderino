@@ -1,16 +1,9 @@
-import { useMemo } from 'react';
-import { Image, Pressable, StyleSheet, View } from 'react-native';
+import { useMemo } from "react";
+import { Image, Pressable, StyleSheet, View } from "react-native";
 
-import { ThemedText } from '../themed-text';
-import {
-  BorderWidth,
-  PressableState,
-  Radius,
-  Spacing,
-  Theme,
-  focusRing,
-} from '@/constants/theme';
-import { useTheme } from '@/hooks/use-theme';
+import { ThemedText } from "../themed-text";
+import { BorderWidth, Radius, Spacing, Theme } from "@/constants/theme";
+import { useTheme } from "@/hooks/use-theme";
 
 export type PickedPhoto = {
   uri: string;
@@ -32,11 +25,8 @@ export function PhotoPicker({ photo, onPick }: PhotoPickerProps) {
       onPress={onPick}
       accessibilityRole="button"
       testID="pick-photo-button"
-      style={({ pressed, focused }: PressableState) => [
-        styles.picker,
-        pressed && styles.pressed,
-        focused && styles.focused,
-      ]}>
+      style={({ pressed }) => [styles.picker, pressed && styles.pressed]}
+    >
       {photo ? (
         <View style={styles.previewWrap}>
           <Image
@@ -59,30 +49,29 @@ const makeStyles = (theme: Theme) =>
   StyleSheet.create({
     picker: {
       borderWidth: BorderWidth.thick,
-      borderStyle: 'dashed',
+      borderStyle: "dashed",
       borderColor: theme.border,
-      borderRadius: Radius.small,
-      backgroundColor: theme.inputBackground,
-      padding: Spacing.three,
+      borderRadius: Radius.sm,
+      backgroundColor: theme.surface1,
+      padding: Spacing.lg,
       minHeight: 72,
-      justifyContent: 'center',
-      alignItems: 'center',
+      justifyContent: "center",
+      alignItems: "center",
     },
     pressed: { transform: [{ translateX: 2 }, { translateY: 2 }] },
-    focused: focusRing(theme),
     cta: {
       color: theme.text,
       fontSize: 14,
-      fontWeight: '800',
+      fontWeight: "800",
       letterSpacing: 1,
     },
-    previewWrap: { gap: Spacing.two, alignItems: 'center' },
+    previewWrap: { gap: Spacing.md, alignItems: "center" },
     preview: {
       width: 140,
       height: 105,
-      borderRadius: Radius.small,
+      borderRadius: Radius.sm,
       borderWidth: BorderWidth.thick,
       borderColor: theme.border,
     },
-    meta: { fontSize: 11, fontWeight: '700', color: theme.textSecondary },
+    meta: { fontSize: 11, fontWeight: "700", color: theme.textSecondary },
   });

@@ -4,12 +4,10 @@ import { Pressable, PressableProps, StyleSheet } from "react-native";
 import { ThemedText } from "../themed-text";
 import {
   BorderWidth,
-  PressableState,
   Radius,
+  RainbowTokens,
   Spacing,
   Theme,
-  focusRing,
-  onColor,
 } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
 
@@ -44,12 +42,11 @@ export function Button({
         size === "small" ? { top: 4, bottom: 4, left: 4, right: 4 } : undefined
       }
       {...rest}
-      style={(state: PressableState) => [
+      style={(state) => [
         styles.base,
         size === "small" && styles.small,
         styles[`${variant}_${action}`],
         state.pressed && !disabled && styles.pressed,
-        state.focused && styles.focused,
         disabled && styles.disabled,
         typeof style === "function" ? style(state) : style,
       ]}
@@ -62,37 +59,40 @@ export function Button({
 }
 
 const makeStyles = (theme: Theme) => {
-  const solidText = (color: string) => ({ color: onColor(color) });
-  const outlineText = (color: string) => ({ color });
-  const solidBox = (color: string) => ({
-    backgroundColor: color,
-    borderColor: theme.text,
+  const solidText = ({ on }: { bg: string; on: string }) => ({
+    color: on,
   });
-  const outlineBox = (color: string) => ({
+  const outlineText = () => ({
+    color: theme.text,
+  });
+  const solidBox = ({ bg, on }: { bg: string; on: string }) => ({
+    backgroundColor: bg,
+    borderColor: on,
+  });
+  const outlineBox = ({ bg, on }: { bg: string; on: string }) => ({
     backgroundColor: "transparent",
-    borderColor: color,
+    borderColor: bg,
   });
 
   return StyleSheet.create({
     base: {
-      borderRadius: Radius.small,
+      borderRadius: Radius.sm,
       borderWidth: BorderWidth.thick,
-      paddingVertical: Spacing.three,
-      paddingHorizontal: Spacing.four,
+      paddingVertical: Spacing.lg,
+      paddingHorizontal: Spacing.xl,
       alignItems: "center",
       justifyContent: "center",
       minHeight: 44,
     },
     small: {
-      paddingVertical: Spacing.two,
-      paddingHorizontal: Spacing.three,
-      minHeight: 40,
+      paddingVertical: Spacing.md,
+      paddingHorizontal: Spacing.lg,
+      minHeight: 44,
     },
     pressed: {
       transform: [{ translateX: 3 }, { translateY: 3 }],
       opacity: 0.85,
     },
-    focused: focusRing(theme),
     disabled: {
       opacity: 0.5,
     },
@@ -102,21 +102,21 @@ const makeStyles = (theme: Theme) => {
       letterSpacing: 0.8,
       textAlign: "center",
     },
-    solid_primary: solidBox(theme.blue),
-    solid_secondary: solidBox(theme.purple),
-    solid_positive: solidBox(theme.green),
-    solid_negative: solidBox(theme.red),
-    solid_primary_text: solidText(theme.blue),
-    solid_secondary_text: solidText(theme.purple),
-    solid_positive_text: solidText(theme.green),
-    solid_negative_text: solidText(theme.red),
-    outline_primary: outlineBox(theme.blue),
-    outline_secondary: outlineBox(theme.purple),
-    outline_positive: outlineBox(theme.green),
-    outline_negative: outlineBox(theme.red),
-    outline_primary_text: outlineText(theme.blue),
-    outline_secondary_text: outlineText(theme.purple),
-    outline_positive_text: outlineText(theme.green),
-    outline_negative_text: outlineText(theme.red),
+    solid_primary: solidBox(RainbowTokens.navy),
+    solid_secondary: solidBox(RainbowTokens.purple),
+    solid_positive: solidBox(RainbowTokens.green),
+    solid_negative: solidBox(RainbowTokens.red),
+    solid_primary_text: solidText(RainbowTokens.navy),
+    solid_secondary_text: solidText(RainbowTokens.purple),
+    solid_positive_text: solidText(RainbowTokens.green),
+    solid_negative_text: solidText(RainbowTokens.red),
+    outline_primary: outlineBox(RainbowTokens.navy),
+    outline_secondary: outlineBox(RainbowTokens.purple),
+    outline_positive: outlineBox(RainbowTokens.green),
+    outline_negative: outlineBox(RainbowTokens.red),
+    outline_primary_text: outlineText(),
+    outline_secondary_text: outlineText(),
+    outline_positive_text: outlineText(),
+    outline_negative_text: outlineText(),
   });
 };

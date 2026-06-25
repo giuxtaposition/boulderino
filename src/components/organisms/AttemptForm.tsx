@@ -185,24 +185,24 @@ export function AttemptForm({
 const makeStyles = (theme: Theme) =>
   StyleSheet.create({
     form: {
-      gap: Spacing.three,
-      padding: Spacing.three,
-      backgroundColor: theme.surface,
+      gap: Spacing.lg,
+      padding: Spacing.lg,
+      backgroundColor: theme.surface1,
       borderWidth: BorderWidth.thick,
       borderColor: theme.border,
-      borderRadius: Radius.small,
+      borderRadius: Radius.sm,
     },
-    field: { gap: Spacing.one },
+    field: { gap: Spacing.md },
     chipRow: {
       flexDirection: "row",
-      gap: Spacing.two,
+      gap: Spacing.md,
       flexWrap: "wrap",
     },
     notesInput: {
       minHeight: 72,
       textAlignVertical: "top",
     },
-    editorBlock: { gap: Spacing.two },
+    editorBlock: { gap: Spacing.md },
     editorPlaceholder: {
       minHeight: 200,
       alignItems: "center",
@@ -210,11 +210,11 @@ const makeStyles = (theme: Theme) =>
     },
     editorActions: {
       flexDirection: "row",
-      gap: Spacing.two,
+      gap: Spacing.md,
       flexWrap: "wrap",
     },
     fallSummary: {
-      gap: Spacing.two,
+      gap: Spacing.md,
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
@@ -226,7 +226,7 @@ const makeStyles = (theme: Theme) =>
       fontWeight: "600",
     },
     actions: {
-      gap: Spacing.two,
+      gap: Spacing.md,
       flexDirection: "row",
       flexWrap: "wrap",
     },

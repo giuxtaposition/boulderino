@@ -19,9 +19,11 @@ export default function ProbeSamScreen() {
     (async () => {
       try {
         const ort = await import("onnxruntime-react-native");
-        const version = (ort as { Tensor?: unknown; env?: { versions?: { common?: string } } })
-          .env?.versions?.common;
-        const hasInferenceSession = typeof ort.InferenceSession?.create === "function";
+        const version = (
+          ort as { Tensor?: unknown; env?: { versions?: { common?: string } } }
+        ).env?.versions?.common;
+        const hasInferenceSession =
+          typeof ort.InferenceSession?.create === "function";
         setResult({
           ok: hasInferenceSession,
           message: hasInferenceSession
@@ -46,7 +48,10 @@ export default function ProbeSamScreen() {
           <ThemedText style={styles.heading}>SAM probe</ThemedText>
           {!result && <ThemedText>Loading…</ThemedText>}
           {result && (
-            <View style={styles.block} testID={result.ok ? "probe-ok" : "probe-fail"}>
+            <View
+              style={styles.block}
+              testID={result.ok ? "probe-ok" : "probe-fail"}
+            >
               <ThemedText style={styles.status}>
                 {result.ok ? "OK" : "FAIL"}
               </ThemedText>
@@ -65,9 +70,9 @@ export default function ProbeSamScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   safe: { flex: 1 },
-  scroll: { padding: Spacing.four, gap: Spacing.three },
+  scroll: { padding: Spacing.xl, gap: Spacing.lg },
   heading: { fontSize: 24, fontWeight: "800" },
-  block: { gap: Spacing.one },
+  block: { gap: Spacing.md },
   status: { fontSize: 32, fontWeight: "900" },
   detail: { fontSize: 12, opacity: 0.7 },
 });

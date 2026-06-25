@@ -15,7 +15,7 @@ const meta = {
     ),
   ],
   argTypes: {
-    color: {
+    backgroundColor: {
       control: "color",
     },
   },

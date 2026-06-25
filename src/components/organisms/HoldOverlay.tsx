@@ -94,6 +94,6 @@ const makeStyles = (theme: Theme) =>
     frame: {
       width: "100%",
       overflow: "hidden",
-      backgroundColor: theme.surface,
+      backgroundColor: theme.surface1,
     },
   });

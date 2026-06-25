@@ -3,14 +3,14 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { expect, fn, userEvent, within } from "storybook/test";
 
 import { GradeRowEditor, GradeRowValue } from "./GradeRowEditor";
-import { Rainbow } from "@/constants/theme";
+import { RainbowTokens } from "@/constants/theme";
 
 const meta = {
   title: "Organisms/GradeRowEditor",
   component: GradeRowEditor,
   args: {
     index: 0,
-    row: { name: "V2", color: Rainbow[1], order: "3" },
+    row: { name: "V2", color: RainbowTokens.yellow.bg, order: "3" },
     removable: true,
     onChange: fn(),
     onRemove: fn(),

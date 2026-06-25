@@ -3,13 +3,13 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { expect, fn, userEvent, within } from "storybook/test";
 
 import { ColorPicker } from "./ColorPicker";
-import { Rainbow } from "@/constants/theme";
+import { RainbowTokens } from "../../constants/theme";
 
 const meta = {
   title: "Molecules/ColorPicker",
   component: ColorPicker,
   args: {
-    value: Rainbow[3] as string,
+    value: RainbowTokens.green.bg,
     testIDPrefix: "sb-color",
     onChange: fn(),
   },
@@ -23,7 +23,7 @@ export const Static: Story = {};
 
 export const Interactive: Story = {
   render: (args) => {
-    const [value, setValue] = useState<string>(Rainbow[3]);
+    const [value, setValue] = useState<string>(RainbowTokens.green.bg);
     return <ColorPicker {...args} value={value} onChange={setValue} />;
   },
 };
@@ -37,6 +37,6 @@ export const SelectsSwatch: Story = {
     const canvas = within(canvasElement);
     const swatch = await canvas.findByTestId("sb-color-1");
     await userEvent.click(swatch);
-    await expect(args.onChange).toHaveBeenCalledWith(Rainbow[1]);
+    await expect(args.onChange).toHaveBeenCalledWith(RainbowTokens.yellow.bg);
   },
 };
