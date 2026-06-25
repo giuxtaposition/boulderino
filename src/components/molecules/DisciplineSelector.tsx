@@ -4,7 +4,11 @@ import { Chip } from "../atoms/Chip";
 import { Spacing, Rainbow } from "@/constants/theme";
 import { Discipline } from "@/domain/route/Discipline";
 
-const OPTIONS: { value: Discipline; label: string; color: string }[] = [
+export const DISCIPLINES_OPTIONS: {
+  value: Discipline;
+  label: string;
+  color: string;
+}[] = [
   { value: "bouldering", label: "Boulder", color: Rainbow[1] },
   { value: "lead-sport", label: "Sport", color: Rainbow[3] },
   { value: "lead-trad", label: "Trad", color: Rainbow[6] },
@@ -21,7 +25,7 @@ export function DisciplineSelector({
 }: DisciplineSelectorProps) {
   return (
     <View style={styles.row} testID="discipline-options">
-      {OPTIONS.map((option) => (
+      {DISCIPLINES_OPTIONS.map((option) => (
         <Chip
           key={option.value}
           selected={option.value === value}

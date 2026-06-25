@@ -1,10 +1,5 @@
 import { lazy, Suspense, useCallback, useMemo, useState } from "react";
-import {
-  ActivityIndicator,
-  Pressable,
-  StyleSheet,
-  View,
-} from "react-native";
+import { ActivityIndicator, Pressable, StyleSheet, View } from "react-native";
 
 import { Button } from "@/components/atoms/Button";
 import { ThemedText } from "@/components/themed-text";
@@ -15,11 +10,11 @@ import {
   Spacing,
   Theme,
   focusRing,
-  onColor,
   outcomeColor,
 } from "@/constants/theme";
 import { Attempt } from "@/domain/route/Attempt";
 import { useTheme } from "@/hooks/use-theme";
+import { Tag } from "../atoms/Tag";
 
 const HoldOverlay = lazy(() => import("./HoldOverlay"));
 
@@ -108,19 +103,12 @@ function AttemptItem({
   const bg = outcomeColor(theme, attempt.outcome);
 
   return (
-    <View
-      style={styles.item}
-      testID={`attempt-item-${attempt.id}`}
-    >
+    <View style={styles.item} testID={`attempt-item-${attempt.id}`}>
       <View style={styles.header}>
         <ThemedText style={styles.date}>
           {dateFormatter.format(attempt.date)}
         </ThemedText>
-        <View style={[styles.outcomeTag, { backgroundColor: bg }]}>
-          <ThemedText style={[styles.outcomeText, { color: onColor(bg) }]}>
-            {attempt.outcome.toUpperCase()}
-          </ThemedText>
-        </View>
+        <Tag color={bg}>{attempt.outcome.toUpperCase()}</Tag>
       </View>
       {attempt.notes ? (
         <ThemedText style={styles.notes}>{attempt.notes}</ThemedText>
@@ -230,19 +218,6 @@ const makeStyles = (theme: Theme) =>
     date: {
       fontSize: 13,
       fontWeight: "700",
-      color: theme.text,
-    },
-    outcomeTag: {
-      borderWidth: BorderWidth.thick,
-      borderColor: theme.border,
-      borderRadius: Radius.small,
-      paddingVertical: Spacing.half,
-      paddingHorizontal: Spacing.two,
-    },
-    outcomeText: {
-      fontSize: 11,
-      fontWeight: "800",
-      letterSpacing: 1,
       color: theme.text,
     },
     notes: {

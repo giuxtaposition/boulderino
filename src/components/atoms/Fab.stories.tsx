@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { View } from "react-native";
 import { expect, fn, userEvent, within } from "storybook/test";
 
 import { Fab } from "./Fab";
@@ -6,6 +7,13 @@ import { Fab } from "./Fab";
 const meta = {
   title: "Atoms/Fab",
   component: Fab,
+  decorators: [
+    (Story) => (
+      <View style={{ position: "relative", width: "100%", height: 300 }}>
+        <Story />
+      </View>
+    ),
+  ],
   argTypes: {
     color: {
       control: "color",

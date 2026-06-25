@@ -14,6 +14,8 @@ import {
 } from "@/constants/theme";
 import { Route } from "@/domain/route/Route";
 import { useTheme } from "@/hooks/use-theme";
+import { Tag } from "../atoms/Tag";
+import { DISCIPLINES_OPTIONS } from "../molecules/DisciplineSelector";
 
 type RouteCardProps = {
   route: Route;
@@ -36,8 +38,10 @@ export function RouteCard({ route, index, background }: RouteCardProps) {
   const styles = makeStyles(theme);
   const router = useRouter();
   const cardTextColor = onColor(background);
-  const tagBackground = theme.text;
-  const tagTextColor = onColor(tagBackground);
+
+  const tagBackground =
+    DISCIPLINES_OPTIONS.find((option) => option.value === route.discipline)
+      ?.color ?? theme.background;
 
   return (
     <Pressable
@@ -59,21 +63,21 @@ export function RouteCard({ route, index, background }: RouteCardProps) {
         testID={`route-photo-${index}`}
       />
       <View style={styles.body}>
-        <ThemedText
-          style={[styles.name, { color: cardTextColor }]}
-          numberOfLines={1}
-        >
-          {route.name}
-        </ThemedText>
+        <View style={styles.headerRow}>
+          <ThemedText
+            style={[styles.name, { color: cardTextColor }]}
+            numberOfLines={1}
+          >
+            {route.name}
+          </ThemedText>
+          <Tag border={true} color={tagBackground}>
+            {route.discipline}
+          </Tag>
+        </View>
         <View style={styles.headerRow}>
           <ThemedText style={[styles.grade, { color: cardTextColor }]}>
             {route.grade.systemId} / {route.grade.name}
           </ThemedText>
-          <View style={[styles.tag, { backgroundColor: tagBackground }]}>
-            <ThemedText style={[styles.tagText, { color: tagTextColor }]}>
-              {route.discipline}
-            </ThemedText>
-          </View>
         </View>
         <ThemedText
           style={[styles.timestamp, { color: cardTextColor, opacity: 0.7 }]}
@@ -122,17 +126,6 @@ const makeStyles = (theme: Theme) =>
       fontSize: 14,
       fontWeight: "800",
       flexShrink: 1,
-    },
-    tag: {
-      paddingVertical: Spacing.half,
-      paddingHorizontal: Spacing.two,
-      borderRadius: Radius.small,
-    },
-    tagText: {
-      fontSize: 11,
-      fontWeight: "800",
-      letterSpacing: 1,
-      textTransform: "uppercase",
     },
     timestamp: {
       fontSize: 11,
