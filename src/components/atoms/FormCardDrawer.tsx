@@ -32,6 +32,7 @@ type FormCardProps = ViewProps & {
   children: ReactNode;
   visible: boolean;
   setVisible: (visible: boolean) => void;
+  fullscreen?: boolean;
 };
 
 export function FormCardDrawer({
@@ -40,6 +41,7 @@ export function FormCardDrawer({
   visible,
   setVisible,
   title,
+  fullscreen = false,
   ...rest
 }: FormCardProps) {
   const theme = useTheme();
@@ -74,15 +76,19 @@ export function FormCardDrawer({
             onPress={() => setVisible(false)}
             accessibilityLabel="close drawer"
           />
-          <View {...rest} style={[styles.card, style]}>
+          <View {...rest} style={[styles.card, fullscreen && styles.cardFullscreen, style]}>
             {header}
-            <ScrollView
-              contentContainerStyle={styles.sheetContent}
-              keyboardShouldPersistTaps="handled"
-              showsVerticalScrollIndicator={false}
-            >
-              {children}
-            </ScrollView>
+            {fullscreen ? (
+              <View style={styles.fullscreenContent}>{children}</View>
+            ) : (
+              <ScrollView
+                contentContainerStyle={styles.sheetContent}
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+              >
+                {children}
+              </ScrollView>
+            )}
           </View>
         </GestureHandlerRootView>
       </Modal>
@@ -92,15 +98,19 @@ export function FormCardDrawer({
   if (!visible) return null;
 
   return (
-    <View {...rest} style={[styles.card, style]}>
+    <View {...rest} style={[styles.card, fullscreen && styles.cardFullscreen, style]}>
       {header}
-      <ScrollView
-        contentContainerStyle={styles.sheetContent}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-      >
-        {children}
-      </ScrollView>
+      {fullscreen ? (
+        <View style={styles.fullscreenContent}>{children}</View>
+      ) : (
+        <ScrollView
+          contentContainerStyle={styles.sheetContent}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          {children}
+        </ScrollView>
+      )}
     </View>
   );
 }
@@ -166,5 +176,14 @@ const makeStyles = (theme: Theme, isMobile: boolean, desktopMaxHeight: number) =
       fontSize: 18,
       fontWeight: "bold",
       color: theme.text,
+    },
+    cardFullscreen: {
+      top: Spacing.four,
+      maxHeight: "100%",
+      flex: 1,
+    },
+    fullscreenContent: {
+      flex: 1,
+      overflow: "hidden",
     },
   });

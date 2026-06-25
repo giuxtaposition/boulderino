@@ -170,12 +170,27 @@ export function regionGrowLab(
   const gradient = c.gradient;
   const maxRadiusSq = maxRadius * maxRadius;
 
-  const seedIdx = seedY * width + seedX;
-  const seedO = seedIdx * 3;
-  const seedL = lab[seedO];
-  const seedA = lab[seedO + 1];
-  const seedB = lab[seedO + 2];
+  let seedL = 0;
+  let seedA = 0;
+  let seedB = 0;
+  let count = 0;
+  for (let dy = -1; dy <= 1; dy++) {
+    for (let dx = -1; dx <= 1; dx++) {
+      const nx = seedX + dx;
+      const ny = seedY + dy;
+      if (!inBounds(nx, ny, width, height)) continue;
+      const o = (ny * width + nx) * 3;
+      seedL += lab[o];
+      seedA += lab[o + 1];
+      seedB += lab[o + 2];
+      count++;
+    }
+  }
+  seedL /= count;
+  seedA /= count;
+  seedB /= count;
 
+  const seedIdx = seedY * width + seedX;
   mask[seedIdx] = 1;
   const stack: number[] = [seedX, seedY];
 

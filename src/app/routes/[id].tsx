@@ -155,6 +155,42 @@ export default function RouteDetailScreen() {
     );
   }
 
+  if (editing) {
+    return (
+      <ThemedView style={styles.container}>
+        <SafeAreaView style={styles.safeArea} edges={["top", "bottom"]}>
+          <View style={styles.editorFullscreen}>
+            <Suspense fallback={<ActivityIndicator />}>
+              <HoldEditor
+                photoUri={route.photo.url}
+                photoWidth={route.photo.width}
+                photoHeight={route.photo.height}
+                holds={draftHolds}
+                onChange={setDraftHolds}
+                testID="route-detail-hold-editor"
+              />
+            </Suspense>
+            <View style={styles.editorToolbar}>
+              <Button
+                onPress={handleSaveEdit}
+                testID="route-detail-save-holds"
+              >
+                SAVE HOLDS
+              </Button>
+              <Button
+                onPress={handleCancelEdit}
+                testID="route-detail-cancel-edit"
+                style={styles.cancelButton}
+              >
+                CANCEL
+              </Button>
+            </View>
+          </View>
+        </SafeAreaView>
+      </ThemedView>
+    );
+  }
+
   let background: string = Rainbow[3];
   try {
     background = gradingSystemRegistry
@@ -393,6 +429,17 @@ const makeStyles = (theme: Theme) =>
   StyleSheet.create({
     container: { flex: 1 },
     safeArea: { flex: 1 },
+    editorFullscreen: {
+      flex: 1,
+      paddingHorizontal: Spacing.four,
+      paddingTop: Spacing.four,
+      gap: Spacing.three,
+    },
+    editorToolbar: {
+      flexDirection: "row",
+      gap: Spacing.two,
+      paddingBottom: Spacing.four,
+    },
     scroll: {
       paddingHorizontal: Spacing.four,
       paddingTop: Spacing.four,

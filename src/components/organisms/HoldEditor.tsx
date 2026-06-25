@@ -2,14 +2,17 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
   LayoutChangeEvent,
+  Platform,
   StyleSheet,
   View,
 } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import {
   Canvas,
+  Circle,
   Group,
   Image as SkiaImage,
+  Line,
   Path,
   Skia,
   useImage,
@@ -40,16 +43,16 @@ import { useTheme } from "@/hooks/use-theme";
 import { SamSegmenter } from "@/infrastructure/segmentation/SamSegmenter";
 
 const SAM_INPUT_SIZE = 1024;
-const FALLBACK_MAX_SIDE = 360;
+const FALLBACK_MAX_SIDE = 540;
 const DEFAULT_SIMPLIFY_FRACTION = 0.004;
 const MIN_ZOOM = 1;
 const MAX_ZOOM = 5;
 
 const LAB_OPTIONS = {
-  tolerance: 22,
-  edgeThreshold: 50,
+  tolerance: 26,
+  edgeThreshold: 35,
   maxRadiusFraction: 0.35,
-  minRegionPixels: 8,
+  minRegionPixels: 4,
 } as const;
 
 interface PixelData {
@@ -78,13 +81,12 @@ const isPointInPolygon = (
 
 const buildClosedPath = (
   points: readonly Point[],
-  width: number,
-  height: number,
+  rect: { x: number; y: number; width: number; height: number },
 ) => {
   const builder = Skia.PathBuilder.Make();
   points.forEach((p, i) => {
-    const x = p.x * width;
-    const y = p.y * height;
+    const x = rect.x + p.x * rect.width;
+    const y = rect.y + p.y * rect.height;
     if (i === 0) builder.moveTo(x, y);
     else builder.lineTo(x, y);
   });
@@ -147,6 +149,26 @@ export default function HoldEditor({
   const [encoding, setEncoding] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const aspect =
+    photoWidth > 0 && photoHeight > 0 ? photoWidth / photoHeight : 4 / 3;
+
+  // Compute the rect where fit="contain" places the image inside the canvas
+  const imageRect = useMemo(() => {
+    const cw = canvasSize.width;
+    const ch = canvasSize.height;
+    const canvasAspect = cw / ch;
+    if (aspect > canvasAspect) {
+      // image is wider than canvas → letterbox top/bottom
+      const imgW = cw;
+      const imgH = cw / aspect;
+      return { x: 0, y: (ch - imgH) / 2, width: imgW, height: imgH };
+    }
+    // image is taller than canvas → letterbox left/right
+    const imgH = ch;
+    const imgW = ch * aspect;
+    return { x: (cw - imgW) / 2, y: 0, width: imgW, height: imgH };
+  }, [canvasSize.width, canvasSize.height, aspect]);
+
   const samState = useSamSegmenter();
   const useSam = samState.status === "ready" || samState.status === "loading";
 
@@ -168,9 +190,6 @@ export default function HoldEditor({
       segmenterRef.current = samState.segmenter;
     }
   }, [samState]);
-
-  const aspect =
-    photoWidth > 0 && photoHeight > 0 ? photoWidth / photoHeight : 4 / 3;
 
   const maxSide = useSam ? SAM_INPUT_SIZE : FALLBACK_MAX_SIDE;
 
@@ -278,6 +297,42 @@ export default function HoldEditor({
     savedPanX.current = 0;
     savedPanY.current = 0;
   }, []);
+
+  const canvasFrameRef = useRef<View>(null);
+
+  useEffect(() => {
+    if (Platform.OS !== "web") return;
+    const node = canvasFrameRef.current as unknown as HTMLElement | null;
+    if (!node) return;
+
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      const factor = e.deltaY < 0 ? 1.15 : 1 / 1.15;
+      const newScale = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, savedZoom.current * factor));
+
+      const rect = node.getBoundingClientRect();
+      const border = BorderWidth.thick;
+      const cursorX = e.clientX - rect.left - border;
+      const cursorY = e.clientY - rect.top - border;
+      const cx = canvasSize.width / 2;
+      const cy = canvasSize.height / 2;
+
+      const scaleRatio = newScale / savedZoom.current;
+      const newPanX = cursorX - cx - scaleRatio * (cursorX - cx - savedPanX.current);
+      const newPanY = cursorY - cy - scaleRatio * (cursorY - cy - savedPanY.current);
+
+      const clamped = clampPan(newPanX, newPanY, newScale);
+      setZoom(newScale);
+      setPanX(clamped.x);
+      setPanY(clamped.y);
+      savedZoom.current = newScale;
+      savedPanX.current = clamped.x;
+      savedPanY.current = clamped.y;
+    };
+
+    node.addEventListener("wheel", handleWheel, { passive: false });
+    return () => node.removeEventListener("wheel", handleWheel);
+  }, [canvasSize.width, canvasSize.height, clampPan]);
 
   const handleLayout = useCallback((event: LayoutChangeEvent) => {
     const { width, height } = event.nativeEvent.layout;
@@ -432,6 +487,36 @@ export default function HoldEditor({
     [detectWithSam, detectWithFallback],
   );
 
+  const [drawMode, setDrawMode] = useState<"auto" | "manual">("auto");
+  const [manualPoints, setManualPoints] = useState<Point[]>([]);
+
+  const finishManualPolygon = useCallback(() => {
+    if (manualPoints.length < 3) {
+      setError("Need at least 3 points to create a hold.");
+      return;
+    }
+    const hold = buildHoldFromPolygon(manualPoints);
+    if (!hold) {
+      setError("Polygon too small.");
+      return;
+    }
+    const current = holdsRef.current;
+    if (current.some((h) => polygonsOverlap(h.points, manualPoints))) {
+      setError("That overlaps an existing hold.");
+      return;
+    }
+    onChange([...current, hold]);
+    setManualPoints([]);
+    setDrawMode("auto");
+    setError(null);
+  }, [manualPoints, buildHoldFromPolygon, onChange]);
+
+  const cancelManualPolygon = useCallback(() => {
+    setManualPoints([]);
+    setDrawMode("auto");
+    setError(null);
+  }, []);
+
   const pinchGesture = useMemo(
     () =>
       Gesture.Pinch()
@@ -480,6 +565,34 @@ export default function HoldEditor({
     [panX, panY, zoom, clampPan],
   );
 
+  const dragGesture = useMemo(
+    () =>
+      Gesture.Pan()
+        .runOnJS(true)
+        .minPointers(1)
+        .maxPointers(1)
+        .minDistance(10)
+        .enabled(zoom > 1)
+        .onStart(() => {
+          savedPanX.current = panX;
+          savedPanY.current = panY;
+        })
+        .onUpdate((event) => {
+          const clamped = clampPan(
+            savedPanX.current + event.translationX,
+            savedPanY.current + event.translationY,
+            zoom,
+          );
+          setPanX(clamped.x);
+          setPanY(clamped.y);
+        })
+        .onEnd(() => {
+          savedPanX.current = panX;
+          savedPanY.current = panY;
+        }),
+    [panX, panY, zoom, clampPan],
+  );
+
   const doubleTapGesture = useMemo(
     () =>
       Gesture.Tap()
@@ -503,15 +616,21 @@ export default function HoldEditor({
           const ch = canvasSize.height;
           const cx = cw / 2;
           const cy = ch / 2;
-          const imgX = (event.x - cx - panX) / zoom + cx;
-          const imgY = (event.y - cy - panY) / zoom + cy;
-          const nx = imgX / cw;
-          const ny = imgY / ch;
+          // Undo zoom/pan to get canvas-space coordinates
+          const canvasX = (event.x - cx - panX) / zoom + cx;
+          const canvasY = (event.y - cy - panY) / zoom + cy;
+          // Convert canvas-space to image-normalized [0,1] using imageRect
+          const nx = (canvasX - imageRect.x) / imageRect.width;
+          const ny = (canvasY - imageRect.y) / imageRect.height;
           if (nx < 0 || nx > 1 || ny < 0 || ny > 1) return;
+          if (drawMode === "manual") {
+            setManualPoints((pts) => [...pts, { x: nx, y: ny }]);
+            return;
+          }
           if (tryRemoveHoldAt(nx, ny)) return;
           detectAtNormalized(nx, ny);
         }),
-    [canvasSize.width, canvasSize.height, detecting, encoding, zoom, panX, panY, detectAtNormalized, tryRemoveHoldAt],
+    [canvasSize.width, canvasSize.height, detecting, encoding, zoom, panX, panY, drawMode, imageRect, detectAtNormalized, tryRemoveHoldAt],
   );
 
   const composedGesture = useMemo(
@@ -519,9 +638,10 @@ export default function HoldEditor({
       Gesture.Race(
         doubleTapGesture,
         Gesture.Simultaneous(pinchGesture, panGesture),
+        dragGesture,
         tapGesture,
       ),
-    [doubleTapGesture, pinchGesture, panGesture, tapGesture],
+    [doubleTapGesture, pinchGesture, panGesture, dragGesture, tapGesture],
   );
 
   const handleClear = useCallback(() => {
@@ -543,20 +663,22 @@ export default function HoldEditor({
   })();
 
   const hintText = (() => {
+    if (drawMode === "manual") return "Tap corners of the hold to draw its outline. Press DONE when finished.";
     if (samState.status === "error") return `Model error: ${samState.message}`;
     if (samState.status === "unavailable") return "Using color-based detection (no native module).";
-    if (holds.length === 0) return "Pinch to zoom, tap a hold to outline it.";
+    if (holds.length === 0) return "Tap a hold to outline it. Use DRAW for tricky holds.";
     return "Tap empty space to add. Tap a hold to remove. Double-tap to reset zoom.";
   })();
 
   return (
     <View style={styles.wrapper} testID={testID}>
       <View
-        style={[styles.canvasFrame, { aspectRatio: aspect }]}
+        ref={canvasFrameRef}
+        style={styles.canvasFrame}
         onLayout={handleLayout}
       >
         <GestureDetector gesture={composedGesture}>
-          <View style={styles.pressArea} testID="hold-editor-press">
+            <View style={{ width: canvasSize.width, height: canvasSize.height }}>
             <Canvas style={StyleSheet.absoluteFill}>
               <Group
                 transform={[
@@ -570,7 +692,7 @@ export default function HoldEditor({
                 {image && (
                   <SkiaImage
                     image={image}
-                    fit="cover"
+                    fit="contain"
                     x={0}
                     y={0}
                     width={canvasSize.width}
@@ -580,11 +702,7 @@ export default function HoldEditor({
                 {holds.map((hold) => (
                   <Path
                     key={hold.id}
-                    path={buildClosedPath(
-                      hold.points,
-                      canvasSize.width,
-                      canvasSize.height,
-                    )}
+                    path={buildClosedPath(hold.points, imageRect)}
                     color={hold.color}
                     opacity={0.4}
                     style="fill"
@@ -593,14 +711,34 @@ export default function HoldEditor({
                 {holds.map((hold) => (
                   <Path
                     key={`${hold.id}-stroke`}
-                    path={buildClosedPath(
-                      hold.points,
-                      canvasSize.width,
-                      canvasSize.height,
-                    )}
+                    path={buildClosedPath(hold.points, imageRect)}
                     color={hold.color}
                     style="stroke"
                     strokeWidth={3 / zoom}
+                  />
+                ))}
+                {manualPoints.length > 1 &&
+                  manualPoints.map((p, i) => {
+                    if (i === 0) return null;
+                    const prev = manualPoints[i - 1];
+                    return (
+                      <Line
+                        key={`manual-line-${i}`}
+                        p1={{ x: imageRect.x + prev.x * imageRect.width, y: imageRect.y + prev.y * imageRect.height }}
+                        p2={{ x: imageRect.x + p.x * imageRect.width, y: imageRect.y + p.y * imageRect.height }}
+                        color={color}
+                        strokeWidth={2 / zoom}
+                        style="stroke"
+                      />
+                    );
+                  })}
+                {manualPoints.map((p, i) => (
+                  <Circle
+                    key={`manual-pt-${i}`}
+                    cx={imageRect.x + p.x * imageRect.width}
+                    cy={imageRect.y + p.y * imageRect.height}
+                    r={5 / zoom}
+                    color={color}
                   />
                 ))}
               </Group>
@@ -625,6 +763,33 @@ export default function HoldEditor({
       </View>
 
       <View style={styles.controls}>
+        {drawMode === "auto" && (
+          <Button
+            onPress={() => setDrawMode("manual")}
+            testID="hold-editor-draw"
+            style={styles.secondary}
+          >
+            DRAW
+          </Button>
+        )}
+        {drawMode === "manual" && (
+          <Button
+            onPress={finishManualPolygon}
+            testID="hold-editor-done"
+            disabled={manualPoints.length < 3}
+          >
+            DONE ({manualPoints.length} pts)
+          </Button>
+        )}
+        {drawMode === "manual" && (
+          <Button
+            onPress={cancelManualPolygon}
+            testID="hold-editor-cancel-draw"
+            style={styles.secondary}
+          >
+            CANCEL
+          </Button>
+        )}
         {zoom > 1.05 && (
           <Button
             onPress={resetZoom}
@@ -634,7 +799,7 @@ export default function HoldEditor({
             RESET ZOOM
           </Button>
         )}
-        {holds.length > 0 && (
+        {holds.length > 0 && drawMode === "auto" && (
           <Button
             onPress={handleClear}
             testID="hold-editor-clear"
@@ -658,16 +823,15 @@ export default function HoldEditor({
 
 const makeStyles = (theme: Theme) =>
   StyleSheet.create({
-    wrapper: { gap: Spacing.three },
+    wrapper: { gap: Spacing.three, flex: 1 },
     canvasFrame: {
-      width: "100%",
+      flex: 1,
       borderRadius: Radius.small,
       borderWidth: BorderWidth.thick,
       borderColor: theme.border,
       overflow: "hidden",
       backgroundColor: Media.backdrop,
     },
-    pressArea: { flex: 1 },
     overlay: {
       position: "absolute",
       top: 0,

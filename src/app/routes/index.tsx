@@ -52,6 +52,7 @@ export default function RoutesScreen() {
   const [selectedGrade, setSelectedGrade] = useState<string | null>(null);
   const [photo, setPhoto] = useState<PickedPhoto | null>(null);
   const [holds, setHolds] = useState<readonly Hold[]>([]);
+  const [markingHolds, setMarkingHolds] = useState(false);
   const [routes, setRoutes] = useState<Route[]>(() =>
     routeRepository.findAll(),
   );
@@ -89,6 +90,7 @@ export default function RoutesScreen() {
         height: asset.height,
       });
       setHolds([]);
+      setMarkingHolds(true);
       setError(null);
     } catch (err) {
       setError((err as Error).message);
@@ -172,9 +174,31 @@ export default function RoutesScreen() {
           <FormCardDrawer
             visible={showAddForm}
             setVisible={setShowAddForm}
-            title="Add new route"
+            title={markingHolds ? "Mark holds" : "Add new route"}
+            fullscreen={markingHolds}
             testID="form-route"
           >
+            {markingHolds && photo ? (
+              <>
+                <Suspense fallback={<ActivityIndicator />}>
+                  <HoldEditor
+                    photoUri={photo.uri}
+                    photoWidth={photo.width}
+                    photoHeight={photo.height}
+                    holds={holds}
+                    onChange={setHolds}
+                    testID="form-hold-editor"
+                  />
+                </Suspense>
+                <Button
+                  onPress={() => setMarkingHolds(false)}
+                  testID="save-holds"
+                >
+                  SAVE HOLDS
+                </Button>
+              </>
+            ) : (
+              <>
             <FormField label="Name">
               <Input
                 value={name}
@@ -246,18 +270,15 @@ export default function RoutesScreen() {
               <PhotoPicker photo={photo} onPick={handlePickPhoto} />
             </FormField>
 
-            {photo && (
-              <FormField label="Holds">
-                <Suspense fallback={<ActivityIndicator />}>
-                  <HoldEditor
-                    photoUri={photo.uri}
-                    photoWidth={photo.width}
-                    photoHeight={photo.height}
-                    holds={holds}
-                    onChange={setHolds}
-                    testID="form-hold-editor"
-                  />
-                </Suspense>
+            {photo && holds.length > 0 && (
+              <FormField label={`Holds (${holds.length})`}>
+                <Button
+                  onPress={() => setMarkingHolds(true)}
+                  testID="edit-holds"
+                  style={styles.secondary}
+                >
+                  EDIT HOLDS
+                </Button>
               </FormField>
             )}
 
@@ -270,6 +291,8 @@ export default function RoutesScreen() {
             </Button>
 
             {error && <ErrorBlock testID="error-route" message={error} />}
+              </>
+            )}
           </FormCardDrawer>
         </ScrollView>
 
@@ -306,6 +329,7 @@ const makeStyles = (theme: Theme) =>
       color: theme.text,
     },
     submit: { marginTop: Spacing.three },
+    secondary: { backgroundColor: theme.inputBackground },
     multiline: {
       minHeight: 84,
       paddingTop: Spacing.three,
