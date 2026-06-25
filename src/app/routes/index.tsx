@@ -79,7 +79,7 @@ export default function RoutesScreen() {
   const handlePickPhoto = async () => {
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ["image" as ImagePicker.MediaType],
+        mediaTypes: ["images"],
         quality: 0.8,
       });
       if (result.canceled || result.assets.length === 0) return;
