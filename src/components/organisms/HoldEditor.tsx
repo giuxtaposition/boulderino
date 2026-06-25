@@ -839,7 +839,8 @@ export default function HoldEditor({
           <Button
             onPress={() => setDrawMode("manual")}
             testID="hold-editor-draw"
-            style={styles.secondary}
+            variant="solid"
+            action="secondary"
           >
             DRAW
           </Button>
@@ -857,7 +858,7 @@ export default function HoldEditor({
           <Button
             onPress={cancelManualPolygon}
             testID="hold-editor-cancel-draw"
-            style={styles.secondary}
+            variant="outline"
           >
             CANCEL
           </Button>
@@ -866,7 +867,7 @@ export default function HoldEditor({
           <Button
             onPress={resetZoom}
             testID="hold-editor-reset-zoom"
-            style={styles.secondary}
+            variant="outline"
           >
             RESET ZOOM
           </Button>
@@ -875,7 +876,7 @@ export default function HoldEditor({
           <Button
             onPress={handleClear}
             testID="hold-editor-clear"
-            style={styles.secondary}
+            variant="outline"
           >
             CLEAR ALL
           </Button>
@@ -939,10 +940,6 @@ const makeStyles = (theme: Theme) =>
       flexDirection: "row",
       gap: Spacing.md,
       flexWrap: "wrap",
-    },
-    secondary: {
-      flexGrow: 1,
-      backgroundColor: theme.surface1,
     },
     hint: {
       color: theme.textSecondary,

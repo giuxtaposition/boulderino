@@ -37,9 +37,8 @@ export function GradePicker({ grades, selected, onSelect }: GradePickerProps) {
             testID={`select-grade-${grade.name}`}
             style={({ pressed }) => [
               styles.option,
-              { backgroundColor: grade.color },
+              { backgroundColor: grade.color, borderColor: textColor },
               isSelected && styles.selected,
-              isSelected && { borderColor: textColor },
               pressed && styles.pressed,
             ]}
           >
@@ -84,7 +83,6 @@ const makeStyles = (theme: Theme) =>
       paddingRight: Spacing.xxl + Spacing.sm,
       borderRadius: Radius.sm,
       borderWidth: BorderWidth.thick + 1,
-      borderColor: theme.border,
       minHeight: 52,
       justifyContent: "center",
       gap: 2,

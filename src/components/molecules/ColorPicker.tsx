@@ -9,6 +9,7 @@ import {
   Spacing,
   Theme,
   RainbowColors,
+  toHex,
 } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
 
@@ -37,7 +38,8 @@ export function ColorPicker({
 }: ColorPickerProps) {
   const theme = useTheme();
   const styles = useMemo(() => makeStyles(theme), [theme]);
-  const hasInvalidHex = value.length > 0 && !isValidHex(value);
+  const hexValue = isValidHex(value) ? value : toHex(value);
+  const hasInvalidHex = hexValue.length > 0 && !isValidHex(hexValue);
 
   return (
     <View style={styles.container}>
@@ -63,13 +65,13 @@ export function ColorPicker({
             styles.preview,
             hasInvalidHex && styles.previewInvalid,
             {
-              backgroundColor: isValidHex(value) ? value : "transparent",
+              backgroundColor: isValidHex(hexValue) ? hexValue : "transparent",
             },
           ]}
           testID={`${testIDPrefix}-preview`}
         />
         <Input
-          value={value}
+          value={hexValue}
           onChangeText={(text) => onChange(normalizeHex(text))}
           placeholder="#22C55E"
           autoCapitalize="characters"

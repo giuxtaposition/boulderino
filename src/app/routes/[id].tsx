@@ -180,7 +180,7 @@ export default function RouteDetailScreen() {
               <Button
                 onPress={handleCancelEdit}
                 testID="route-detail-cancel-edit"
-                style={styles.cancelButton}
+                variant="outline"
               >
                 CANCEL
               </Button>
@@ -280,7 +280,7 @@ export default function RouteDetailScreen() {
                   <Button
                     onPress={handleCancelEdit}
                     testID="route-detail-cancel-edit"
-                    style={styles.cancelButton}
+                    variant="outline"
                   >
                     CANCEL
                   </Button>
@@ -297,7 +297,7 @@ export default function RouteDetailScreen() {
                   <Button
                     onPress={() => setConfirmingDelete(false)}
                     testID="route-detail-cancel-delete"
-                    style={styles.cancelButton}
+                    variant="outline"
                   >
                     CANCEL
                   </Button>
@@ -330,8 +330,7 @@ export default function RouteDetailScreen() {
 
             <View style={styles.metaRow}>
               <Tag
-                color={theme.background}
-                border={true}
+                color={theme.surface3}
                 testID="route-detail-grade-tag"
                 leftIcon={
                   <View
@@ -487,9 +486,6 @@ const makeStyles = (theme: Theme) =>
       flexDirection: "row",
       flexWrap: "wrap",
       gap: Spacing.md,
-    },
-    cancelButton: {
-      backgroundColor: theme.surface1,
     },
     name: {
       fontSize: 28,

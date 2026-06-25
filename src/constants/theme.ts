@@ -73,10 +73,10 @@ export const Colors: { light: Theme; dark: Theme } = {
     brand: hsla(BRAND.h, BRAND.s, 60),
     success: hsla(SUCCESS.h, SUCCESS.s, 40),
     warning: hsla(WARNING.h, WARNING.s, 40),
-    danger: hsla(DANGER.h, DANGER.s, 50),
+    danger: hsla(DANGER.h, DANGER.s, 40),
 
     onBrand: ON_DARK,
-    onSuccess: ON_DARK,
+    onSuccess: ON_LIGHT,
     onWarning: ON_LIGHT,
     onDanger: ON_DARK,
 
@@ -104,10 +104,10 @@ export const Colors: { light: Theme; dark: Theme } = {
     brand: hsla(BRAND.h, BRAND.s, 65),
     success: hsla(SUCCESS.h, SUCCESS.s, 50),
     warning: hsla(WARNING.h, WARNING.s, 60),
-    danger: hsla(DANGER.h, DANGER.s, 60),
+    danger: hsla(DANGER.h, DANGER.s, 45),
 
     onBrand: ON_DARK,
-    onSuccess: ON_DARK,
+    onSuccess: ON_LIGHT,
     onWarning: ON_LIGHT,
     onDanger: ON_DARK,
 
@@ -123,12 +123,12 @@ export const Colors: { light: Theme; dark: Theme } = {
 
 export const RainbowTokens = {
   white: { bg: hsla(0, 0, 95), on: ON_LIGHT },
-  yellow: { bg: hsla(45, 95, 65), on: ON_LIGHT },
-  green: { bg: hsla(160, 85, 45), on: ON_DARK },
-  cyan: { bg: hsla(200, 85, 45), on: ON_DARK },
-  red: { bg: hsla(345, 85, 55), on: ON_DARK },
-  navy: { bg: hsla(220, 40, 20), on: ON_DARK },
-  purple: { bg: hsla(252, 90, 65), on: ON_DARK },
+  yellow: { bg: hsla(45, 90, 65), on: ON_LIGHT },
+  green: { bg: hsla(160, 85, 50), on: ON_LIGHT },
+  cyan: { bg: hsla(200, 80, 58), on: ON_LIGHT },
+  red: { bg: hsla(345, 85, 66), on: ON_LIGHT },
+  navy: { bg: hsla(220, 65, 70), on: ON_LIGHT },
+  purple: { bg: hsla(252, 80, 72), on: ON_LIGHT },
 } as const;
 
 export const RainbowColors = Object.values(RainbowTokens).map(
@@ -281,6 +281,17 @@ export const onColor = (background: string) => {
   const l = relativeLuminance(background);
   if (l === null) return ON_LIGHT;
   return l > 0.5 ? ON_LIGHT : ON_DARK;
+};
+
+export const toHex = (color: string): string => {
+  const rgb = toRgb(color);
+  if (!rgb) return color;
+  const [r, g, b] = rgb;
+  const byte = (v: number) =>
+    Math.round(v * 255)
+      .toString(16)
+      .padStart(2, "0");
+  return `#${byte(r)}${byte(g)}${byte(b)}`.toUpperCase();
 };
 
 export const Media = {

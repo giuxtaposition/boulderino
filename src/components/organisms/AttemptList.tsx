@@ -13,6 +13,7 @@ import {
 import { Attempt } from "@/domain/route/Attempt";
 import { useTheme } from "@/hooks/use-theme";
 import { Tag } from "../atoms/Tag";
+import { EmptyBlock } from "../atoms/EmptyBlock";
 
 const HoldOverlay = lazy(() => import("./HoldOverlay"));
 
@@ -50,11 +51,10 @@ export function AttemptList({
 
   if (sorted.length === 0) {
     return (
-      <View style={styles.empty} testID={`${testID}-empty`}>
-        <ThemedText style={styles.emptyText}>
-          No attempts logged yet.
-        </ThemedText>
-      </View>
+      <EmptyBlock
+        testID={`${testID}-empty`}
+        message="No attempts logged yet."
+      />
     );
   }
 

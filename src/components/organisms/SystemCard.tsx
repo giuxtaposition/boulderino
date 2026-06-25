@@ -35,7 +35,7 @@ export function SystemCard({
   return (
     <View
       testID={`system-row-${system.name}`}
-      style={[styles.card, { backgroundColor: background }]}
+      style={[styles.card, { backgroundColor: background, borderColor: cardTextColor }]}
     >
       <View style={styles.header}>
         <ThemedText style={[styles.name, { color: cardTextColor }]}>
@@ -57,7 +57,7 @@ export function SystemCard({
                 styles.chip,
                 {
                   backgroundColor: grade.color,
-                  borderColor: theme.border,
+                  borderColor: chipTextColor,
                 },
               ]}
               testID={`system-grade-${system.name}-${grade.name}`}
@@ -133,7 +133,6 @@ const makeStyles = (theme: Theme) =>
   StyleSheet.create({
     card: {
       borderWidth: BorderWidth.thick,
-      borderColor: theme.border,
       borderRadius: Radius.md,
       padding: Spacing.lg,
       gap: Spacing.md,

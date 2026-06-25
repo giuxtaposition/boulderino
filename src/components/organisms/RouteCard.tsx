@@ -44,13 +44,13 @@ export function RouteCard({ route, index, background }: RouteCardProps) {
       onPress={() => router.push(`/routes/${route.id.value}` as Href)}
       style={({ pressed }) => [
         styles.card,
-        { backgroundColor: background },
+        { backgroundColor: background, borderColor: cardTextColor },
         pressed && styles.pressed,
       ]}
     >
       <Image
         source={{ uri: route.photo.url }}
-        style={[styles.photo, { borderColor: theme.border }]}
+        style={[styles.photo, { borderColor: cardTextColor }]}
         accessibilityLabel={`photo of route ${route.name}`}
         testID={`route-photo-${index}`}
       />
@@ -86,7 +86,6 @@ const makeStyles = (theme: Theme) =>
       flexDirection: "row",
       gap: Spacing.lg,
       borderWidth: BorderWidth.thick,
-      borderColor: theme.border,
       borderRadius: Radius.md,
       padding: Spacing.lg,
       ...elevation(theme, "md"),

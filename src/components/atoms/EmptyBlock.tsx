@@ -1,14 +1,15 @@
-import { useMemo } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { useMemo } from "react";
+import { StyleSheet, View } from "react-native";
 
-import { ThemedText } from '../themed-text';
+import { ThemedText } from "../themed-text";
 import {
   BorderWidth,
   Radius,
   Spacing,
   Theme,
-} from '@/constants/theme';
-import { useTheme } from '@/hooks/use-theme';
+  withAlpha,
+} from "@/constants/theme";
+import { useTheme } from "@/hooks/use-theme";
 
 type EmptyBlockProps = { message: string; testID?: string };
 
@@ -17,7 +18,7 @@ export function EmptyBlock({ message, testID }: EmptyBlockProps) {
   const styles = useMemo(() => makeStyles(theme), [theme]);
   return (
     <View testID={testID} style={styles.block}>
-      <ThemedText style={styles.text}>{message}</ThemedText>
+      <ThemedText>{message}</ThemedText>
     </View>
   );
 }
@@ -28,9 +29,9 @@ const makeStyles = (theme: Theme) =>
       padding: Spacing.xxl,
       borderWidth: BorderWidth.thick,
       borderStyle: 'dashed',
-      borderColor: theme.borderMuted,
+      borderColor: withAlpha(theme.text, 0.25),
       borderRadius: Radius.md,
       alignItems: 'center',
+      backgroundColor: withAlpha(theme.surface1, 0.55),
     },
-    text: { color: theme.textSecondary, fontWeight: '600' },
   });
