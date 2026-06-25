@@ -7,12 +7,10 @@ const meta = {
   title: "Organisms/AttemptForm",
   component: AttemptForm,
   args: {
-    photoUri:
-      "https://images.unsplash.com/photo-1522163182402-834f871fd851?w=400",
-    photoWidth: 400,
-    photoHeight: 300,
+    fallHolds: [],
     onSubmit: fn(),
     onCancel: fn(),
+    onMarkFall: fn(),
     testID: "attempt-form",
   },
   tags: ["autodocs"],
@@ -30,11 +28,9 @@ export const SelectsOutcome: Story = {
     await userEvent.click(sent);
     const save = await canvas.findByTestId("attempt-form-save");
     await userEvent.click(save);
-    await expect(args.onSubmit).toHaveBeenCalledWith({
-      outcome: "sent",
-      notes: "",
-      fallHold: null,
-    });
+    await expect(args.onSubmit).toHaveBeenCalledWith(
+      expect.objectContaining({ outcome: "sent", notes: "", fallHolds: [] }),
+    );
   },
 };
 
@@ -44,11 +40,9 @@ export const SubmitsAttempt: Story = {
     const save = await canvas.findByTestId("attempt-form-save");
     await userEvent.click(save);
     await expect(args.onSubmit).toHaveBeenCalledTimes(1);
-    await expect(args.onSubmit).toHaveBeenCalledWith({
-      outcome: "fell",
-      notes: "",
-      fallHold: null,
-    });
+    await expect(args.onSubmit).toHaveBeenCalledWith(
+      expect.objectContaining({ outcome: "fell", notes: "", fallHolds: [] }),
+    );
   },
 };
 

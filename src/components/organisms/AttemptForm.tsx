@@ -1,5 +1,5 @@
-import { lazy, Suspense, useCallback, useMemo, useState } from "react";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { useCallback, useMemo, useState } from "react";
+import { StyleSheet, View } from "react-native";
 
 import { Button } from "@/components/atoms/Button";
 import { Chip } from "@/components/atoms/Chip";
@@ -18,8 +18,6 @@ import { AttemptOutcome } from "@/domain/route/Attempt";
 import { Hold } from "@/domain/route/Hold";
 import { useTheme } from "@/hooks/use-theme";
 
-const HoldEditor = lazy(() => import("./HoldEditor"));
-
 const OUTCOMES: readonly AttemptOutcome[] = ["sent", "fell", "flash"];
 
 export interface AttemptFormInput {
@@ -30,20 +28,18 @@ export interface AttemptFormInput {
 }
 
 export interface AttemptFormProps {
-  readonly photoUri: string;
-  readonly photoWidth: number;
-  readonly photoHeight: number;
+  readonly fallHolds: readonly Hold[];
   readonly onSubmit: (input: AttemptFormInput) => void;
   readonly onCancel: () => void;
+  readonly onMarkFall: () => void;
   readonly testID?: string;
 }
 
 export function AttemptForm({
-  photoUri,
-  photoWidth,
-  photoHeight,
+  fallHolds,
   onSubmit,
   onCancel,
+  onMarkFall,
   testID,
 }: AttemptFormProps) {
   const theme = useTheme();
@@ -51,13 +47,7 @@ export function AttemptForm({
 
   const [outcome, setOutcome] = useState<AttemptOutcome>("fell");
   const [notes, setNotes] = useState("");
-  const [fallHolds, setFallHolds] = useState<readonly Hold[]>([]);
-  const [markingFall, setMarkingFall] = useState(false);
   const [date, setDate] = useState<Date>(() => new Date());
-
-  const handleEditorChange = useCallback((next: readonly Hold[]) => {
-    setFallHolds(next);
-  }, []);
 
   const handleSubmit = useCallback(() => {
     onSubmit({ outcome, notes, fallHolds, date });
@@ -106,63 +96,21 @@ export function AttemptForm({
 
       <View style={styles.field}>
         <Label>FALL HOLDS</Label>
-        {markingFall ? (
-          <View style={styles.editorBlock}>
-            <Suspense
-              fallback={
-                <View style={styles.editorPlaceholder}>
-                  <ActivityIndicator />
-                </View>
-              }
-            >
-              <HoldEditor
-                photoUri={photoUri}
-                photoWidth={photoWidth}
-                photoHeight={photoHeight}
-                holds={fallHolds}
-                onChange={handleEditorChange}
-                color={outcomeColor(theme, "fell")}
-                testID="attempt-form-hold-editor"
-              />
-            </Suspense>
-            <View style={styles.editorActions}>
-              <Button
-                size="small"
-                variant="outline"
-                onPress={() => {
-                  setFallHolds([]);
-                  setMarkingFall(false);
-                }}
-                testID="attempt-form-clear-fall"
-              >
-                CLEAR
-              </Button>
-              <Button
-                size="small"
-                onPress={() => setMarkingFall(false)}
-                testID="attempt-form-done-fall"
-              >
-                DONE
-              </Button>
-            </View>
-          </View>
-        ) : (
-          <View style={styles.fallSummary}>
-            <ThemedText style={styles.fallSummaryText}>
-              {fallHolds.length > 0
-                ? `${fallHolds.length} fall hold${fallHolds.length > 1 ? "s" : ""} marked.`
-                : "No fall holds marked."}
-            </ThemedText>
-            <Button
-              size="small"
-              variant="outline"
-              onPress={() => setMarkingFall(true)}
-              testID="attempt-form-mark-fall"
-            >
-              {fallHolds.length > 0 ? "EDIT FALL HOLDS" : "MARK FALL HOLDS"}
-            </Button>
-          </View>
-        )}
+        <View style={styles.fallSummary}>
+          <ThemedText style={styles.fallSummaryText}>
+            {fallHolds.length > 0
+              ? `${fallHolds.length} fall hold${fallHolds.length > 1 ? "s" : ""} marked.`
+              : "No fall holds marked."}
+          </ThemedText>
+          <Button
+            size="small"
+            variant="outline"
+            onPress={onMarkFall}
+            testID="attempt-form-mark-fall"
+          >
+            {fallHolds.length > 0 ? "EDIT FALL HOLDS" : "MARK FALL HOLDS"}
+          </Button>
+        </View>
       </View>
 
       <View style={styles.actions}>
@@ -201,17 +149,6 @@ const makeStyles = (theme: Theme) =>
     notesInput: {
       minHeight: 72,
       textAlignVertical: "top",
-    },
-    editorBlock: { gap: Spacing.md },
-    editorPlaceholder: {
-      minHeight: 200,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    editorActions: {
-      flexDirection: "row",
-      gap: Spacing.md,
-      flexWrap: "wrap",
     },
     fallSummary: {
       gap: Spacing.md,

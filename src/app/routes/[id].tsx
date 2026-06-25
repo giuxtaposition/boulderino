@@ -33,6 +33,7 @@ import {
   RainbowTokens,
   BorderWidth,
   onColor,
+  outcomeColor,
 } from "@/constants/theme";
 import { useContainer } from "@/composition/Container";
 import { useTheme } from "@/hooks/use-theme";
@@ -72,6 +73,8 @@ export default function RouteDetailScreen() {
     route?.attempts ?? [],
   );
   const [loggingAttempt, setLoggingAttempt] = useState(false);
+  const [markingFall, setMarkingFall] = useState(false);
+  const [fallHolds, setFallHolds] = useState<readonly Hold[]>([]);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   const handleStartEdit = useCallback(() => {
@@ -183,6 +186,46 @@ export default function RouteDetailScreen() {
                 variant="outline"
               >
                 CANCEL
+              </Button>
+            </View>
+          </View>
+        </SafeAreaView>
+      </ThemedView>
+    );
+  }
+
+  if (markingFall) {
+    return (
+      <ThemedView style={styles.container}>
+        <SafeAreaView style={styles.safeArea} edges={["top", "bottom"]}>
+          <View style={styles.editorFullscreen}>
+            <Suspense fallback={<ActivityIndicator />}>
+              <HoldEditor
+                photoUri={route.photo.url}
+                photoWidth={route.photo.width}
+                photoHeight={route.photo.height}
+                holds={fallHolds}
+                onChange={setFallHolds}
+                color={outcomeColor(theme, "fell")}
+                testID="attempt-form-hold-editor"
+              />
+            </Suspense>
+            <View style={styles.editorToolbar}>
+              <Button
+                onPress={() => setMarkingFall(false)}
+                testID="attempt-form-done-fall"
+              >
+                SAVE FALL HOLDS
+              </Button>
+              <Button
+                onPress={() => {
+                  setFallHolds([]);
+                  setMarkingFall(false);
+                }}
+                testID="attempt-form-clear-fall"
+                style={styles.cancelButton}
+              >
+                CLEAR
               </Button>
             </View>
           </View>
@@ -401,11 +444,10 @@ export default function RouteDetailScreen() {
 
               {loggingAttempt ? (
                 <AttemptForm
-                  photoUri={route.photo.url}
-                  photoWidth={route.photo.width}
-                  photoHeight={route.photo.height}
+                  fallHolds={fallHolds}
                   onSubmit={handleLogAttempt}
                   onCancel={() => setLoggingAttempt(false)}
+                  onMarkFall={() => setMarkingFall(true)}
                   testID="route-detail-attempt-form"
                 />
               ) : (
@@ -440,6 +482,9 @@ const makeStyles = (theme: Theme) =>
       flexDirection: "row",
       gap: Spacing.md,
       paddingBottom: BottomTabHeight + Spacing.md,
+    },
+    cancelButton: {
+      opacity: 0.7,
     },
     scroll: {
       paddingHorizontal: Spacing.xl,
